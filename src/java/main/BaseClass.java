@@ -18,6 +18,7 @@ package main;
 
 import java.awt.Canvas;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import main.Vector;
 /**
  *
@@ -45,16 +46,18 @@ public class BaseClass {
               ,int ro
               ,float vangle
               ,float vlength
+              ,ArrayList<BaseClass> AL
               ){
        this.X = x;
        this.Y = y;
        this.M = m;
        this.RO = ro;
-       V = new Vector(vangle,vlength);
+       this.V = new Vector(vangle,vlength);
+       AL.add(this);
      }
      
      void draw(Graphics g){
-         g.drawOval(X-RO, Y-RO, X+RO, Y+RO);
+         g.drawOval(X, Y, RO, RO);
      }
      
      
