@@ -16,10 +16,48 @@
  */
 package main;
 
+import java.awt.Canvas;
+import java.awt.Graphics;
+import main.Vector;
 /**
  *
  * @author Vladimir
  */
 public class BaseClass {
+    int X,Y;   /*Координаты объекта*/
+    float M;   /*Масса объекта */
+    int RO;    /*Радиус сферы(объекта)*/
+    Vector V;  /*Вектор импульса*/
+    
+     BaseClass(){
+       this.X = 0;
+       this.Y = 0;
+       this.M = 1;
+       this.RO = 1;
+       V = new Vector(1,1);
+     }
+     
+     
+     BaseClass(
+               int x
+              ,int y
+              ,float m
+              ,int ro
+              ,float vangle
+              ,float vlength
+              ){
+       this.X = x;
+       this.Y = y;
+       this.M = m;
+       this.RO = ro;
+       V = new Vector(vangle,vlength);
+     }
+     
+     void draw(Graphics g){
+         g.drawOval(X-RO, Y-RO, X+RO, Y+RO);
+     }
+     
+     
+    
     
 }
