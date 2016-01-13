@@ -29,6 +29,6 @@ public class Vector {
     }
     Vector(float na, float nl){
         this.angle = na;
-        this.legnth = nl;
+        this.length = nl;
     }
 }
