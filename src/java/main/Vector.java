@@ -21,5 +21,14 @@ package main;
  * @author Vladimir
  */
 public class Vector {
-    
+    float angle;
+    float length;
+    Vector(){
+        this.angle = 0;
+        this.length = 0;
+    }
+    Vector(float na, float nl){
+        this.angle = na;
+        this.legnth = nl;
+    }
 }
