@@ -16,6 +16,8 @@
  */
 package main;
 
+import static java.lang.Math.*;
+
 /**
  *
  * @author Vladimir
@@ -30,5 +32,25 @@ public class Vector {
     Vector(float na, float nl){
         this.angle = na;
         this.length = nl;
+    }
+    Vector(Vector nv){
+        this.angle = nv.angle;
+        this.length = nv.length;
+    }
+    Vector Plus(Vector nv){
+        float nx, ny;   //координаты конца суммарного вектора
+        nx = (float) (this.length * sin(this.angle) + nv.length * sin(nv.angle));
+        ny = (float) (this.length * cos(this.angle) + nv.length * cos(nv.angle));
+        this.length = (float) sqrt((nx * nx + ny * ny));
+        this.angle = (float) acos(this.length / (nx * nv.length));
+        return this;
+    }
+    Vector Minus(Vector nv){
+        float nx, ny;   //координаты конца суммарного вектора
+        nx = (float) (nv.length * sin(nv.angle) - this.length * sin(this.angle));
+        ny = (float) (nv.length * cos(nv.angle) - this.length * cos(this.angle));
+        this.length = (float) sqrt((nx * nx + ny * ny));
+        this.angle = (float) acos(this.length / (nx * nv.length));
+        return this;
     }
 }
