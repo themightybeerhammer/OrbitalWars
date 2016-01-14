@@ -24,7 +24,7 @@ import static java.lang.Math.*;
  */
 public class Vector {
     
-    public float angle;    /*угол вектора, в градусах*/
+    public float angle;    /*угол вектора, в радианах*/
     public float length;   /*длина вектора*/
     
     /*Конструкторы класса*/
@@ -81,7 +81,7 @@ public class Vector {
         ny = (float) (nv.length * cos(nv.angle) - this.length * cos(this.angle));
         /*вычисление новых значений*/
         this.length = (float) sqrt((nx * nx + ny * ny));
-        this.angle = (float) acos(this.length / (nx * nv.length));
+        this.angle = (float) this.length / (nx * nv.length);
         return this;
     }
     
@@ -93,7 +93,7 @@ public class Vector {
         ny = (float) (this.length * cos(this.angle) + nv.length * cos(nv.angle));
         /*вычисление новых значений*/
         this.length = (float) sqrt((nx * nx + ny * ny));
-        this.angle = (float) acos(this.length / (nx * nv.length));
+        this.angle = (float) this.length / (max(1, nx) * nv.length);
         return this;
     }
     
@@ -103,4 +103,13 @@ public class Vector {
         return this;
     }
 
+    /*TEST START*//*
+    public static void main(String[] args) {
+        Vector a = new Vector(0, 5);
+        Vector b = new Vector((float) 3.14, 2);
+        System.out.println(a.angle + " " + a.length + " | " + b.angle + " " + b.length);
+        a.Plus(b);
+        System.out.println(a.angle + " " + a.length + " | " + b.angle + " " + b.length);
+    }*/
+    /*TEST END*/
 }
