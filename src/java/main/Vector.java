@@ -50,7 +50,11 @@ public class Vector {
         nx = (float) (nv.length * sin(nv.angle) - this.length * sin(this.angle));
         ny = (float) (nv.length * cos(nv.angle) - this.length * cos(this.angle));
         this.length = (float) sqrt((nx * nx + ny * ny));
-        this.angle = (float) acos(this.length / (nx * nv.length));
+        //this.angle = (float) acos(this.length / (nx * nv.length));
+        return this;
+    }
+    Vector SetAlign(float x1, float y1, float x2, float y2){
+        this.angle = (float) acos(sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) + abs(x2 - x1) / (abs(x2 - x1) * sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))));
         return this;
     }
 }
