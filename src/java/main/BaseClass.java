@@ -102,7 +102,11 @@ public class BaseClass {
          float xr = CM.X + (int)(M/(mr)*(CM.X-X));
          float yr = CM.Y + (int)(M/(mr)*(CM.Y-Y));
          
-         float fr = (float) (mr*M/(Math.pow(X-xr,2)+Math.pow(Y-yr,2)));
+         float r = (float)(Math.pow(X-xr,2)+Math.pow(Y-yr,2));
+         if(r<RO) r = RO;
+         float fr = (float) (mr*M/r);
+         
+         
        
          
          float af = (float)Math.asin((yr-Y)/Math.sqrt((Math.pow(xr-X,2)+Math.pow(yr-Y,2))));
@@ -128,23 +132,20 @@ public class BaseClass {
          
          float xd ;
          float yd ;
-          xd = (float)(Math.cos(F.angle)*F.length/M);
-          yd = (float)(Math.sin(F.angle)*F.length/M);
+          //xd = (float)(Math.cos(F.angle)*F.length/M);
+          //yd = (float)(Math.sin(F.angle)*F.length/M);
          
-          //xd = (float)(Math.cos(P.angle)*P.length/M);
-          //yd = (float)(Math.sin(P.angle)*P.length/M);
+          xd = (float)(Math.cos(P.angle)*P.length/M);
+          yd = (float)(Math.sin(P.angle)*P.length/M);
           
-        /* if((xd<1)&&(xd>0)) xd=1; 
-         if((xd>-1)&&(xd<0)) xd=-1; */
-         if(xd>10) xd=1;
-         if(xd<-10) xd=-1;
+          /*Ограничитель скорости до 10 */
+          if(Math.sqrt(xd*xd+yd*yd)>10){
+                xd=(float)(xd*10/Math.sqrt(xd*xd+yd*yd));
+                yd=(float)(yd*10/Math.sqrt(xd*xd+yd*yd));
+          }
          
-        /* if((yd<1)&&(yd>0)) yd=1; 
-         if((yd>-1)&&(yd<0)) yd=-1; */
-         if(yd>10)yd=1;        
-         if(yd<-10)yd=-1;
+         //System.out.println("F="+F.length+" M="+M+" X="+xd+" Y="+yd);
          
-         System.out.println("F="+F.length+" M="+M+" X="+xd+" Y="+yd);
          X = X+xd;
          Y = Y+yd;
      
