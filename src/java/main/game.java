@@ -18,27 +18,27 @@
 package main;
 
 import java.applet.Applet;
-import java.awt.Graphics;
-import java.awt.Paint;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import static java.lang.Math.random;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.lang.Object;
 
 /**
  *
  * @author Vladimir
  */
 
-public class game extends Applet implements ActionListener, KeyListener {
+public class game extends Applet implements KeyListener {
     
     private ArrayList<BaseClass> ALBaseClass;   /*Коллекция всех объектов*/
     private CenterMass CM;                      /*Центр масс*/ 
     private DrawPanel Display;                  /*Панель для отображения*/
+    private Planet player;                      /*Указатель на планету игрока*/
     
+    @Override
     public void init() {
         addKeyListener(this);
         ALBaseClass = new ArrayList<>();
@@ -50,13 +50,13 @@ public class game extends Applet implements ActionListener, KeyListener {
         add(Display);
         
         /*тестовые болванки НАЧАЛО*/
-        new Planet(100, 190, 10, 5, 85, 5, ALBaseClass, true);
-        new Planet(122, 280, 10, 5, 136, 5, ALBaseClass, false);
-        new Planet(155, 110, 10, 5, 74, 5, ALBaseClass, false);       
-        new Planet(250, 150, 1, 5, 8, 5, ALBaseClass, false);
-        new Planet(77, 260, 1, 5, 267, 5, ALBaseClass, false);
-        new Planet(220, 100, 1, 5, 307, 5, ALBaseClass, false);
-        new Star(200, 200, 10000, 10, 0, 0, ALBaseClass);
+        player = new Planet((float)Math.random()*700, 190, 10, 5, 85, 5, ALBaseClass, true);
+        new Planet((float)Math.random()*700, (float)Math.random()*500, 10, 5, 136, 5, ALBaseClass, false);
+        new Planet((float)Math.random()*700, (float)Math.random()*500, 10, 5, 74, 5, ALBaseClass, false);       
+        new Planet((float)Math.random()*700, (float)Math.random()*500, 1, 5, 8, 5, ALBaseClass, false);
+        new Planet((float)Math.random()*700, (float)Math.random()*500, 1, 5, 267, 5, ALBaseClass, false);
+        new Planet((float)Math.random()*700, (float)Math.random()*500, 1, 5, 307, 5, ALBaseClass, false);
+        new Star(350, 250, 100000, 10, 0, 0, ALBaseClass);
         /*тестовые болванки КОНЕЦ*/
         
         /*таймер обновления мира*/
@@ -74,6 +74,8 @@ public class game extends Applet implements ActionListener, KeyListener {
             }
         };
         oTimer.schedule(oTimerTask, 0, 100);
+        this.setFocusable(true);
+        this.requestFocusInWindow();
     }
     
     @Override
@@ -81,28 +83,19 @@ public class game extends Applet implements ActionListener, KeyListener {
     }
     
     @Override 
-    public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override 
     public void keyTyped(KeyEvent e) {
-                CM.CalcCenterMass();                            /*пересчет центра масс*/
-                Display.AssignList(ALBaseClass);                /*передача игровому экрану списка объектов для отрисовки*/  
-                for(int i = 0 ;i < ALBaseClass.size(); i++){
-                    ALBaseClass.get(i).calc_F_ravn(CM);         /*пересчет импульса объекта*/
-                    ALBaseClass.get(i).move();                  /*движение объекта*/
-                }
     }
     
     @Override 
     public void keyPressed(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println(e.getKeyCode());
+        if(e.getKeyCode() == 32){
+            new Projectile(player.X, player.Y, 1, 1, player.P.angle, 5, ALBaseClass);
+        }
     }
     
     @Override 
     public void keyReleased(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
