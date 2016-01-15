@@ -70,7 +70,7 @@ public class BaseClass {
          draw_in_scr(g,X,Y);
          
          /*Направление равнодействующей*/
-         float r = 20;
+         float r = 100;
          if(F.length!=0)
             {
                 g.setColor(Color.BLUE);
@@ -109,36 +109,44 @@ public class BaseClass {
          
          
          
-         if((xr<X)&&(yr>Y)) { af=af*(-1)+(float)Math.PI;}
-         if((xr<X)&&(yr<Y)) { af=af*(-1)+(float)Math.PI;}
-         if((xr>X)&&(yr<Y)) { af=af+(float)Math.PI*2;}
+         if((xr<X)&&(yr>Y))  { af=af*(-1)+(float)Math.PI;}
+         if((xr<X)&&(yr==Y)) { af=af*(-1)+(float)Math.PI;}
+         if((xr<X)&&(yr<Y))  { af=af*(-1)+(float)Math.PI;}
+         if((xr>X)&&(yr<Y))  { af=af+(float)Math.PI*2;}
          
          
          this.F =new Vector(af,fr);
+         
+         
          this.P.Plus(F);
          
          }
          
        }
      void move(){
-         System.out.println(F.length+" "+P.length);
-         /*float xd = (float)(Math.cos(F.angle)*F.length);
-         float yd = (float)(Math.sin(F.angle)*F.length);*/
+         //System.out.println(F.length+" "+P.length);
          
-         float xd = (float)(Math.cos(P.angle)*P.length);
-         float yd = (float)(Math.sin(P.angle)*P.length);
+         float xd ;
+         float yd ;
+          xd = (float)(Math.cos(F.angle)*F.length/M);
+          yd = (float)(Math.sin(F.angle)*F.length/M);
+         
+          //xd = (float)(Math.cos(P.angle)*P.length/M);
+          //yd = (float)(Math.sin(P.angle)*P.length/M);
+          
         /* if((xd<1)&&(xd>0)) xd=1; 
          if((xd>-1)&&(xd<0)) xd=-1; */
-         if(xd>10) xd=10;
-         if(xd<-10) xd=-10;
+         if(xd>10) xd=1;
+         if(xd<-10) xd=-1;
          
         /* if((yd<1)&&(yd>0)) yd=1; 
          if((yd>-1)&&(yd<0)) yd=-1; */
-         if(yd>10)yd=10;        
-         if(yd<-10)yd=-10;
+         if(yd>10)yd=1;        
+         if(yd<-10)yd=-1;
          
-         this.X = this.X+(int)Math.round(xd);
-         this.Y = this.Y+(int)Math.round(yd);
+         System.out.println("F="+F.length+" M="+M+" X="+xd+" Y="+yd);
+         X = X+xd;
+         Y = Y+yd;
      
      
      }

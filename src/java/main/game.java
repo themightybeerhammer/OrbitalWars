@@ -45,10 +45,18 @@ public class game extends Applet implements KeyListener{
         addKeyListener(this);
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
-        new BaseClass(50,50,70,5,0,2,ALBaseClass);
-        new BaseClass(250,150,70,5,(float) Math.PI,2,ALBaseClass);
-        new BaseClass(50,150,70,5, (float) Math.PI*3/2,2,ALBaseClass);
-        new BaseClass(250,50,70,5,(float) Math.PI*2,2,ALBaseClass);
+        new BaseClass(75,75   ,120,10,  0             ,2    ,ALBaseClass);
+        new BaseClass(50,100  ,120,10, (float) Math.PI,2    ,ALBaseClass);
+        new BaseClass(75,125  ,120,10, (float) Math.PI*3/2,2,ALBaseClass);
+        new BaseClass(225,100 ,12000,10, (float) Math.PI*2,2  ,ALBaseClass);
+       /* new BaseClass(350,300 ,120,10, (float) Math.PI,2    ,ALBaseClass);
+        new BaseClass(500,200 ,120,10, (float) Math.PI*3/2,2,ALBaseClass);
+        new BaseClass(550,500 ,220,10, (float) Math.PI*2,2  ,ALBaseClass);
+        new BaseClass(475,325 ,120,10, (float) Math.PI*2,2  ,ALBaseClass);
+        new BaseClass(450,300 ,120,10, (float) Math.PI,2    ,ALBaseClass);
+        new BaseClass(400,300 ,120,10, (float) Math.PI*3/2,2,ALBaseClass);
+        new BaseClass(450,300 ,220,10, (float) Math.PI*2,2  ,ALBaseClass);*/
+      
        
        
         
