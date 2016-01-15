@@ -27,4 +27,11 @@ package main;
 */
 public class Projectile extends BaseClass{
     
+    /*Конструкторы класса*/
+    Projectile(){
+        super();
+    }
+    
+    
+    
 }

@@ -14,7 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package main;
+
+import java.util.ArrayList;
 
 /**
  *
@@ -23,6 +26,15 @@ package main;
 /* Центр солнечной системы
 *  
 */
+
 public class Star extends BaseClass {
+    
+    /*Конструкторы класса*/
+    Star(){
+        super();
+    } 
+    Star(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL){
+        super(x, y, m, ro, vangle, vlength, AL);
+    }
     
 }

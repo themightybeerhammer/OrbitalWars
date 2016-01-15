@@ -43,18 +43,20 @@ public class game extends Applet implements ActionListener, KeyListener {
         addKeyListener(this);
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
+        this.setSize(800, 600);
         
         /*создаем новый игровой экран*/
         Display = new DrawPanel();
         add(Display);
         
         /*тестовые болванки НАЧАЛО*/
-        new BaseClass(100, 190, 5, 5, 20, 20, ALBaseClass);
-        new BaseClass(122, 180, 5, 5, 20, 20, ALBaseClass);
-        new BaseClass(55, 110, 5, 5, 20, 20, ALBaseClass);       
-        new BaseClass(150, 150, 5, 5, 20, 20, ALBaseClass);
-        new BaseClass(177, 160, 5, 5, 20, 20, ALBaseClass);
-        new BaseClass(120, 100, 5, 5, 20, 20, ALBaseClass);
+        new Planet(100, 190, 10, 5, 85, 5, ALBaseClass, true);
+        new Planet(122, 280, 10, 5, 136, 5, ALBaseClass, false);
+        new Planet(155, 110, 10, 5, 74, 5, ALBaseClass, false);       
+        new Planet(250, 150, 1, 5, 8, 5, ALBaseClass, false);
+        new Planet(77, 260, 1, 5, 267, 5, ALBaseClass, false);
+        new Planet(220, 100, 1, 5, 307, 5, ALBaseClass, false);
+        new Star(200, 200, 10000, 10, 0, 0, ALBaseClass);
         /*тестовые болванки КОНЕЦ*/
         
         /*таймер обновления мира*/
@@ -71,19 +73,7 @@ public class game extends Applet implements ActionListener, KeyListener {
                 }
             }
         };
-        oTimer.schedule(oTimerTask, 0, 1000);
-    }
-    
-    /*расчет центра массы системы*/
-    public void CalcCenterMass(Graphics g){
-        float Xc = ALBaseClass.get(0).X;
-        float Yc = ALBaseClass.get(0).Y;
-        float Mc = ALBaseClass.get(0).M;
-        for(int i = 1; i < ALBaseClass.size(); i++){
-            Xc = Xc + (Xc - ALBaseClass.get(i).X) * (ALBaseClass.get(i).M / Mc);
-            Yc = Yc + (Yc - ALBaseClass.get(i).Y) * (ALBaseClass.get(i).M / Mc);
-            Mc = Mc + ALBaseClass.get(i).M;
-        }  
+        oTimer.schedule(oTimerTask, 0, 100);
     }
     
     @Override

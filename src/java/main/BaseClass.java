@@ -120,23 +120,23 @@ public class BaseClass {
      
      void move(){
          System.out.println(F.length+" "+P.length);
-         /*float xd = (float)(Math.cos(F.angle)*F.length);
-         float yd = (float)(Math.sin(F.angle)*F.length);*/
+         //float xd = (float)(Math.cos(F.angle)*F.length);
+         //float yd = (float)(Math.sin(F.angle)*F.length);
          
-         float xd = (float)(Math.cos(P.angle)*P.length);
-         float yd = (float)(Math.sin(P.angle)*P.length);
+         float xd = (float)(Math.cos(P.angle)*P.length / M);
+         float yd = (float)(Math.sin(P.angle)*P.length / M);
         /* if((xd<1)&&(xd>0)) xd=1; 
          if((xd>-1)&&(xd<0)) xd=-1; */
-         if(xd>10) xd=10;
-         if(xd<-10) xd=-10;
+         if(xd>5) xd=5;
+         if(xd<-5) xd=-5;
          
         /* if((yd<1)&&(yd>0)) yd=1; 
          if((yd>-1)&&(yd<0)) yd=-1; */
-         if(yd>10)yd=10;        
-         if(yd<-10)yd=-10;
+         if(yd>5)yd=5;        
+         if(yd<-5)yd=-5;
          
-         this.X = this.X+(int)Math.round(xd);
-         this.Y = this.Y+(int)Math.round(yd);
+         this.X = this.X + xd;
+         this.Y = this.Y + yd;
      
      
      }

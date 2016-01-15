@@ -81,7 +81,7 @@ public class Vector {
         ny = (float) (nv.length * sin(nv.angle) - this.length * sin(this.angle));
         /*вычисление новых значений*/
         this.length = (float) sqrt(nx * nx + ny * ny);
-        this.angle = (float) acos(nx / this.length);
+        this.angle = (float) acos(nx / this.length) * signum(ny);
         return this;
     }
     
@@ -93,7 +93,7 @@ public class Vector {
         ny = (float) (this.length * sin(this.angle) + nv.length * sin(nv.angle));
         /*вычисление новых значений*/
         this.length = (float) sqrt(nx * nx + ny * ny);
-        this.angle = (float) acos(nx / this.length);
+        this.angle = (float) acos(nx / this.length) * signum(ny);
         return this;
     }
     
@@ -103,13 +103,4 @@ public class Vector {
         return this;
     }
 
-    /*TEST START*//*
-    public static void main(String[] args) {
-        Vector a = new Vector(0, 5);
-        Vector b = new Vector((float) 3.14, 2);
-        System.out.println(a.angle + " " + a.length + " | " + b.angle + " " + b.length);
-        a.Plus(b);
-        System.out.println(a.angle + " " + a.length + " | " + b.angle + " " + b.length);
-    }*/
-    /*TEST END*/
 }

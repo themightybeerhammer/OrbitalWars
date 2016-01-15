@@ -16,6 +16,8 @@
  */
 package main;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Vladimir
@@ -25,5 +27,15 @@ package main;
 *  потом даже проще, наверное, будет ИИ реализовать
 */
 public class Planet extends BaseClass {
-    public boolean IsPlayer; /*метка планеты-игрока*/
+    public boolean IsPlayer = false; /*метка планеты-игрока*/
+    
+    /*Конструкторы класса*/
+    Planet(){
+        super();
+    }
+    Planet(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL, boolean player){
+        super(x, y, m, ro, vangle, vlength, AL);
+        this.IsPlayer = player;
+    }
+    
 }

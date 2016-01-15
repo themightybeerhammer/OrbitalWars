@@ -66,7 +66,7 @@ public class CenterMass extends BaseClass {
       
      void draw_in_scr(Graphics g,float x, float y){
          g.setColor(Color.RED);
-         g.drawOval((int)x-10,(int) y-10, 5, 5);
+         g.drawOval((int)x-5,(int) y-5, 10, 10);
      }
         
       
