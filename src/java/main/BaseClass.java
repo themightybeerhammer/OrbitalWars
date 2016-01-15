@@ -119,7 +119,7 @@ public class BaseClass {
        }
      
      void move(){
-         System.out.println(F.length+" "+P.length);
+         //System.out.println(F.length+" "+P.length);
          //float xd = (float)(Math.cos(F.angle)*F.length);
          //float yd = (float)(Math.sin(F.angle)*F.length);
          
