@@ -84,9 +84,6 @@ public class BaseClass {
                 g.setColor(Color.GREEN);
                 g.drawLine((int)X, (int)Y, (int)X+(int)(Math.cos(P.angle)*r) , (int)Y+(int)(Math.sin(P.angle)*r));
             }
-                 
-         
-         
          
      }
      
@@ -120,6 +117,7 @@ public class BaseClass {
          }
          
        }
+     
      void move(){
          System.out.println(F.length+" "+P.length);
          /*float xd = (float)(Math.cos(F.angle)*F.length);
@@ -142,8 +140,5 @@ public class BaseClass {
      
      
      }
-     
-     
-    
-    
+        
 }

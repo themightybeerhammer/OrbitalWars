@@ -77,11 +77,11 @@ public class Vector {
     public Vector Minus(Vector nv){
         float nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при вычитании)*/
-        nx = (float) (nv.length * sin(nv.angle) - this.length * sin(this.angle));
-        ny = (float) (nv.length * cos(nv.angle) - this.length * cos(this.angle));
+        nx = (float) (nv.length * cos(nv.angle) - this.length * cos(this.angle));
+        ny = (float) (nv.length * sin(nv.angle) - this.length * sin(this.angle));
         /*вычисление новых значений*/
-        this.length = (float) sqrt((nx * nx + ny * ny));
-        this.angle = (float) this.length / (nx * nv.length);
+        this.length = (float) sqrt(nx * nx + ny * ny);
+        this.angle = (float) acos(nx / this.length);
         return this;
     }
     
@@ -89,17 +89,17 @@ public class Vector {
     public Vector Plus(Vector nv){
         float nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при суммировании)*/
-        nx = (float) (this.length * sin(this.angle) + nv.length * sin(nv.angle));
-        ny = (float) (this.length * cos(this.angle) + nv.length * cos(nv.angle));
+        nx = (float) (this.length * cos(this.angle) + nv.length * cos(nv.angle));
+        ny = (float) (this.length * sin(this.angle) + nv.length * sin(nv.angle));
         /*вычисление новых значений*/
-        this.length = (float) sqrt((nx * nx + ny * ny));
-        this.angle = (float) this.length / (max(1, nx) * nv.length);
+        this.length = (float) sqrt(nx * nx + ny * ny);
+        this.angle = (float) acos(nx / this.length);
         return this;
     }
     
     /*Установка угла вектора по двум точкам*/
     public Vector SetAngle(float x1, float y1, float x2, float y2){
-        this.angle = (float) acos(Length(x1, y1, x2, y2) + abs(x2 - x1) / (abs(x2 - x1) * Length(x1, y1, x2, y2)));
+        this.angle = (float) acos((x2 - x1) / sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)));
         return this;
     }
 

@@ -17,51 +17,64 @@
 
 package main;
 
-
 import java.applet.Applet;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Paint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import org.hibernate.validator.internal.util.logging.Log;
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  *
  * @author Vladimir
  */
 
-
-public class game extends Applet implements KeyListener{
+public class game extends Applet implements ActionListener, KeyListener {
     
-    public ArrayList<BaseClass> ALBaseClass; /*Коллекция всех объектов*/
-    public CenterMass CM; /*Центр масс*/      
-    /**
-     * Initialization method that will be called after the applet is loaded into
-     * the browser.
-     */
+    private ArrayList<BaseClass> ALBaseClass;   /*Коллекция всех объектов*/
+    private CenterMass CM;                      /*Центр масс*/ 
+    private DrawPanel Display;                  /*Панель для отображения*/
+    
     public void init() {
         addKeyListener(this);
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
-        new BaseClass(50,50,70,5,0,2,ALBaseClass);
-        new BaseClass(250,150,70,5,(float) Math.PI,2,ALBaseClass);
-        new BaseClass(50,150,70,5, (float) Math.PI*3/2,2,ALBaseClass);
-        new BaseClass(250,50,70,5,(float) Math.PI*2,2,ALBaseClass);
-       
-       
         
-        CM.CalcCenterMass();
+        /*создаем новый игровой экран*/
+        Display = new DrawPanel();
+        add(Display);
         
-         for(int i=0;i<ALBaseClass.size();i++){
-          ALBaseClass.get(i).calc_F_ravn(CM);
-        }
-      
+        /*тестовые болванки НАЧАЛО*/
+        new BaseClass(100, 190, 5, 5, 20, 20, ALBaseClass);
+        new BaseClass(122, 180, 5, 5, 20, 20, ALBaseClass);
+        new BaseClass(55, 110, 5, 5, 20, 20, ALBaseClass);       
+        new BaseClass(150, 150, 5, 5, 20, 20, ALBaseClass);
+        new BaseClass(177, 160, 5, 5, 20, 20, ALBaseClass);
+        new BaseClass(120, 100, 5, 5, 20, 20, ALBaseClass);
+        /*тестовые болванки КОНЕЦ*/
         
+        /*таймер обновления мира*/
+        Timer oTimer = new Timer();
+        TimerTask oTimerTask = new TimerTask(){
+            /*в ране описываются периодические действия*/
+            @Override 
+            public void run(){
+                CM.CalcCenterMass();                            /*пересчет центра масс*/
+                Display.AssignList(ALBaseClass);                /*передача игровому экрану списка объектов для отрисовки*/  
+                for(int i = 0 ;i < ALBaseClass.size(); i++){
+                    ALBaseClass.get(i).calc_F_ravn(CM);         /*пересчет импульса объекта*/
+                    ALBaseClass.get(i).move();                  /*движение объекта*/
+                }
+            }
+        };
+        oTimer.schedule(oTimerTask, 0, 1000);
     }
     
+    /*расчет центра массы системы*/
     public void CalcCenterMass(Graphics g){
         float Xc = ALBaseClass.get(0).X;
         float Yc = ALBaseClass.get(0).Y;
@@ -74,38 +87,32 @@ public class game extends Applet implements KeyListener{
     }
     
     @Override
-    public void paint(Graphics g){      
-        for(int i=0;i<ALBaseClass.size();i++){
-          ALBaseClass.get(i).draw(g);
-        }
-        
-       
-    }
-
-    @Override
-    public void keyTyped(KeyEvent ke) {
-       
-        CM.CalcCenterMass();
-        for(int i=0;i<ALBaseClass.size();i++){
-          ALBaseClass.get(i).calc_F_ravn(CM);
-          ALBaseClass.get(i).move();
-        }
-        
-     //  ALBaseClass.get(1).P.angle=(float) (ALBaseClass.get(1).P.angle+0.05);
-     //  System.out.println(ALBaseClass.get(1).P.angle);
-       repaint();
-        
-        
-    }
-
-    @Override
-    public void keyPressed(KeyEvent ke) {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void keyReleased(KeyEvent ke) {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void destroy(){
     }
     
+    @Override 
+    public void actionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override 
+    public void keyTyped(KeyEvent e) {
+                CM.CalcCenterMass();                            /*пересчет центра масс*/
+                Display.AssignList(ALBaseClass);                /*передача игровому экрану списка объектов для отрисовки*/  
+                for(int i = 0 ;i < ALBaseClass.size(); i++){
+                    ALBaseClass.get(i).calc_F_ravn(CM);         /*пересчет импульса объекта*/
+                    ALBaseClass.get(i).move();                  /*движение объекта*/
+                }
+    }
+    
+    @Override 
+    public void keyPressed(KeyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override 
+    public void keyReleased(KeyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
