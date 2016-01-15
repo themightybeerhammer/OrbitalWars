@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package main;
 
 import java.awt.*;
@@ -25,7 +26,8 @@ import javax.swing.*;
  *
  * @author Vladimir
  */
-public class DrawPanel extends JPanel{
+
+public class DrawPanel extends JPanel {
     static ArrayList<BaseClass> ALBaseClass;
 
     public void AssignList(ArrayList<BaseClass> ALBC){
@@ -52,17 +54,7 @@ public class DrawPanel extends JPanel{
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(400, 400);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                DrawPanel timer = new DrawPanel();
-                timer.AssignList(ALBaseClass);
-            }
-        });
+        return new Dimension(700, 500);
     }
     
 }
