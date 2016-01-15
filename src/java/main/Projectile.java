@@ -16,6 +16,8 @@
  */
 package main;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Vladimir
@@ -31,7 +33,8 @@ public class Projectile extends BaseClass{
     Projectile(){
         super();
     }
-    
-    
-    
+    Projectile(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL){
+        super(x, y, m, ro, vangle, vlength, AL);
+    }
+   
 }
