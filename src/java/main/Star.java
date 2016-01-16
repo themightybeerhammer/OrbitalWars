@@ -37,4 +37,10 @@ public class Star extends BaseClass {
         super(x, y, m, ro, vangle, vlength, AL);
     }
     
+     void move(float Mtplr)
+     {
+     
+     }
+     
+    
 }

@@ -64,9 +64,17 @@ public class CenterMass extends BaseClass {
        this.M = Mc;
     }
       
-     void draw_in_scr(Graphics g,float x, float y){
+     void draw_in_scr(Graphics g
+                     ,float x
+                     ,float y
+                     ,boolean v_F  
+                     ,boolean v_P){
          g.setColor(Color.RED);
          g.drawOval((int)x-5,(int) y-5, 10, 10);
+     }
+     
+     void move(float Mtplr){
+     
      }
         
       
