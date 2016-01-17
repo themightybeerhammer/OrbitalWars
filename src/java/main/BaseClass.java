@@ -27,7 +27,7 @@ import main.Vector;
  * @author Vladimir
  */
 public class BaseClass {
-    float X,Y; /*Координаты объекта*/
+    public float X,Y; /*Координаты объекта*/
     float M;   /*Масса объекта */
     int RO;    /*Радиус сферы(объекта)*/
     Vector P;  /*Вектор импульса*/
@@ -83,7 +83,7 @@ public class BaseClass {
          Т.Е. ВХОДИТ ЛИ ОБЪЕКТ В ОТОБРАЖАЕМУЮ ОБЛАСТЬ */
        
          /*Отрисовка объекта*/
-         draw_in_scr(g,X+0,Y+0,v_F,v_P);
+         draw_in_scr(g,X,Y,v_F,v_P);
          /*Орбита объекта*/
          if(dw_orbit)draw_orbit(g,0,0); 
         
@@ -205,7 +205,7 @@ public class BaseClass {
              
             if(((float)Math.sqrt(Math.pow(_X-X, 2)+Math.pow(_Y-Y, 2))<RO)&&(_xd*j>2*RO))break;
            j++;
-       }while(j<500);
+       }while(j<1500);
        }         
       }
        
@@ -224,7 +224,7 @@ public class BaseClass {
          }
      }
      
-     void calc_F_ravn(ArrayList<BaseClass> AL,float Mtplr){
+     void calc_F_ravn(float Mtplr){
          
          float r; /*Растояние между двумя объектами*/
          float f; /*Сила притяжения между двумя объектами*/
@@ -235,13 +235,15 @@ public class BaseClass {
          
         F=new Vector(0,0);
          
-         for(int i=0;i<AL.size();i++){
-             if((AL.get(i).getClass().getName()!="main.CenterMass")&&(AL.get(i)!=this))
+         for(int i=0;i<aLBaseClass.size();i++){
+             if((aLBaseClass.get(i).getClass().getName()!="main.CenterMass")
+              &&(aLBaseClass.get(i)!=this)
+              &&(aLBaseClass.get(i).M>M*10))
              {
-                x=AL.get(i).X;
-                y=AL.get(i).Y;
-                m=AL.get(i).M;
-                ro=AL.get(i).RO;
+                x=aLBaseClass.get(i).X;
+                y=aLBaseClass.get(i).Y;
+                m=aLBaseClass.get(i).M;
+                ro=aLBaseClass.get(i).RO;
                 
                 
                 r = (float)Math.sqrt(Math.pow(X-x,2)+Math.pow(Y-y,2));
@@ -286,7 +288,7 @@ public class BaseClass {
      
      }
      
-     
+  
     
     
 }

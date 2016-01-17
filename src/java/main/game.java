@@ -18,30 +18,30 @@
 package main;
 
 import java.applet.Applet;
-import java.awt.Graphics;
-import java.awt.Paint;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import static java.lang.Math.random;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.lang.Object;
 
 /**
  *
  * @author Vladimir
  */
 
-public class game extends Applet implements ActionListener, KeyListener {
+public class game extends Applet implements KeyListener {
     
     private ArrayList<BaseClass> ALBaseClass;   /*Коллекция всех объектов*/
     private CenterMass CM;                      /*Центр масс*/ 
     private DrawPanel Display;                  /*Панель для отображения*/
     public float Mltplr ;     /*Множитель замедления*/      
     public boolean v_F;       /*Рисовать вектор равнодействующей*/
-    public boolean v_P;       /*Рисовать вектор импульса*/   
+    public boolean v_P;       /*Рисовать вектор импульса*/ 
+    public Planet player; 
     
+    @Override
     public void init() {
         /*Параметры для дебугагинга начало*/
         Mltplr = 3f;
@@ -58,28 +58,22 @@ public class game extends Applet implements ActionListener, KeyListener {
         add(Display);
         
         /*тестовые болванки НАЧАЛО*/
-        new BaseClass(100,200 ,10,10, (float)Math.PI*2/4,100,ALBaseClass);
-        new BaseClass(200,70 ,10,10, (float)Math.PI,90,ALBaseClass);    
-        new BaseClass(200,30 ,10,10, 0,78,ALBaseClass); 
+        player = new Planet(200,30 ,10,10, 0,78,ALBaseClass, true);
+        player.dw_orbit = true;
         
-        // new BaseClass(150,150 ,5,10, (float)Math.PI,50,ALBaseClass);
-        // new Planet(200, 300, 10, 5, (float)Math.PI/2, 5, ALBaseClass, false);
-        /*new Planet(155, 110, 10, 5, 74, 5, ALBaseClass, false);       
-        new Planet(250, 150, 1, 5, 8, 5, ALBaseClass, false);
-        new Planet(77, 260, 1, 5, 267, 5, ALBaseClass, false);
-        new Planet(220, 100, 1, 5, 307, 5, ALBaseClass, false);*/
+     
+          
+        new BaseClass(100,200 ,10,10, (float)Math.PI*2/4,100,ALBaseClass).dw_orbit=true;
+        new BaseClass(200,70 ,10,10, (float)Math.PI,90,ALBaseClass).dw_orbit=true;    
+        
         new Star(200, 200, 10000, 40, 0, 0, ALBaseClass);
-        /*тестовые болванки КОНЕЦ*/
         
-        ALBaseClass.get(1).dw_orbit=true;
-        ALBaseClass.get(2).dw_orbit=true;
-        ALBaseClass.get(3).dw_orbit=true;
-        
-         for(int i = 0 ;i < ALBaseClass.size(); i++){
+          for(int i = 0 ;i < ALBaseClass.size(); i++){
             ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
          }            
         
-        
+       
+        /*тестовые болванки КОНЕЦ*/
         
         /*таймер обновления мира*/
         Timer oTimer = new Timer();
@@ -91,12 +85,14 @@ public class game extends Applet implements ActionListener, KeyListener {
                 Display.AssignList(ALBaseClass,v_F,v_P);        /*передача игровому экрану списка объектов для отрисовки*/  
                 for(int i = 0 ;i < ALBaseClass.size(); i++){
                     
-                    ALBaseClass.get(i).calc_F_ravn(ALBaseClass,Mltplr);         /*пересчет импульса объекта*/
+                    ALBaseClass.get(i).calc_F_ravn(Mltplr);         /*пересчет импульса объекта*/
                     ALBaseClass.get(i).move(Mltplr);                  /*движение объекта*/
                 }
             }
         };
         oTimer.schedule(oTimerTask, 0, 50);
+        this.setFocusable(true);
+        this.requestFocusInWindow();
     }
     
     @Override
@@ -104,28 +100,23 @@ public class game extends Applet implements ActionListener, KeyListener {
     }
     
     @Override 
-    public void actionPerformed(ActionEvent e) {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override 
     public void keyTyped(KeyEvent e) {
-                CM.CalcCenterMass();                            /*пересчет центра масс*/
-                Display.AssignList(ALBaseClass,v_F,v_P);         /*передача игровому экрану списка объектов для отрисовки*/  
-                for(int i = 0 ;i < ALBaseClass.size(); i++){
-                    ALBaseClass.get(i).calc_F_ravn(ALBaseClass,Mltplr);         /*пересчет импульса объекта*/
-                    ALBaseClass.get(i).move(Mltplr);                  /*движение объекта*/
-                }
     }
     
     @Override 
     public void keyPressed(KeyEvent e) {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        //System.out.println(e.getKeyCode());
+        if(e.getKeyCode() == 32){
+            
+            float x = player.X+(float)(Math.cos(player.P.angle)*player.P.length/player.M);
+            float y = player.Y+(float)(Math.sin(player.P.angle)*player.P.length/player.M);
+            new Projectile(x, y, 1, 1, player.P.angle, 5, ALBaseClass);
+        }
     }
     
     @Override 
     public void keyReleased(KeyEvent e) {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
