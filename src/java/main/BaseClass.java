@@ -181,22 +181,31 @@ public class BaseClass {
                 
          
             }
-            _F.length=(float)(_F.length/1.5);
+            _F.length=(float)(_F.length/3);
             _P.Plus(_F);
             
             _xd=0; _yd=0;
             
-            _xd = (float)(Math.cos(_P.angle)*_P.length/M/1.5);
-            _yd = (float)(Math.sin(_P.angle)*_P.length/M/1.5);
+            _xd = (float)(Math.cos(_P.angle)*_P.length/M/3);
+            _yd = (float)(Math.sin(_P.angle)*_P.length/M/3);
             
             _X=_X+_xd;
             _Y=_Y+_yd;
             
-            Orbit.add(new Point((int)(_X-X),(int)(_Y-Y)));
+            boolean flag = true;
+            for(int i=0;i<Orbit.size();i++){
+                if((float)Math.sqrt((Math.pow((Orbit.get(i).x-(_X-X)),2)+ Math.pow((Orbit.get(i).y-(_Y-Y)),2)))<10 ){
+                    flag=false;
+                }
+            }
+            
+            if(flag){
+             Orbit.add(new Point((int)(_X-X),(int)(_Y-Y)));             
+            }
              
             if(((float)Math.sqrt(Math.pow(_X-X, 2)+Math.pow(_Y-Y, 2))<RO)&&(_xd*j>2*RO))break;
            j++;
-       }while(j<450);
+       }while(j<500);
        }         
       }
        
