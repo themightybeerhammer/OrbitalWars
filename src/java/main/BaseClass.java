@@ -228,7 +228,7 @@ public class BaseClass {
              RenderingHints.KEY_ANTIALIASING,
              RenderingHints.VALUE_ANTIALIAS_ON);
          g2.setRenderingHints(rh);
-         g2.setColor(Color.PINK);
+         g2.setColor(Color.WHITE);
          
          for(int i=0;i<Orbit.size();i++){
             if(i==0){
