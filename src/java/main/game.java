@@ -44,7 +44,7 @@ public class game extends Applet implements KeyListener {
     @Override
     public void init() {
         /*Параметры для дебугагинга начало*/
-        Mltplr = 3f;
+        Mltplr = 5f;
         v_F=false;       
         v_P=false; 
         /*Параметры для дебугагинга конец*/

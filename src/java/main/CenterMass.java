@@ -18,6 +18,9 @@ package main;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
 import static java.time.Clock.system;
 import java.util.ArrayList;
 
@@ -69,8 +72,15 @@ public class CenterMass extends BaseClass {
                      ,float y
                      ,boolean v_F  
                      ,boolean v_P){
-         g.setColor(Color.RED);
-         g.drawOval((int)x-5,(int) y-5, 10, 10);
+         
+         Graphics2D g2 = (Graphics2D)g;
+         RenderingHints rh = new RenderingHints(
+             RenderingHints.KEY_ANTIALIASING,
+             RenderingHints.VALUE_ANTIALIAS_ON);
+         g2.setRenderingHints(rh);
+         g2.setColor(Color.ORANGE);
+         g2.draw(new Ellipse2D.Float(x-5, y-5, 10, 10));
+         
      }
      
      void move(float Mtplr){

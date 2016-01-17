@@ -19,8 +19,12 @@ package main;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import javafx.scene.shape.Ellipse;
 import main.Vector;
 /**
  *
@@ -97,23 +101,30 @@ public class BaseClass {
                      ,float y
                      ,boolean v_F  
                      ,boolean v_P ){
-         g.setColor(Color.BLACK);
-         g.drawOval((int)x-RO, (int)y-RO, RO*2, RO*2);
+         
+         Graphics2D g2 = (Graphics2D)g;
+         RenderingHints rh = new RenderingHints(
+             RenderingHints.KEY_ANTIALIASING,
+             RenderingHints.VALUE_ANTIALIAS_ON);
+         g2.setRenderingHints(rh);
+         g2.setColor(Color.WHITE);
+         g2.draw(new Ellipse2D.Float(x-RO, y-RO, RO*2, RO*2));
+        // g2.drawOval((int)x-RO, (int)y-RO, RO*2, RO*2);
 
           /*Направление равнодействующей*/
          float r = 20;
          if((F.length!=0)&(v_F))
             {
-                g.setColor(Color.BLUE);
-                g.drawLine((int)X,(int) Y, (int)X+(int)(Math.cos(F.angle)*r) ,(int) Y+(int)(Math.sin(F.angle)*r));
+                g2.setColor(Color.BLUE);
+                g2.drawLine((int)X,(int) Y, (int)X+(int)(Math.cos(F.angle)*r) ,(int) Y+(int)(Math.sin(F.angle)*r));
             }
          
          /*Направление Импульса*/
           r = 20;
          if((P.length!=0)&(v_P))
             {
-                g.setColor(Color.GREEN);
-                g.drawLine((int)X, (int)Y, (int)X+(int)(Math.cos(P.angle)*r) , (int)Y+(int)(Math.sin(P.angle)*r));
+                g2.setColor(Color.GREEN);
+                g2.drawLine((int)X, (int)Y, (int)X+(int)(Math.cos(P.angle)*r) , (int)Y+(int)(Math.sin(P.angle)*r));
             }
      }
      
@@ -212,12 +223,21 @@ public class BaseClass {
      }
      
      void draw_orbit(Graphics g,float x,float y){
-         g.setColor(Color.PINK);
+         Graphics2D g2 = (Graphics2D)g;
+         RenderingHints rh = new RenderingHints(
+             RenderingHints.KEY_ANTIALIASING,
+             RenderingHints.VALUE_ANTIALIAS_ON);
+         g2.setRenderingHints(rh);
+         g2.setColor(Color.WHITE);
+         
          for(int i=0;i<Orbit.size();i++){
             if(i==0){
-              g.drawOval(Orbit.get(0).x-1+(int)x,Orbit.get(0).y-1+(int)y, 2, 2);  
+              g2.draw(new Ellipse2D.Float(Orbit.get(0).x+(int)x,Orbit.get(0).y+(int)y, 1, 1));
+              //g2.drawOval(Orbit.get(0).x-1+(int)x,Orbit.get(0).y-1+(int)y, 2, 2);  
             }else{
-              g.drawOval(Orbit.get(0).x+Orbit.get(i).x-1+(int)x,Orbit.get(0).y+Orbit.get(i).y-1+(int)y, 2, 2);  
+              g2.draw(new Ellipse2D.Float(Orbit.get(0).x+Orbit.get(i).x+(int)x,Orbit.get(0).y+Orbit.get(i).y+(int)y, 1, 1));
+              //g2.drawOval(Orbit.get(0).x+Orbit.get(i).x-1+(int)x,Orbit.get(0).y+Orbit.get(i).y-1+(int)y, 2, 2);  
+              
             }
              
            

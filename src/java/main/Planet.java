@@ -45,4 +45,7 @@ public class Planet extends BaseClass {
         this.IsPlayer = player;
     }
     
+    
+    
+    
 }
