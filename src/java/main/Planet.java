@@ -33,7 +33,14 @@ public class Planet extends BaseClass {
     Planet(){
         super();
     }
-    Planet(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL, boolean player){
+    Planet(float x, 
+            float y, 
+            float m, 
+            int ro, 
+            float vangle, 
+            float vlength, 
+            ArrayList<BaseClass> AL, 
+            boolean player){
         super(x, y, m, ro, vangle, vlength, AL);
         this.IsPlayer = player;
     }

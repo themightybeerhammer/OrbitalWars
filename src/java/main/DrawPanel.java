@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package main;
 
 import java.awt.*;
@@ -22,19 +21,41 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
+
 /**
  *
  * @author Vladimir
  */
-
-public class DrawPanel extends JPanel {
+public class DrawPanel extends JPanel{
+    
+    
+    static boolean v_F;
+    static boolean v_P; 
     static ArrayList<BaseClass> ALBaseClass;
-
-    public void AssignList(ArrayList<BaseClass> ALBC){
+    
+    
+    public void AssignList(ArrayList<BaseClass> ALBC)
+    {
+       
         ALBaseClass = new ArrayList<BaseClass>(ALBC);
+  
+    }
+  
+
+    public void AssignList(ArrayList<BaseClass> ALBC
+                          ,boolean V_F
+                          ,boolean V_P )
+    {
+        v_F = V_F;
+        v_P = V_P; 
+        ALBaseClass = new ArrayList<BaseClass>(ALBC);
+  
     }
     
     public DrawPanel() {
+       v_F = true;
+       v_P = true;
+       
         Timer timer = new Timer(10, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -48,13 +69,24 @@ public class DrawPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         for(int i = 0 ;i < ALBaseClass.size(); i++){
-            ALBaseClass.get(i).draw(g);
+            ALBaseClass.get(i).draw(g,v_F,v_P);
+                  
         }
     }
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(700, 500);
+        return new Dimension(400, 400);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                DrawPanel timer = new DrawPanel();
+                timer.AssignList(ALBaseClass,v_F,v_P);
+            }
+        });
     }
     
 }

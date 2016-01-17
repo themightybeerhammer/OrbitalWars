@@ -36,10 +36,18 @@ public class game extends Applet implements KeyListener {
     private ArrayList<BaseClass> ALBaseClass;   /*Коллекция всех объектов*/
     private CenterMass CM;                      /*Центр масс*/ 
     private DrawPanel Display;                  /*Панель для отображения*/
-    private Planet player;                      /*Указатель на планету игрока*/
+    public float Mltplr ;     /*Множитель замедления*/      
+    public boolean v_F;       /*Рисовать вектор равнодействующей*/
+    public boolean v_P;       /*Рисовать вектор импульса*/ 
+    public Planet player; 
     
     @Override
     public void init() {
+        /*Параметры для дебугагинга начало*/
+        Mltplr = 3f;
+        v_F=false;       
+        v_P=false; 
+        /*Параметры для дебугагинга конец*/
         addKeyListener(this);
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
@@ -50,13 +58,21 @@ public class game extends Applet implements KeyListener {
         add(Display);
         
         /*тестовые болванки НАЧАЛО*/
-        player = new Planet((float)Math.random()*700, 190, 10, 5, 85, 5, ALBaseClass, true);
-        new Planet((float)Math.random()*700, (float)Math.random()*500, 10, 5, 136, 5, ALBaseClass, false);
-        new Planet((float)Math.random()*700, (float)Math.random()*500, 10, 5, 74, 5, ALBaseClass, false);       
-        new Planet((float)Math.random()*700, (float)Math.random()*500, 1, 5, 8, 5, ALBaseClass, false);
-        new Planet((float)Math.random()*700, (float)Math.random()*500, 1, 5, 267, 5, ALBaseClass, false);
-        new Planet((float)Math.random()*700, (float)Math.random()*500, 1, 5, 307, 5, ALBaseClass, false);
-        new Star(350, 250, 100000, 10, 0, 0, ALBaseClass);
+        player = new Planet(200,30 ,10,10, 0,78,ALBaseClass, true);
+        player.dw_orbit = true;
+        
+     
+          
+        new BaseClass(100,200 ,10,10, (float)Math.PI*2/4,100,ALBaseClass).dw_orbit=true;
+        new BaseClass(200,70 ,10,10, (float)Math.PI,90,ALBaseClass).dw_orbit=true;    
+        
+        new Star(200, 200, 10000, 40, 0, 0, ALBaseClass);
+        
+          for(int i = 0 ;i < ALBaseClass.size(); i++){
+            ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
+         }            
+        
+       
         /*тестовые болванки КОНЕЦ*/
         
         /*таймер обновления мира*/
@@ -66,14 +82,15 @@ public class game extends Applet implements KeyListener {
             @Override 
             public void run(){
                 CM.CalcCenterMass();                            /*пересчет центра масс*/
-                Display.AssignList(ALBaseClass);                /*передача игровому экрану списка объектов для отрисовки*/  
+                Display.AssignList(ALBaseClass,v_F,v_P);        /*передача игровому экрану списка объектов для отрисовки*/  
                 for(int i = 0 ;i < ALBaseClass.size(); i++){
-                    ALBaseClass.get(i).calc_F_ravn(CM);         /*пересчет импульса объекта*/
-                    ALBaseClass.get(i).move();                  /*движение объекта*/
+                    
+                    ALBaseClass.get(i).calc_F_ravn(Mltplr);         /*пересчет импульса объекта*/
+                    ALBaseClass.get(i).move(Mltplr);                  /*движение объекта*/
                 }
             }
         };
-        oTimer.schedule(oTimerTask, 0, 100);
+        oTimer.schedule(oTimerTask, 0, 50);
         this.setFocusable(true);
         this.requestFocusInWindow();
     }
@@ -88,9 +105,13 @@ public class game extends Applet implements KeyListener {
     
     @Override 
     public void keyPressed(KeyEvent e) {
-        System.out.println(e.getKeyCode());
+        
+        //System.out.println(e.getKeyCode());
         if(e.getKeyCode() == 32){
-            new Projectile(player.X, player.Y, 1, 1, player.P.angle, 5, ALBaseClass);
+            
+            float x = player.X+(float)(Math.cos(player.P.angle)*player.P.length/player.M);
+            float y = player.Y+(float)(Math.sin(player.P.angle)*player.P.length/player.M);
+            new Projectile(x, y, 1, 1, player.P.angle, 5, ALBaseClass);
         }
     }
     
