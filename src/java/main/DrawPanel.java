@@ -68,6 +68,8 @@ public class DrawPanel extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, 500, 500);
         for(int i = 0 ;i < ALBaseClass.size(); i++){
             ALBaseClass.get(i).draw(g,v_F,v_P);
                   
