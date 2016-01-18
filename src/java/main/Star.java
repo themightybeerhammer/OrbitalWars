@@ -30,9 +30,8 @@ import java.util.ArrayList;
  *
  * @author Vladimir
  */
-/* Центр солнечной системы
-*  
-*/
+/** Центр солнечной системы
+ */
 
 public class Star extends BaseClass {
     
@@ -44,39 +43,36 @@ public class Star extends BaseClass {
         super(x, y, m, ro, vangle, vlength, AL);
     }
     
-     void move(float Mtplr)
-     {
-     
-     }
+    @Override
+    void move(float Mtplr){
+    }
     
-     
-      void draw_in_scr(Graphics g
-                     ,float x
-                     ,float y
-                     ,boolean v_F  
-                     ,boolean v_P ){
-         
-         Graphics2D g2 = (Graphics2D)g;
-          Point2D center = new Point2D.Float(X, Y);
-          float radius = RO;
-          float rr = (float)(Math.random()*4+20)/100;
-          float[] dist = {rr, 0.6f, 1.0f};
-          Color[] colors = {Color.RED, Color.YELLOW, new Color(1,0,0,0) };
-          RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
-          g2.setPaint(p);
-          g2.fill(new Ellipse2D.Float(x-RO, y-RO, RO*2, RO*2));
+    @Override
+    void draw_in_scr(Graphics g
+                    ,float x
+                    ,float y
+                    ,boolean v_F  
+                    ,boolean v_P ){
+        Graphics2D g2 = (Graphics2D)g;
+        Point2D center = new Point2D.Float(X, Y);
+        float radius = RO;
+        float rr = (float)(Math.random()*4+20)/100;
+        float[] dist = {rr, 0.6f, 1.0f};
+        Color[] colors = {Color.RED, Color.YELLOW, new Color(1,0,0,0) };
+        RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+        g2.setPaint(p);
+        g2.fill(new Ellipse2D.Float(x-RO, y-RO, RO*2, RO*2));
           
-         /*RenderingHints rh = new RenderingHints(
-             RenderingHints.KEY_ANTIALIASING,
-             RenderingHints.VALUE_ANTIALIAS_ON);
-         g2.setRenderingHints(rh);
-         g2.setColor(Color.YELLOW);
-         g2.draw(new Ellipse2D.Float(x-RO, y-RO, RO*2, RO*2));*/
+        /*RenderingHints rh = new RenderingHints(
+        RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHints(rh);
+        g2.setColor(Color.YELLOW);
+        g2.draw(new Ellipse2D.Float(x-RO, y-RO, RO*2, RO*2));*/
          
         // g2.drawOval((int)x-RO, (int)y-RO, RO*2, RO*2);
 
-          /*Направление равнодействующей*/
-        
-     } 
+        /*Направление равнодействующей*/
+    } 
     
 }
