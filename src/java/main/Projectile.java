@@ -16,16 +16,21 @@
  */
 package main;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.RadialGradientPaint;
+import java.awt.geom.*;
 import java.util.ArrayList;
 
 /**
  *
  * @author Vladimir
  */
-/* Снаряд
-*  для начала будет просто летающая болванка
-*  потом можно будет ввести типы снярадов и 
-*  разветвить метод их поведения 
+/** Снаряд для начала будет просто летающая болванка 
+ * потом можно будет ввести типы снарядов 
+ * и разветвить метод их поведения 
 */
 public class Projectile extends BaseClass{
     
@@ -36,5 +41,17 @@ public class Projectile extends BaseClass{
     Projectile(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL){
         super(x, y, m, ro, vangle, vlength, AL);
     }
+    
+    @Override
+    void draw_in_scr(Graphics g
+                    ,float x
+                    ,float y
+                    ,boolean v_F  
+                    ,boolean v_P ){ 
+        Graphics2D g2 = (Graphics2D)g;
+        Point2D center = new Point2D.Float(X, Y);
+        g2.setPaint(Color.BLUE);
+        g2.fill(new Rectangle2D.Float(x - RO, y - RO, RO * 2, RO * 2));
+    } 
    
 }
