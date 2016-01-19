@@ -149,7 +149,8 @@ public class BaseClass {
        for(int i=0;i<aLBaseClass.size();i++){
             if((aLBaseClass.get(i).getClass().getName()!="main.CenterMass")
              &&(aLBaseClass.get(i)!=this)
-             &&(aLBaseClass.get(i).M>=MinMassOrbit)){ 
+             &&(aLBaseClass.get(i).M>=MinMassOrbit)
+             &&(aLBaseClass.get(i)!=null)){ 
                  
             AL.add(aLBaseClass.get(i));
             }
@@ -178,7 +179,9 @@ public class BaseClass {
             _F = new Vector(0,0);
             
             for(int i=0;i<AL.size();i++){
-             
+              
+                if(AL.get(i)!=null){
+                
                 _x=AL.get(i).X;
                 _y=AL.get(i).Y;
                 _m=AL.get(i).M;
@@ -197,7 +200,7 @@ public class BaseClass {
                  if((_x>_X)&&(_y<_Y))  { _a=_a+(float)Math.PI*2;}
          
                 _F.Plus(new Vector(_a,_f));
-                
+                } 
          
             }
             _F.length=(float)(_F.length/3);
@@ -266,7 +269,8 @@ public class BaseClass {
          for(int i=0;i<aLBaseClass.size();i++){
              if((aLBaseClass.get(i).getClass().getName()!="main.CenterMass")
               &&(aLBaseClass.get(i)!=this)
-              &&(aLBaseClass.get(i).M>M*10))
+              &&(aLBaseClass.get(i).M>M*10)
+              &&(aLBaseClass.get(i)!=null)       )
              {
                 x=aLBaseClass.get(i).X;
                 y=aLBaseClass.get(i).Y;

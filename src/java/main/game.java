@@ -58,14 +58,10 @@ public class game extends Applet implements KeyListener, MouseListener {
         CM = new CenterMass(ALBaseClass);
         this.setSize(800, 600);
         
-        /*создаем новый игровой экран*/
-        Display = new DrawPanel();
-        add(Display);
-        Display.addMouseMotionListener(new MotionSensor(this));
-        addKeyListener(this);
-        Display.addMouseListener(this);
+       
         
         /*тестовые болванки НАЧАЛО*/
+        
         /*Одна звезда и 3 планеты*/
         player = new Planet(200, 30, 10, 10, 0, 78, ALBaseClass, true, true);
         player.dw_orbit = true;
@@ -74,11 +70,17 @@ public class game extends Applet implements KeyListener, MouseListener {
         new Star(200, 200, 10000, 40, 0, 0, ALBaseClass);
         
         /*Система сиськи*/
-        /*player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
+       /* player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
         player.dw_orbit = true;
         new Star(250, 250, 8000, 40, 0, 0, ALBaseClass);
-        new Star(500, 500, 8000, 40, 0, 0, ALBaseClass);*/
-
+        new Star(500, 500, 8000, 40, 0, 0, ALBaseClass);
+          *  /
+         /*создаем новый игровой экран*/
+        Display = new DrawPanel();
+        add(Display);
+        Display.addMouseMotionListener(new MotionSensor(this));
+        addKeyListener(this);
+        Display.addMouseListener(this);
         
         for(int i = 0 ;i < ALBaseClass.size(); i++){
             ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
@@ -99,8 +101,10 @@ public class game extends Applet implements KeyListener, MouseListener {
                 CM.CalcCenterMass();                            /*пересчет центра масс*/
                 Display.AssignList(ALBaseClass,v_F,v_P);        /*передача игровому экрану списка объектов для отрисовки*/ 
                 for(int i = 0 ;i < ALBaseClass.size(); i++){
-                    ALBaseClass.get(i).calc_F_ravn(Mltplr);     /*пересчет импульса объекта*/
-                    ALBaseClass.get(i).move(Mltplr);            /*движение объекта*/
+                    if(ALBaseClass.get(i)!=null){
+                        ALBaseClass.get(i).calc_F_ravn(Mltplr);     /*пересчет импульса объекта*/
+                        ALBaseClass.get(i).move(Mltplr);            /*движение объекта*/
+                    }
                 }
                 
                 

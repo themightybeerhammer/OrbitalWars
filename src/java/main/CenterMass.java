@@ -51,7 +51,7 @@ public class CenterMass extends BaseClass {
        float Mc=0; 
        
         for(int i=0;i<ALBaseClass.size();i++){
-           if(ALBaseClass.get(i)!=this)
+           if((ALBaseClass.get(i)!=this)&&(ALBaseClass.get(i)!=null))
            {
                 Xc =  Xc+(ALBaseClass.get(i).X-Xc)* ((ALBaseClass.get(i).M)/(Mc+ALBaseClass.get(i).M));
                 Yc =  Yc+(ALBaseClass.get(i).Y-Yc)* ((ALBaseClass.get(i).M)/(Mc+ALBaseClass.get(i).M));

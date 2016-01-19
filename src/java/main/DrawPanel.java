@@ -65,8 +65,9 @@ public class DrawPanel extends JPanel{
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
         for(int i = 0 ;i < ALBaseClass.size(); i++){
-            ALBaseClass.get(i).draw(g,v_F,v_P);
-                  
+            if(ALBaseClass.get(i)!=null){
+               ALBaseClass.get(i).draw(g,v_F,v_P);
+            }      
         }
     }
 
