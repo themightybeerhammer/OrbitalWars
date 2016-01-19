@@ -98,7 +98,8 @@ public class Planet extends BaseClass {
     /*Выстрел из пушки*/
     boolean Shoot(ArrayList<BaseClass> AL){
         try{
-            new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length, this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length, 1, 1, this.Gun.angle, 5, AL);
+            new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length
+                         , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length, 1, 1, this.Gun.angle, 8, AL);
             return true;   
         }finally{
             return false;

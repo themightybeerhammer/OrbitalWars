@@ -40,6 +40,7 @@ public class Projectile extends BaseClass{
     }
     Projectile(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL){
         super(x, y, m, ro, vangle, vlength, AL);
+        DeadSteps = 2;
     }
     
     @Override
@@ -48,10 +49,27 @@ public class Projectile extends BaseClass{
                     ,float y
                     ,boolean v_F  
                     ,boolean v_P ){ 
+        
+        
         Graphics2D g2 = (Graphics2D)g;
-        Point2D center = new Point2D.Float(X, Y);
+        Point2D center = new Point2D.Float(x, y);
         g2.setPaint(Color.BLUE);
         g2.fill(new Rectangle2D.Float(x - RO, y - RO, RO * 2, RO * 2));
+        
+         /*Прорисовка гибели объекта*/
+         if(DeadFlag){
+         
+             
+             float radius = RO*2-DeadSteps+2;
+             if(radius<=0) radius = 1;
+            
+             float[] dist = { 0.6f, 1.0f};
+             Color[] colors = { Color.YELLOW, new Color(1,0,0,0) };
+             RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+             g2.setPaint(p);
+             g2.fill(new Ellipse2D.Float(x-radius, y-radius, radius*2, radius*2));
+         }
+        
     } 
    
 }

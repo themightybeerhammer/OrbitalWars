@@ -21,8 +21,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import javafx.scene.shape.Ellipse;
 import main.Vector;
@@ -39,7 +41,10 @@ public class BaseClass {
     float MinMassOrbit;     /*Минимальная масса объекта для участия в расчете орбиты*/
     private ArrayList<Point> Orbit; /*Кординаты орбиты*/
     static ArrayList<BaseClass> aLBaseClass;
-    boolean dw_orbit;
+    boolean dw_orbit; /*Флаг рисования орбиты*/
+    
+    boolean DeadFlag=false; /*Флаг Гибели объекта*/
+    int DeadSteps=0;        /*Количество итераций гибели объекта*/
     
    
     
@@ -74,6 +79,7 @@ public class BaseClass {
        MinMassOrbit = m*10;
        Orbit = new ArrayList<Point>();
        dw_orbit = false;
+       DeadSteps = ro*20;
       
      }
     
@@ -126,6 +132,8 @@ public class BaseClass {
                 g2.setColor(Color.GREEN);
                 g2.drawLine((int)X, (int)Y, (int)X+(int)(Math.cos(P.angle)*r) , (int)Y+(int)(Math.sin(P.angle)*r));
             }
+         
+      
      }
      
      void calc_orbit(){
@@ -304,6 +312,13 @@ public class BaseClass {
          
           X = X+xd;
           Y = Y+yd;
+          
+         if(DeadFlag){
+           DeadSteps--;  
+           if(DeadSteps<0) DeadSteps = 0;
+           
+         }
+       
      
      
      }

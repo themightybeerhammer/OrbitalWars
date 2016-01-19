@@ -54,7 +54,7 @@ public class Star extends BaseClass {
                     ,boolean v_F  
                     ,boolean v_P ){
         Graphics2D g2 = (Graphics2D)g;
-        Point2D center = new Point2D.Float(X, Y);
+        Point2D center = new Point2D.Float(x, y);
         float radius = RO;
         float rr = (float)(Math.random()*4+20)/100;
         float[] dist = {rr, 0.6f, 1.0f};
