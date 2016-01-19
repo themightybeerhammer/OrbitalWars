@@ -28,34 +28,28 @@ import javax.swing.*;
  */
 public class DrawPanel extends JPanel{
     
-    
     static boolean v_F;
     static boolean v_P; 
     static ArrayList<BaseClass> ALBaseClass;
     
-    
-    public void AssignList(ArrayList<BaseClass> ALBC)
-    {
+    public void AssignList(ArrayList<BaseClass> ALBC){
        
         ALBaseClass = new ArrayList<BaseClass>(ALBC);
   
     }
   
-
-    public void AssignList(ArrayList<BaseClass> ALBC
-                          ,boolean V_F
-                          ,boolean V_P )
-    {
+    public void AssignList(ArrayList<BaseClass> ALBC, boolean V_F, boolean V_P ){
         v_F = V_F;
         v_P = V_P; 
         ALBaseClass = new ArrayList<BaseClass>(ALBC);
-  
     }
     
-    public DrawPanel() {
-       v_F = true;
-       v_P = true;
-       
+    public DrawPanel(){
+        v_F = true;
+        v_P = true;
+        
+        this.setBorder(BorderFactory.createEtchedBorder());
+        
         Timer timer = new Timer(10, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,29 +60,20 @@ public class DrawPanel extends JPanel{
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g){
         super.paintComponent(g);
         g.setColor(Color.BLACK);
-        g.fillRect(0, 0, 500, 500);
+        g.fillRect(0, 0, 800, 600);
         for(int i = 0 ;i < ALBaseClass.size(); i++){
-            ALBaseClass.get(i).draw(g,v_F,v_P);
-                  
+            if(ALBaseClass.get(i)!=null){
+               ALBaseClass.get(i).draw(g,v_F,v_P);
+            }      
         }
     }
 
     @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(400, 400);
+    public Dimension getPreferredSize(){
+        return new Dimension(800, 600);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                DrawPanel timer = new DrawPanel();
-                timer.AssignList(ALBaseClass,v_F,v_P);
-            }
-        });
-    }
-    
 }

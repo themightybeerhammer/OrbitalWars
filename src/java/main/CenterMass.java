@@ -50,16 +50,13 @@ public class CenterMass extends BaseClass {
        float Yc=0;
        float Mc=0; 
        
-       for(int i=0;i<ALBaseClass.size();i++){
-           if(ALBaseClass.get(i)!=this)
+        for(int i=0;i<ALBaseClass.size();i++){
+           if((ALBaseClass.get(i)!=this)&&(ALBaseClass.get(i)!=null))
            {
                 Xc =  Xc+(ALBaseClass.get(i).X-Xc)* ((ALBaseClass.get(i).M)/(Mc+ALBaseClass.get(i).M));
                 Yc =  Yc+(ALBaseClass.get(i).Y-Yc)* ((ALBaseClass.get(i).M)/(Mc+ALBaseClass.get(i).M));
                 Mc=Mc+ALBaseClass.get(i).M;
-                
-              
-           }
-           
+           } 
         }
        
        this.X = Xc;
@@ -67,25 +64,23 @@ public class CenterMass extends BaseClass {
        this.M = Mc;
     }
       
-     void draw_in_scr(Graphics g
-                     ,float x
-                     ,float y
-                     ,boolean v_F  
-                     ,boolean v_P){
-         
-         Graphics2D g2 = (Graphics2D)g;
-         RenderingHints rh = new RenderingHints(
-             RenderingHints.KEY_ANTIALIASING,
-             RenderingHints.VALUE_ANTIALIAS_ON);
-         g2.setRenderingHints(rh);
-         g2.setColor(Color.ORANGE);
-         g2.draw(new Ellipse2D.Float(x-5, y-5, 10, 10));
-         
-     }
-     
-     void move(float Mtplr){
-     
-     }
+    void draw_in_scr(Graphics g
+                    ,float x
+                    ,float y
+                    ,boolean v_F  
+                    ,boolean v_P){     
+        Graphics2D g2 = (Graphics2D)g;
+        RenderingHints rh = new RenderingHints(
+        RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHints(rh);
+        g2.setColor(Color.ORANGE);
+        g2.draw(new Ellipse2D.Float(x-5, y-5, 10, 10));
+    }
+    
+    @Override
+    void move(float Mtplr){
+    }
         
       
       

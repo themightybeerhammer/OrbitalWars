@@ -99,7 +99,7 @@ public class Vector {
     
     /*Установка угла вектора по двум точкам*/
     public Vector SetAngle(float x1, float y1, float x2, float y2){
-        this.angle = (float) acos((x2 - x1) / sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)));
+        this.angle = (float) acos((x2 - x1) / sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))) * signum(y2 - y1);
         return this;
     }
 

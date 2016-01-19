@@ -16,36 +16,93 @@
  */
 package main;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.MouseInfo;
+import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 
 /**
  *
  * @author Vladimir
  */
-/* Игровой объект "Планета"
-*  используется как для игрока, так и для целей
-*  потом даже проще, наверное, будет ИИ реализовать
-*/
+/** Игровой объект "Планета" 
+ * используется как для игрока, так и для целей 
+ * потом даже проще, наверное, будет ИИ реализовать
+ */
 public class Planet extends BaseClass {
-    public boolean IsPlayer = false; /*метка планеты-игрока*/
+    public boolean IsPlayer = false;    /*Метка планеты-игрока*/
+    public boolean HaveGun = IsPlayer;  /*Наличие пушки у планеты*/
+    private Vector Gun;                 /*Вектор пушки*/
     
     /*Конструкторы класса*/
     Planet(){
         super();
     }
-    Planet(float x, 
-            float y, 
-            float m, 
-            int ro, 
-            float vangle, 
-            float vlength, 
-            ArrayList<BaseClass> AL, 
-            boolean player){
+    Planet(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL, boolean player, boolean havegun){
         super(x, y, m, ro, vangle, vlength, AL);
         this.IsPlayer = player;
+        this.HaveGun = havegun;
+        if(this.HaveGun){
+            this.Gun = new Vector(0, 20);
+        }
     }
     
+    @Override
+    void draw_in_scr(Graphics g, float x, float y, boolean v_F, boolean v_P ){
+        RenderingHints rh = new RenderingHints(
+        RenderingHints.KEY_ANTIALIASING,
+        RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setRenderingHints(rh);
+        g2.setColor(Color.WHITE);
+        g2.draw(new Ellipse2D.Float(x - this.RO, y - this.RO, this.RO * 2, this.RO * 2));
+        g2.setColor(Color.GRAY);
+        
+        
+        /*Отрисовка пушки*/
+        if(this.IsPlayer){
+            float mouseX = MouseInfo.getPointerInfo().getLocation().x;
+            float mouseY = MouseInfo.getPointerInfo().getLocation().y;
+            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.Gun.angle) * this.Gun.length), (int)this.Y + (int)(Math.sin(this.Gun.angle) * this.Gun.length));
+        }
+        
+        /*Направление равнодействующей*/
+        float r = 20;
+        if((this.F.length != 0) & (v_F)){
+            g2.setColor(Color.BLUE);
+            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.F.angle) * r), (int)this.Y + (int)(Math.sin(this.F.angle) * r));
+        }
+         
+        /*Направление Импульса*/
+        r = 20;
+        if((this.P.length != 0) & (v_P)){
+            g2.setColor(Color.GREEN);
+            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.P.angle) * r), (int)this.Y + (int)(Math.sin(this.P.angle) * r));
+        }
+     }
     
+    /*Нацеливание пушки на точку*/
+    void Aim(float x, float y){
+        Gun.SetAngle(this.X, this.Y, x, y);
+    }
     
-    
+    /*Выстрел из пушки*/
+    boolean Shoot(ArrayList<BaseClass> AL){
+        try{
+            new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length
+                         , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length, 1, 1, this.Gun.angle, 8, AL);
+            return true;   
+        }finally{
+            return false;
+        }
+    }
 }
