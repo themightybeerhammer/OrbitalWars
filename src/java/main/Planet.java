@@ -59,7 +59,7 @@ public class Planet extends BaseClass {
         this.HaveGun = havegun;
         if(this.HaveGun){
             this.Gun = new Vector(0, 20);
-        }
+        }  
         this.GunPowerNeed = 200;
         this.DeadSteps = 20;
     }
@@ -111,7 +111,7 @@ public class Planet extends BaseClass {
         }
         
         
-        /*Гибель планеты*/
+     
          /*Прорисовка гибели объекта*/
          if(DeadFlag){
          
