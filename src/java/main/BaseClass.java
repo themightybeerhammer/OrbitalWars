@@ -25,6 +25,7 @@ import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import javafx.scene.shape.Ellipse;
 import main.Vector;
@@ -326,9 +327,10 @@ public class BaseClass {
        
      
      
-     }
+    }
      
-  
-    
-    
+    float Distance(BaseClass bc){
+        return (float)sqrt((this.X - bc.X) * (this.X - bc.X) + (this.Y - bc.Y) * (this.Y - bc.Y));
+    }
+     
 }

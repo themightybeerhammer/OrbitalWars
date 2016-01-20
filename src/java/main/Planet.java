@@ -25,6 +25,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import static java.lang.Math.cos;
+import static java.lang.Math.min;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ public class Planet extends BaseClass {
     public boolean IsPlayer = false;    /*Метка планеты-игрока*/
     public boolean HaveGun = IsPlayer;  /*Наличие пушки у планеты*/
     private Vector Gun;                 /*Вектор пушки*/
-    private float GunPowerCurrent = 0;      /*Заряд в пушке напокленный*/
+    public float Energy = 0;            /*Энергия планеты*/
+    public float MaxEnergy = 1000;      /*Максимальное количество запасаемой энергии планеты*/
     private float GunPowerNeed;         /*Заряд в пушке для выстрела*/
     
     /*Конструкторы класса*/
@@ -55,7 +57,7 @@ public class Planet extends BaseClass {
         if(this.HaveGun){
             this.Gun = new Vector(0, 20);
         }
-        this.GunPowerNeed = 20;
+        this.GunPowerNeed = 200;
     }
     
     @Override
@@ -69,6 +71,18 @@ public class Planet extends BaseClass {
         g2.setColor(Color.WHITE);
         g2.draw(new Ellipse2D.Float(x - this.RO, y - this.RO, this.RO * 2, this.RO * 2));
         
+        /*Отрисовка прогрессбара зарядки планеты*/
+        /*Заливка бара*/
+        g2.setColor(Color.GRAY);
+        g2.fillRect((int)(x - this.RO), (int)(y - this.RO * 2), (int)(RO * 2), (int)(RO / 5));
+        /*Маркер необходимого для выстрела кол-ва энергии*/
+        g2.setColor(Color.RED);
+        g2.setBackground(Color.RED);
+        g2.fillRect((int)(x - this.RO), (int)(y - this.RO * 2), (int)(RO * 2 * (this.GunPowerNeed / this.MaxEnergy)), (int)(RO / 5)); 
+        /*Текущий уровень заряда*/
+        g2.setColor(Color.GREEN);
+        g2.setBackground(Color.GREEN);
+        g2.fillRect((int)(x - this.RO), (int)(y - this.RO * 2), (int)(RO * 2 * (this.Energy / this.MaxEnergy)), (int)(RO / 5)); 
         
         /*Отрисовка пушки*/
         float r = 20;
@@ -97,19 +111,39 @@ public class Planet extends BaseClass {
         this.Gun.SetAngle(this.X, this.Y, x, y);
     }
     
-    /*Выстрел из пушки*/
+    /*Выстрел из орудия*/
     boolean Shoot(ArrayList<BaseClass> AL){
         try{
-            /*вектор учитывает скорость и направление движения планеты-стрелка*/
-            Vector ShotV = new Vector(this.P.angle, this.P.length/this.M).Plus(this.Gun);
-            new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length
-                         , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length
-                         , 1, 1
-                         , ShotV.angle
-                         , ShotV.length, AL);
-            return true;   
+            if(this.Energy >= this.GunPowerNeed){
+                this.Energy -= this.GunPowerNeed;
+                /*вектор учитывает скорость и направление движения планеты-стрелка*/
+                Vector ShotV = new Vector(this.P.angle, this.P.length/this.M).Plus(this.Gun);
+                new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length
+                             , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length
+                             , 1, 1
+                             , ShotV.angle
+                             , ShotV.length, AL);
+                return true;   
+            }
         }finally{
             return false;
+        }
+    }
+    
+    /**Подзарядка планеты
+     * текущий вариант использует только звезды как источники энергии
+     * в будущем будем учитывать и другие (внутренние)
+     */
+    void Charge(ArrayList<BaseClass> AL){
+        if(this.Energy < this.MaxEnergy){
+            for(int i = 0; i < AL.size(); i++){
+                if(AL.get(i) != null){
+                    if(AL.get(i).getClass().getName() == "main.Star"){
+                        this.Energy += 1 / this.Distance(AL.get(i)) * 1000;
+                    }
+                }
+            }
+            this.Energy = min(this.Energy, this.MaxEnergy);
         }
     }
 }

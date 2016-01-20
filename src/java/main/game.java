@@ -100,14 +100,16 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             /*в ране описываются периодические действия*/
             @Override 
             public void run(){
-                
                 player.Aim(mx - p_display.x, my - p_display.y);     /*постоянно нацеливаем орудие на последние координаты мыши*/
-                CM.CalcCenterMass();                            /*пересчет центра масс*/
-                Display.AssignList(ALBaseClass,p_display,v_F,v_P);        /*передача игровому экрану списка объектов для отрисовки*/ 
+                CM.CalcCenterMass();                                /*пересчет центра масс*/
+                Display.AssignList(ALBaseClass,p_display,v_F,v_P);  /*передача игровому экрану списка объектов для отрисовки*/ 
                 for(int i = 0; i < ALBaseClass.size(); i++){
                     if(ALBaseClass.get(i) != null){
                         ALBaseClass.get(i).calc_F_ravn(Mltplr);     /*пересчет импульса объекта*/
                         ALBaseClass.get(i).move(Mltplr);            /*движение объекта*/
+                        if(ALBaseClass.get(i).getClass().getName() == "main.Planet"){
+                            ((Planet)ALBaseClass.get(i)).Charge(ALBaseClass);
+                        }
                     }
                 }
                 
@@ -121,7 +123,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             float rr = (float)(Math.sqrt(Math.pow((ALBaseClass.get(i).X-ALBaseClass.get(j).X),2)+ Math.pow((ALBaseClass.get(i).Y-ALBaseClass.get(j).Y),2)));
                             
                             if(rr<(ALBaseClass.get(i).RO+ALBaseClass.get(j).RO)){
-                                
                                 if(ALBaseClass.get(i).getClass().getName()=="main.Projectile")
                                 {ALBaseClass.get(i).DeadFlag=true;}
                                 if(ALBaseClass.get(j).getClass().getName()=="main.Projectile")
@@ -142,8 +143,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                   }
                    
                }while(j<ALBaseClass.size());
-               
-                
             }
         };
         oTimer.schedule(oTimerTask, 0, 50);
