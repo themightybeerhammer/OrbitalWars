@@ -182,7 +182,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println(e.getButton());
+        
         if(e.getButton() == 1){
             player.Shoot(ALBaseClass);
         }
