@@ -41,6 +41,8 @@ public class Planet extends BaseClass {
     public boolean IsPlayer = false;    /*Метка планеты-игрока*/
     public boolean HaveGun = IsPlayer;  /*Наличие пушки у планеты*/
     private Vector Gun;                 /*Вектор пушки*/
+    private float GunPowerCurrent = 0;      /*Заряд в пушке напокленный*/
+    private float GunPowerNeed;         /*Заряд в пушке для выстрела*/
     
     /*Конструкторы класса*/
     Planet(){
@@ -53,6 +55,7 @@ public class Planet extends BaseClass {
         if(this.HaveGun){
             this.Gun = new Vector(0, 20);
         }
+        this.GunPowerNeed = 20;
     }
     
     @Override
@@ -65,25 +68,24 @@ public class Planet extends BaseClass {
         g2.setRenderingHints(rh);
         g2.setColor(Color.WHITE);
         g2.draw(new Ellipse2D.Float(x - this.RO, y - this.RO, this.RO * 2, this.RO * 2));
-        g2.setColor(Color.GRAY);
         
         
         /*Отрисовка пушки*/
+        float r = 20;
         if(this.IsPlayer){
+            g2.setColor(Color.GRAY);
             float mouseX = MouseInfo.getPointerInfo().getLocation().x;
             float mouseY = MouseInfo.getPointerInfo().getLocation().y;
-            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.Gun.angle) * this.Gun.length), (int)y + (int)(Math.sin(this.Gun.angle) * this.Gun.length));
+            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.Gun.angle) * r), (int)this.Y + (int)(Math.sin(this.Gun.angle) * r));
         }
         
         /*Направление равнодействующей*/
-        float r = 20;
         if((this.F.length != 0) & (v_F)){
             g2.setColor(Color.BLUE);
             g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.F.angle) * r), (int)y + (int)(Math.sin(this.F.angle) * r));
         }
          
         /*Направление Импульса*/
-        r = 20;
         if((this.P.length != 0) & (v_P)){
             g2.setColor(Color.GREEN);
             g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.P.angle) * r), (int)y + (int)(Math.sin(this.P.angle) * r));
@@ -92,14 +94,12 @@ public class Planet extends BaseClass {
     
     /*Нацеливание пушки на точку*/
     void Aim(float x, float y){
-        Gun.SetAngle(this.X, this.Y, x, y);
+        this.Gun.SetAngle(this.X, this.Y, x, y);
     }
     
     /*Выстрел из пушки*/
     boolean Shoot(ArrayList<BaseClass> AL){
-       
-        
-          try{
+        try{
             /*вектор учитывает скорость и направление движения планеты-стрелка*/
             Vector ShotV = new Vector(this.P.angle, this.P.length/this.M).Plus(this.Gun);
             new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length

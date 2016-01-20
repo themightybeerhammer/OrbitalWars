@@ -50,7 +50,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     /*Параметры для дебугагинга начало*/
     public float Mltplr = 5f;                   /*Множитель замедления*/      
     public boolean v_F = false;                 /*Рисовать вектор равнодействующей*/
-    public boolean v_P = false;                 /*Рисовать вектор импульса*/ 
+    public boolean v_P = true;                 /*Рисовать вектор импульса*/ 
     /*Параметры для дебугагинга конец*/
     
     @Override
