@@ -42,34 +42,35 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     private ArrayList<BaseClass> ALBaseClass;   /*Коллекция всех объектов*/
     private CenterMass CM;                      /*Центр масс*/ 
-    protected DrawPanel Display;                  /*Панель для отображения*/
+    protected DrawPanel Display;                /*Панель для отображения*/
     public Planet player;
     public float DisplayX, DisplayY;            /*Координаты центра экрана*/
-    public Point p_Delta,p_display;
+    public Point p_Delta, p_display;
     public boolean RMBPressed = false;          /*Нажата правая кнопка мыши*/
+    boolean overChild;                          /*Буфер для перемещения по контейнерам*/
+    float mx, my;                               /*Последние известные координаты мыши*/
     /*Параметры для дебугагинга начало*/
     public float Mltplr = 5f;                   /*Множитель замедления*/      
     public boolean v_F = false;                 /*Рисовать вектор равнодействующей*/
-    public boolean v_P = true;                 /*Рисовать вектор импульса*/ 
+    public boolean v_P = false;                 /*Рисовать вектор импульса*/ 
     /*Параметры для дебугагинга конец*/
     
     @Override
     public void init() {
-        ALBaseClass = new ArrayList<>();
-        CM = new CenterMass(ALBaseClass);
+        this.ALBaseClass = new ArrayList<>();
+        this.CM = new CenterMass(this.ALBaseClass);
         this.setSize(800, 600);
-        p_Delta = new Point(0,0);
-        p_display = new Point(0,0);
+        this.p_Delta = new Point(0,0);
+        this.p_display = new Point(0,0);
        
-        
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
-        player = new Planet(200, 30, 10, 10, 0, 78, ALBaseClass, true, true);
-        player.dw_orbit = true;
-        new Planet(100, 200, 10, 10, (float)Math.PI * 2 / 4, 100, ALBaseClass, false, false).dw_orbit = true;
-        new Planet(200, 70, 10, 10, (float)Math.PI, 90, ALBaseClass, false, false).dw_orbit = true;    
-        new Star(200, 200, 10000, 40, 0, 0, ALBaseClass);
+        this.player = new Planet(200, 30, 10, 10, 0, 78, this.ALBaseClass, true, true);
+        this.player.dw_orbit = true;
+        new Planet(100, 200, 10, 10, (float)Math.PI * 2 / 4, 100, this.ALBaseClass, false, false).dw_orbit = true;
+        new Planet(200, 70, 10, 10, (float)Math.PI, 90, this.ALBaseClass, false, false).dw_orbit = true;    
+        new Star(200, 200, 10000, 40, 0, 0, this.ALBaseClass);
         
         /*Система сиськи*/
       /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
@@ -80,15 +81,16 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
       
       
          /*создаем новый игровой экран*/
-        Display = new DrawPanel();
-        add(Display);
-        Display.addMouseMotionListener(new MotionSensor(this));
+        this.Display = new DrawPanel();
+        add(this.Display);
+        //Display.addMouseMotionListener(new MotionSensor(this));
+        this.Display.addMouseMotionListener(this);
         addKeyListener(this);
-        Display.addMouseListener(this);
-        Display.addMouseMotionListener(this);
+        this.Display.addMouseListener(this);
+        this.Display.addMouseMotionListener(this);
         
-        for(int i = 0 ;i < ALBaseClass.size(); i++){
-            ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
+        for(int i = 0 ;i < this.ALBaseClass.size(); i++){
+            this.ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
         }
         /*тестовые болванки КОНЕЦ*/
         
@@ -99,19 +101,15 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             @Override 
             public void run(){
                 
-               
-                
-                
-                
+                player.Aim(mx - p_display.x, my - p_display.y);     /*постоянно нацеливаем орудие на последние координаты мыши*/
                 CM.CalcCenterMass();                            /*пересчет центра масс*/
                 Display.AssignList(ALBaseClass,p_display,v_F,v_P);        /*передача игровому экрану списка объектов для отрисовки*/ 
-                for(int i = 0 ;i < ALBaseClass.size(); i++){
-                    if(ALBaseClass.get(i)!=null){
+                for(int i = 0; i < ALBaseClass.size(); i++){
+                    if(ALBaseClass.get(i) != null){
                         ALBaseClass.get(i).calc_F_ravn(Mltplr);     /*пересчет импульса объекта*/
                         ALBaseClass.get(i).move(Mltplr);            /*движение объекта*/
                     }
                 }
-                
                 
                 /*Обработка столкновения*/
                 for(int i = 0 ;i < ALBaseClass.size(); i++){
@@ -131,8 +129,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             
                             }
                         }
-                      }
-                   
+                    }  
                 }
                 
                /*Удаление погибших объектов*/ 
@@ -166,8 +163,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public void keyPressed(KeyEvent e) {
         /*тест стрельбы по клавише ПРОБЕЛ*/
         if(e.getKeyCode() == 32){
-            
-            player.Shoot(ALBaseClass);
+            this.player.Shoot(this.ALBaseClass);
         }
     }
     
@@ -182,18 +178,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println(e.getButton());
         if(e.getButton() == 1){
-            player.Shoot(ALBaseClass);
+            this.player.Shoot(this.ALBaseClass);
         }
         
         if(e.getButton() == 3){
-            RMBPressed = true;
-            p_Delta  = e.getPoint();
-           
+            this.RMBPressed = true;
+            this.p_Delta  = e.getPoint();  
         }
-
-        
     }
 
     @Override
@@ -212,53 +204,27 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     }
 
     @Override
-    public void mouseDragged(MouseEvent me) {
-            if(RMBPressed){
-              p_display.x=p_display.x+(me.getPoint().x-p_Delta.x);
-              p_display.y=p_display.y+(me.getPoint().y-p_Delta.y);
-              p_Delta=me.getPoint();
-              
+    public void mouseDragged(MouseEvent e) {
+            if(this.RMBPressed){
+              this.p_display.x = this.p_display.x + (e.getPoint().x - this.p_Delta.x);
+              this.p_display.y = this.p_display.y + (e.getPoint().y - this.p_Delta.y);
+              this.p_Delta = e.getPoint();
            }
-            
-           
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void mouseMoved(MouseEvent me) {
-          
-    }
-
-}
-
-class MotionSensor extends MouseMotionAdapter{
-    game applet;
-    boolean overChild;
-  
-    public MotionSensor(game apl){
-        applet = apl;
-        overChild = false;
-    }
-    
-    @Override
-    public void mouseMoved(MouseEvent e){
+    public void mouseMoved(MouseEvent e) {
         Point p = e.getPoint();
-        Rectangle r = applet.Display.getBounds();
+        Rectangle r = this.Display.getBounds();
         if(r.contains(p)){
-            if(!overChild)
-                overChild = true;
-            int x = p.x - r.x;
-            int y = p.y - r.y;
-            //System.out.println(x + " " + y);
-            applet.player.Aim(x-applet.p_display.x, y-applet.p_display.y);
+            if(!this.overChild)
+                this.overChild = true;
+            this.mx = p.x - r.x;
+            this.my = p.y - r.y;
         }
-        else if(overChild){
-            overChild = false;
+        else if(this.overChild){
+            this.overChild = false;
         }
-        
-     
-        
-        
-        
     }
+
 }

@@ -47,6 +47,13 @@ public class DrawPanel extends JPanel{
     }
     
     public DrawPanel(){
+        /*замена курсора на прицел*/
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Image image = toolkit.getImage("icons/crosshair.png");
+        Cursor c = toolkit.createCustomCursor(image , new Point(this.getX(), 
+        this.getY()), "img");
+        this.setCursor (c);
+        
         v_F = true;
         v_P = true;
         

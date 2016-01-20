@@ -76,7 +76,7 @@ public class Planet extends BaseClass {
             g2.setColor(Color.GRAY);
             float mouseX = MouseInfo.getPointerInfo().getLocation().x;
             float mouseY = MouseInfo.getPointerInfo().getLocation().y;
-            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.Gun.angle) * r), (int)this.Y + (int)(Math.sin(this.Gun.angle) * r));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.Gun.angle) * r), (int)y + (int)(Math.sin(this.Gun.angle) * r));
         }
         
         /*Направление равнодействующей*/
