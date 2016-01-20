@@ -72,21 +72,21 @@ public class Planet extends BaseClass {
         if(this.IsPlayer){
             float mouseX = MouseInfo.getPointerInfo().getLocation().x;
             float mouseY = MouseInfo.getPointerInfo().getLocation().y;
-            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.Gun.angle) * this.Gun.length), (int)this.Y + (int)(Math.sin(this.Gun.angle) * this.Gun.length));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.Gun.angle) * this.Gun.length), (int)y + (int)(Math.sin(this.Gun.angle) * this.Gun.length));
         }
         
         /*Направление равнодействующей*/
         float r = 20;
         if((this.F.length != 0) & (v_F)){
             g2.setColor(Color.BLUE);
-            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.F.angle) * r), (int)this.Y + (int)(Math.sin(this.F.angle) * r));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.F.angle) * r), (int)y + (int)(Math.sin(this.F.angle) * r));
         }
          
         /*Направление Импульса*/
         r = 20;
         if((this.P.length != 0) & (v_P)){
             g2.setColor(Color.GREEN);
-            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.P.angle) * r), (int)this.Y + (int)(Math.sin(this.P.angle) * r));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.P.angle) * r), (int)y + (int)(Math.sin(this.P.angle) * r));
         }
      }
     
