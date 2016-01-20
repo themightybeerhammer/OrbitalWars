@@ -42,9 +42,10 @@ public class Planet extends BaseClass {
     public boolean IsPlayer = false;    /*Метка планеты-игрока*/
     public boolean HaveGun = IsPlayer;  /*Наличие пушки у планеты*/
     private Vector Gun;                 /*Вектор пушки*/
+    public int GunType = 1;            /*Тип задействованного орудия*/
     public float Energy = 0;            /*Энергия планеты*/
-    public float MaxEnergy = 1000;      /*Максимальное количество запасаемой энергии планеты*/
-    private float GunPowerNeed;         /*Заряд в пушке для выстрела*/
+    public float MaxEnergy = 10000/*1000*/;      /*Максимальное количество запасаемой энергии планеты*/
+    private float GunPowerNeed = 200;   /*Заряд в пушке для выстрела*/
     
     /*Конструкторы класса*/
     Planet(){
@@ -110,19 +111,35 @@ public class Planet extends BaseClass {
     void Aim(float x, float y){
         this.Gun.SetAngle(this.X, this.Y, x, y);
     }
-    
+
     /*Выстрел из орудия*/
     boolean Shoot(ArrayList<BaseClass> AL){
         try{
             if(this.Energy >= this.GunPowerNeed){
                 this.Energy -= this.GunPowerNeed;
                 /*вектор учитывает скорость и направление движения планеты-стрелка*/
-                Vector ShotV = new Vector(this.P.angle, this.P.length/this.M).Plus(this.Gun);
-                new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length
-                             , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length
-                             , 1, 1
-                             , ShotV.angle
-                             , ShotV.length, AL);
+                Vector ShotV = new Vector(this.P.angle, this.P.length / this.M).Plus(this.Gun);
+                switch(this.GunType){
+                    case 1: new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length
+                                         , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length
+                                         , 1, 1
+                                         , ShotV.angle
+                                         , ShotV.length, AL);
+                            break;
+                    case 2: for(int i = -3; i <= 3; i++){ /*Количество "дробинок" (напр. от (-3) до 3 = 6 "дробинок"*/
+                                /**В первых двух параметрах Math.PI / i / 5
+                                 * это смещение появляющихся снарядов
+                                 * относительно дула - чтобы не столкнулись сразу
+                                 */
+                                new Projectile(this.X + (float)(Math.cos(this.Gun.angle + (float)(Math.PI / i / 5))) * this.Gun.length
+                                             , this.Y + (float)(Math.sin(this.Gun.angle + (float)(Math.PI / i / 5))) * this.Gun.length
+                                             , 1, 1
+                                             /*Math.PI / i / 12 - угол разлета снарядов*/
+                                             , ShotV.angle + (float)(Math.PI / i / 12)
+                                             , ShotV.length, AL);
+                            }
+                            break;
+                }
                 return true;   
             }
         }finally{
@@ -139,11 +156,30 @@ public class Planet extends BaseClass {
             for(int i = 0; i < AL.size(); i++){
                 if(AL.get(i) != null){
                     if(AL.get(i).getClass().getName() == "main.Star"){
-                        this.Energy += 1 / this.Distance(AL.get(i)) * 1000;
+                        this.Energy += 1 / this.Distance(AL.get(i)) * 100000/*1000*/;
                     }
                 }
             }
             this.Energy = min(this.Energy, this.MaxEnergy);
+        }
+    }
+    
+    /**Переключение вооружения
+     * Подменяет значения полей описывающих орудие и его снаряды
+     * 
+     * Возращает истину когда удалось переключится
+     */
+    boolean SwitchGun(int gt){
+        try{
+            this.GunType = gt;
+            switch(gt){
+                case 1: this.GunPowerNeed = 200;
+                        break;
+                case 2: this.GunPowerNeed = 1000;
+            }
+            return true;
+        }finally{
+            return false;
         }
     }
 }

@@ -160,9 +160,15 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     @Override 
     public void keyPressed(KeyEvent e) {
-        /*тест стрельбы по клавише ПРОБЕЛ*/
-        if(e.getKeyCode() == 32){
-            this.player.Shoot(this.ALBaseClass);
+        switch(e.getKeyCode()){
+            case 32:    this.player.Shoot(this.ALBaseClass);    /*тест стрельбы по клавише ПРОБЕЛ*/
+                        break;
+            /*клавиши 1-9 для переключения оружия*/
+            case 49:    player.GunType = 1;
+                        break;
+            case 50:    player.GunType = 2;
+                        break;
+            default: System.out.println(e.getKeyCode());
         }
     }
     
