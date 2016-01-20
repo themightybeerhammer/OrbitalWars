@@ -26,7 +26,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 import static java.lang.Math.random;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -38,15 +37,14 @@ import java.lang.Object;
  * @author Vladimir
  */
 
-public class game extends Applet implements KeyListener, MouseListener, MouseMotionListener {
+public class game extends Applet implements KeyListener, MouseListener {
     
     private ArrayList<BaseClass> ALBaseClass;   /*Коллекция всех объектов*/
+    private ArrayList<BaseClass> pBaseClass;    /*Временная Коллекция  объектов*/
     private CenterMass CM;                      /*Центр масс*/ 
     protected DrawPanel Display;                  /*Панель для отображения*/
     public Planet player;
     public float DisplayX, DisplayY;            /*Координаты центра экрана*/
-    public Point p_Delta,p_display;
-    public boolean RMBPressed = false;          /*Нажата правая кнопка мыши*/
     /*Параметры для дебугагинга начало*/
     public float Mltplr = 5f;                   /*Множитель замедления*/      
     public boolean v_F = false;                 /*Рисовать вектор равнодействующей*/
@@ -56,10 +54,10 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     @Override
     public void init() {
         ALBaseClass = new ArrayList<>();
+        pBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
         this.setSize(800, 600);
-        p_Delta = new Point(0,0);
-        p_display = new Point(0,0);
+        
        
         
         /*тестовые болванки НАЧАЛО*/
@@ -72,20 +70,19 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         new Star(200, 200, 10000, 40, 0, 0, ALBaseClass);
         
         /*Система сиськи*/
-      /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
+       /* player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
         player.dw_orbit = true;
         new Star(250, 250, 8000, 40, 0, 0, ALBaseClass);
         new Star(500, 500, 8000, 40, 0, 0, ALBaseClass);
-        */
-      
-      
+          *  /
+        
+        
          /*создаем новый игровой экран*/
         Display = new DrawPanel();
         add(Display);
         Display.addMouseMotionListener(new MotionSensor(this));
         addKeyListener(this);
         Display.addMouseListener(this);
-        Display.addMouseMotionListener(this);
         
         for(int i = 0 ;i < ALBaseClass.size(); i++){
             ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
@@ -104,7 +101,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 
                 
                 CM.CalcCenterMass();                            /*пересчет центра масс*/
-                Display.AssignList(ALBaseClass,p_display,v_F,v_P);        /*передача игровому экрану списка объектов для отрисовки*/ 
+                Display.AssignList(ALBaseClass,v_F,v_P);        /*передача игровому экрану списка объектов для отрисовки*/ 
                 for(int i = 0 ;i < ALBaseClass.size(); i++){
                     if(ALBaseClass.get(i)!=null){
                         ALBaseClass.get(i).calc_F_ravn(Mltplr);     /*пересчет импульса объекта*/
@@ -130,12 +127,16 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                                 {ALBaseClass.get(j).DeadFlag=true;}
                             
                             }
+                                
+                                
+                        
                         }
-                      }
-                   
+                        
+                    }
+                               /*движение объекта*/
                 }
                 
-               /*Удаление погибших объектов*/ 
+                
                int j=0; 
                do{
                   if((ALBaseClass.get(j).DeadFlag)&&(ALBaseClass.get(j).DeadSteps<=0)){
@@ -173,7 +174,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     @Override 
     public void keyReleased(KeyEvent e) {
-        
     }
 
     @Override
@@ -182,25 +182,13 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println(e.getButton());
         if(e.getButton() == 1){
             player.Shoot(ALBaseClass);
         }
-        
-        if(e.getButton() == 3){
-            RMBPressed = true;
-            p_Delta  = e.getPoint();
-           
-        }
-
-        
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-       if(RMBPressed){
-         RMBPressed = false;
-       }
     }
 
     @Override
@@ -209,24 +197,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
     @Override
     public void mouseExited(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent me) {
-            if(RMBPressed){
-              p_display.x=p_display.x+(me.getPoint().x-p_Delta.x);
-              p_display.y=p_display.y+(me.getPoint().y-p_Delta.y);
-              p_Delta=me.getPoint();
-              
-           }
-            
-           
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent me) {
-          
     }
 
 }
@@ -250,15 +220,10 @@ class MotionSensor extends MouseMotionAdapter{
             int x = p.x - r.x;
             int y = p.y - r.y;
             //System.out.println(x + " " + y);
-            applet.player.Aim(x-applet.p_display.x, y-applet.p_display.y);
+            applet.player.Aim(x, y);
         }
         else if(overChild){
             overChild = false;
         }
-        
-     
-        
-        
-        
     }
 }
