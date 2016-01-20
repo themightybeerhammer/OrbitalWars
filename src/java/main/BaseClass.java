@@ -84,18 +84,19 @@ public class BaseClass {
      }
     
      void draw(Graphics g
-            /*,ВОТ ЗДЕСЬ БУДЕТ ПЕРЕМЕНАЯ ЭКРАН*/
+             ,Point p_display /*,ВОТ ЗДЕСЬ БУДЕТ ПЕРЕМЕНАЯ ЭКРАН*/
              ,boolean v_F  /*Рисовать вектор равнодействующей*/
              ,boolean v_P  /*Рисовать вектор импульса*/     
             ){
         
          /*ПЕРЕД ЗАПУСКОМ ПРОЦЕДУРЫ ДОЛЖНА БЫТЬ ОБРАБОТКА ЭКРАНА ОТОБРАЖЕНИЯ
          Т.Е. ВХОДИТ ЛИ ОБЪЕКТ В ОТОБРАЖАЕМУЮ ОБЛАСТЬ */
-       
+         
+         
          /*Отрисовка объекта*/
-         draw_in_scr(g,X,Y,v_F,v_P);
+         draw_in_scr(g,X+p_display.x,Y+p_display.y,v_F,v_P);
          /*Орбита объекта*/
-         if(dw_orbit)draw_orbit(g,0,0); 
+         if(dw_orbit)draw_orbit(g,p_display.x,p_display.y); 
         
           
      }
@@ -122,7 +123,7 @@ public class BaseClass {
          if((F.length!=0)&(v_F))
             {
                 g2.setColor(Color.BLUE);
-                g2.drawLine((int)X,(int) Y, (int)X+(int)(Math.cos(F.angle)*r) ,(int) Y+(int)(Math.sin(F.angle)*r));
+                g2.drawLine((int)x,(int) y, (int)x+(int)(Math.cos(F.angle)*r) ,(int) y+(int)(Math.sin(F.angle)*r));
             }
          
          /*Направление Импульса*/
@@ -130,7 +131,7 @@ public class BaseClass {
          if((P.length!=0)&(v_P))
             {
                 g2.setColor(Color.GREEN);
-                g2.drawLine((int)X, (int)Y, (int)X+(int)(Math.cos(P.angle)*r) , (int)Y+(int)(Math.sin(P.angle)*r));
+                g2.drawLine((int)x, (int)y, (int)x+(int)(Math.cos(P.angle)*r) , (int)y+(int)(Math.sin(P.angle)*r));
             }
          
       

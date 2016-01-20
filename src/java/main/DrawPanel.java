@@ -31,6 +31,7 @@ public class DrawPanel extends JPanel{
     static boolean v_F;
     static boolean v_P; 
     static ArrayList<BaseClass> ALBaseClass;
+    Point P_Display;
     
     public void AssignList(ArrayList<BaseClass> ALBC){
        
@@ -38,10 +39,11 @@ public class DrawPanel extends JPanel{
   
     }
   
-    public void AssignList(ArrayList<BaseClass> ALBC, boolean V_F, boolean V_P ){
+    public void AssignList(ArrayList<BaseClass> ALBC,Point p_display, boolean V_F, boolean V_P ){
         v_F = V_F;
         v_P = V_P; 
         ALBaseClass = new ArrayList<BaseClass>(ALBC);
+        P_Display = new Point(p_display);
     }
     
     public DrawPanel(){
@@ -66,7 +68,7 @@ public class DrawPanel extends JPanel{
         g.fillRect(0, 0, 800, 600);
         for(int i = 0 ;i < ALBaseClass.size(); i++){
             if(ALBaseClass.get(i)!=null){
-               ALBaseClass.get(i).draw(g,v_F,v_P);
+               ALBaseClass.get(i).draw(g,P_Display,v_F,v_P);
             }      
         }
     }

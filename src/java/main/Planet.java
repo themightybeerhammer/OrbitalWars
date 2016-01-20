@@ -72,21 +72,21 @@ public class Planet extends BaseClass {
         if(this.IsPlayer){
             float mouseX = MouseInfo.getPointerInfo().getLocation().x;
             float mouseY = MouseInfo.getPointerInfo().getLocation().y;
-            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.Gun.angle) * this.Gun.length), (int)this.Y + (int)(Math.sin(this.Gun.angle) * this.Gun.length));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.Gun.angle) * this.Gun.length), (int)y + (int)(Math.sin(this.Gun.angle) * this.Gun.length));
         }
         
         /*Направление равнодействующей*/
         float r = 20;
         if((this.F.length != 0) & (v_F)){
             g2.setColor(Color.BLUE);
-            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.F.angle) * r), (int)this.Y + (int)(Math.sin(this.F.angle) * r));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.F.angle) * r), (int)y + (int)(Math.sin(this.F.angle) * r));
         }
          
         /*Направление Импульса*/
         r = 20;
         if((this.P.length != 0) & (v_P)){
             g2.setColor(Color.GREEN);
-            g2.drawLine((int)this.X, (int)this.Y, (int)this.X + (int)(Math.cos(this.P.angle) * r), (int)this.Y + (int)(Math.sin(this.P.angle) * r));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.P.angle) * r), (int)y + (int)(Math.sin(this.P.angle) * r));
         }
      }
     
@@ -97,9 +97,16 @@ public class Planet extends BaseClass {
     
     /*Выстрел из пушки*/
     boolean Shoot(ArrayList<BaseClass> AL){
-        try{
+       
+        
+          try{
+            /*вектор учитывает скорость и направление движения планеты-стрелка*/
+            Vector ShotV = new Vector(this.P.angle, this.P.length/this.M).Plus(this.Gun);
             new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length
-                         , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length, 1, 1, this.Gun.angle, 8, AL);
+                         , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length
+                         , 1, 1
+                         , ShotV.angle
+                         , ShotV.length, AL);
             return true;   
         }finally{
             return false;
