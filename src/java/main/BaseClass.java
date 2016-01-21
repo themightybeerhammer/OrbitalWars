@@ -25,6 +25,7 @@ import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import javafx.scene.shape.Ellipse;
 import main.Vector;
@@ -45,6 +46,10 @@ public class BaseClass {
     
     boolean DeadFlag=false; /*Флаг Гибели объекта*/
     int DeadSteps=0;        /*Количество итераций гибели объекта*/
+    
+    boolean dw_health=false; /*Флаг рисования здоровья*/ 
+    float HealthMax=1    /*Максимальное здоровье*/
+         ,HealthCur=1;   /*Текущие здоровье*/
     
    
     
@@ -80,6 +85,9 @@ public class BaseClass {
        Orbit = new ArrayList<Point>();
        dw_orbit = false;
        DeadSteps = ro*20;
+       
+        HealthMax = this.M;    /*Максимальное здоровье*/
+        HealthCur = HealthMax;
       
      }
     
@@ -97,10 +105,29 @@ public class BaseClass {
          draw_in_scr(g,X+p_display.x,Y+p_display.y,v_F,v_P);
          /*Орбита объекта*/
          if(dw_orbit)draw_orbit(g,p_display.x,p_display.y); 
+         if(dw_health)draw_health(g,X+p_display.x,Y+p_display.y); 
         
           
      }
      
+     void draw_health(Graphics g,float x,float y){
+         Graphics2D g2 = (Graphics2D)g;
+         RenderingHints rh = new RenderingHints(
+         RenderingHints.KEY_ANTIALIASING,
+         RenderingHints.VALUE_ANTIALIAS_ON);
+     
+       /*Отрисовка прогрессбара здоровья объекта*/
+        /*Заливка бара*/
+        g2.setColor(Color.GRAY);
+        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 7), (int)(RO * 2), (int)(2));
+      
+        g2.setColor(Color.GREEN);
+        g2.setBackground(Color.GREEN);
+        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 7), (int)(RO * 2 * (this.HealthCur / this.HealthMax)), (int)(2)); 
+      
+        
+     
+     }
    
      
      void draw_in_scr(Graphics g
@@ -326,9 +353,10 @@ public class BaseClass {
        
      
      
-     }
+    }
      
-  
-    
-    
+    float Distance(BaseClass bc){
+        return (float)sqrt((this.X - bc.X) * (this.X - bc.X) + (this.Y - bc.Y) * (this.Y - bc.Y));
+    }
+     
 }
