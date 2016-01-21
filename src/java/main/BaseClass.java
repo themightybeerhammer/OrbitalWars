@@ -28,6 +28,7 @@ import java.awt.geom.Point2D;
 import static java.lang.Integer.max;
 import static java.lang.Math.PI;
 import static java.lang.Math.pow;
+import static java.lang.Math.random;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import javafx.scene.shape.Ellipse;
@@ -393,7 +394,7 @@ public class BaseClass {
         Projectile projbuff;    /*Осколок*/
         /*Расстановка осколков внутри периметра планеты*/
         for(double i = 0; i < RO; i += 2){
-            for(double j = 0; j < PI * 2; j += (PI * 2) / i / 2){
+            for(double j = 0; j < PI * 2; j += (PI * 2) / i / (2 * random())){
                 dirbuff = new Vector((float)j, (float)i);
                 projbuff = new Projectile(X + dirbuff.GetX(), Y + dirbuff.GetY(), 1, 1, dirbuff.angle, RO, ALBaseClass);
                 projbuff.Transparent = 1;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/

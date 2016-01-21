@@ -18,6 +18,7 @@
 package main;
 
 import java.applet.Applet;
+import java.awt.FlowLayout;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -46,6 +47,8 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public Planet player;
     public float DisplayX, DisplayY;            /*Координаты центра экрана*/
     public Point p_Delta, p_display;
+    public int DisplayW = 800;                  /*Ширина экрана*/
+    public int DisplayH = 600;                  /*Высота экрана*/
     public boolean RMBPressed = false;          /*Нажата правая кнопка мыши*/
     boolean overChild;                          /*Буфер для перемещения по контейнерам*/
     float mx, my;                               /*Последние известные координаты мыши*/
@@ -59,7 +62,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public void init() {
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
-        setSize(800, 600);
+        setSize(DisplayW, DisplayH);
         p_Delta = new Point(0,0);
         p_display = new Point(0,0);
        
@@ -80,13 +83,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
       
       
          /*создаем новый игровой экран*/
-        Display = new DrawPanel();
+        Display = new DrawPanel((int)(DisplayW * 0.9), (int)(DisplayH * 0.9));
         add(Display);
         //Display.addMouseMotionListener(new MotionSensor(this));
         Display.addMouseMotionListener(this);
         addKeyListener(this);
         Display.addMouseListener(this);
         Display.addMouseMotionListener(this);
+        Display.setAlignmentX(0);
         
         for(int i = 0 ;i < ALBaseClass.size(); i++){
             if(ALBaseClass.get(i).getClass().getName()=="main.Star"){
@@ -97,8 +101,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
               ALBaseClass.get(i).dw_orbit = true;
               ALBaseClass.get(i).dw_health = true;
             }
-          
-          
             
             ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
             
@@ -192,8 +194,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                         break;
             case 50:    player.GunType = 2;
                         break;
+            case 112:   SendNewPlanet();
+                        break;
             default: System.out.println(e.getKeyCode());
         }
+    }
+    
+    void SendNewPlanet(){
+        new Planet(200, 70, (float)random() * 50, (int)(random() * 50), (float)Math.PI, 90, ALBaseClass, false, false);    
     }
     
     @Override 

@@ -32,14 +32,18 @@ public class DrawPanel extends JPanel{
     static boolean v_P; 
     static ArrayList<BaseClass> ALBaseClass;
     Point P_Display;
+    public int DisplayW = 800;                  /*Ширина экрана*/
+    public int DisplayH = 600;                  /*Высота экрана*/
     
-    public DrawPanel(){
+    public DrawPanel(int displayw, int displayh){
         /*замена курсора на прицел*/
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Image image = toolkit.getImage("icons/crosshair.png");
         Cursor c = toolkit.createCustomCursor(image , new Point(getX(), 
         getY()), "img");
         setCursor (c);
+        DisplayH = displayh;
+        DisplayW = displayw;
         
         v_F = true;
         v_P = true;
@@ -80,7 +84,7 @@ public class DrawPanel extends JPanel{
 
     @Override
     public Dimension getPreferredSize(){
-        return new Dimension(800, 600);
+        return new Dimension(DisplayW, DisplayH);
     }
 
 }
