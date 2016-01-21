@@ -44,7 +44,7 @@ public class Planet extends BaseClass {
     public boolean IsPlayer = false;    /*Метка планеты-игрока*/
     public boolean HaveGun = IsPlayer;  /*Наличие пушки у планеты*/
     private Vector Gun;                 /*Вектор пушки*/
-    public int GunType = 1;            /*Тип задействованного орудия*/
+    public int GunType = 1;             /*Тип задействованного орудия*/
     public float Energy = 0;            /*Энергия планеты*/
     public float MaxEnergy = 10000/*1000*/;      /*Максимальное количество запасаемой энергии планеты*/
     private float GunPowerNeed = 200;   /*Заряд в пушке для выстрела*/
