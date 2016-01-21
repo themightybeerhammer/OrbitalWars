@@ -41,10 +41,17 @@ public class Star extends BaseClass {
     } 
     Star(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL){
         super(x, y, m, ro, vangle, vlength, AL);
+        HealthMax = 100;    /*Максимальное здоровье*/
+        HealthCur = HealthMax;
+        DeadFlag = false;
+        DeadSteps=30; 
     }
     
     @Override
     void move(float Mtplr){
+          if(DeadFlag){
+           DeadSteps--;  
+           if(DeadSteps<0) DeadSteps = 0;}
     }
     
     @Override
@@ -61,7 +68,23 @@ public class Star extends BaseClass {
         Color[] colors = {Color.RED, Color.YELLOW, new Color(1,0,0,0) };
         RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
         g2.setPaint(p);
+        if(DeadFlag==false){
         g2.fill(new Ellipse2D.Float(x-RO, y-RO, RO*2, RO*2));
+        }
+        
+         /*Прорисовка гибели объекта*/
+         if(DeadFlag){
+         
+             Point2D _center = new Point2D.Float(x, y); 
+             float _radius = RO*((float)DeadSteps/30)+2;
+             if(_radius<=0) _radius = 1;
+            
+             float[] _dist = { 0.6f, 1.0f};
+             Color[] _colors = { Color.YELLOW, new Color(1,0,0,0) };
+             RadialGradientPaint _p = new RadialGradientPaint(_center, _radius, _dist, _colors);
+             g2.setPaint(_p);
+             g2.fill(new Ellipse2D.Float(x-radius, y-radius, radius*2, radius*2));
+         }
           
         /*RenderingHints rh = new RenderingHints(
         RenderingHints.KEY_ANTIALIASING,
