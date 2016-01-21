@@ -33,31 +33,18 @@ public class DrawPanel extends JPanel{
     static ArrayList<BaseClass> ALBaseClass;
     Point P_Display;
     
-    public void AssignList(ArrayList<BaseClass> ALBC){
-       
-        ALBaseClass = new ArrayList<BaseClass>(ALBC);
-  
-    }
-  
-    public void AssignList(ArrayList<BaseClass> ALBC,Point p_display, boolean V_F, boolean V_P ){
-        v_F = V_F;
-        v_P = V_P; 
-        ALBaseClass = new ArrayList<BaseClass>(ALBC);
-        P_Display = new Point(p_display);
-    }
-    
     public DrawPanel(){
         /*замена курсора на прицел*/
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Image image = toolkit.getImage("icons/crosshair.png");
-        Cursor c = toolkit.createCustomCursor(image , new Point(this.getX(), 
-        this.getY()), "img");
-        this.setCursor (c);
+        Cursor c = toolkit.createCustomCursor(image , new Point(getX(), 
+        getY()), "img");
+        setCursor (c);
         
         v_F = true;
         v_P = true;
         
-        this.setBorder(BorderFactory.createEtchedBorder());
+        setBorder(BorderFactory.createEtchedBorder());
         
         Timer timer = new Timer(10, new ActionListener() {
             @Override
@@ -67,6 +54,17 @@ public class DrawPanel extends JPanel{
         });
         timer.start();
     }
+    
+    /*Передача данных в дисплей*/
+    public void AssignList(ArrayList<BaseClass> ALBC){
+        ALBaseClass = new ArrayList<>(ALBC);
+    }
+    public void AssignList(ArrayList<BaseClass> ALBC,Point p_display, boolean V_F, boolean V_P ){
+        v_F = V_F;
+        v_P = V_P; 
+        ALBaseClass = new ArrayList<>(ALBC);
+        P_Display = new Point(p_display);
+    }
 
     @Override
     protected void paintComponent(Graphics g){
@@ -74,8 +72,8 @@ public class DrawPanel extends JPanel{
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
         for(int i = 0 ;i < ALBaseClass.size(); i++){
-            if(ALBaseClass.get(i)!=null){
-               ALBaseClass.get(i).draw(g,P_Display,v_F,v_P);
+            if(ALBaseClass.get(i) != null){
+               ALBaseClass.get(i).draw(g, P_Display, v_F, v_P);
             }      
         }
     }

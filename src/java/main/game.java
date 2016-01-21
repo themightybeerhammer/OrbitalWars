@@ -57,19 +57,19 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     @Override
     public void init() {
-        this.ALBaseClass = new ArrayList<>();
-        this.CM = new CenterMass(this.ALBaseClass);
-        this.setSize(800, 600);
-        this.p_Delta = new Point(0,0);
-        this.p_display = new Point(0,0);
+        ALBaseClass = new ArrayList<>();
+        CM = new CenterMass(ALBaseClass);
+        setSize(800, 600);
+        p_Delta = new Point(0,0);
+        p_display = new Point(0,0);
        
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
-        this.player = new Planet(200, 30, 10, 10, 0, 78, this.ALBaseClass, true, true);
-        new Planet(100, 200, 10, 10, (float)Math.PI * 2 / 4, 100, this.ALBaseClass, false, false);
-        new Planet(200, 70, 10, 10, (float)Math.PI, 90, this.ALBaseClass, false, false);    
-        new Star(200, 200, 10000, 40, 0, 0, this.ALBaseClass);
+        player = new Planet(200, 30, 10, 10, 0, 78, ALBaseClass, true, true);
+        new Planet(100, 200, 10, 10, (float)Math.PI * 2 / 4, 100, ALBaseClass, false, false);
+        new Planet(200, 70, 10, 10, (float)Math.PI, 90, ALBaseClass, false, false);    
+        new Star(200, 200, 10000, 40, 0, 0, ALBaseClass);
         
         /*Система сиськи*/
       /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
@@ -80,27 +80,27 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
       
       
          /*создаем новый игровой экран*/
-        this.Display = new DrawPanel();
-        add(this.Display);
+        Display = new DrawPanel();
+        add(Display);
         //Display.addMouseMotionListener(new MotionSensor(this));
-        this.Display.addMouseMotionListener(this);
+        Display.addMouseMotionListener(this);
         addKeyListener(this);
-        this.Display.addMouseListener(this);
-        this.Display.addMouseMotionListener(this);
+        Display.addMouseListener(this);
+        Display.addMouseMotionListener(this);
         
-        for(int i = 0 ;i < this.ALBaseClass.size(); i++){
-            if(this.ALBaseClass.get(i).getClass().getName()=="main.Star"){
-              this.ALBaseClass.get(i).dw_health = true;   
+        for(int i = 0 ;i < ALBaseClass.size(); i++){
+            if(ALBaseClass.get(i).getClass().getName()=="main.Star"){
+              ALBaseClass.get(i).dw_health = true;   
             }
            
-            if(this.ALBaseClass.get(i).getClass().getName()=="main.Planet"){
-              this.ALBaseClass.get(i).dw_orbit = true;
-              this.ALBaseClass.get(i).dw_health = true;
+            if(ALBaseClass.get(i).getClass().getName()=="main.Planet"){
+              ALBaseClass.get(i).dw_orbit = true;
+              ALBaseClass.get(i).dw_health = true;
             }
           
           
             
-            this.ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
+            ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
             
         }
         /*тестовые болванки КОНЕЦ*/
@@ -170,8 +170,8 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             }
         };
         oTimer.schedule(oTimerTask, 0, 50);
-        this.setFocusable(true);
-        this.requestFocusInWindow();
+        setFocusable(true);
+        requestFocusInWindow();
     }
     
     @Override
@@ -185,7 +185,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     @Override 
     public void keyPressed(KeyEvent e) {
         switch(e.getKeyCode()){
-            case 32:    this.player.Shoot(/*this.ALBaseClass*/);    /*тест стрельбы по клавише ПРОБЕЛ*/
+            case 32:    player.Shoot();    /*тест стрельбы по клавише ПРОБЕЛ*/
                         break;
             /*клавиши 1-9 для переключения оружия*/
             case 49:    player.GunType = 1;
@@ -207,13 +207,12 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getButton() == 1){
-            this.player.Shoot();
-        }
-        
-        if(e.getButton() == 3){
-            this.RMBPressed = true;
-            this.p_Delta  = e.getPoint();  
+        switch(e.getButton()){
+            case 1: player.Shoot();
+                    break;
+            case 3: RMBPressed = true;
+                    p_Delta  = e.getPoint();
+                    break;
         }
     }
 
@@ -234,25 +233,25 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
     @Override
     public void mouseDragged(MouseEvent e) {
-            if(this.RMBPressed){
-              this.p_display.x = this.p_display.x + (e.getPoint().x - this.p_Delta.x);
-              this.p_display.y = this.p_display.y + (e.getPoint().y - this.p_Delta.y);
-              this.p_Delta = e.getPoint();
+            if(RMBPressed){
+              p_display.x = p_display.x + (e.getPoint().x - p_Delta.x);
+              p_display.y = p_display.y + (e.getPoint().y - p_Delta.y);
+              p_Delta = e.getPoint();
            }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         Point p = e.getPoint();
-        Rectangle r = this.Display.getBounds();
+        Rectangle r = Display.getBounds();
         if(r.contains(p)){
-            if(!this.overChild)
-                this.overChild = true;
-            this.mx = p.x - r.x;
-            this.my = p.y - r.y;
+            if(!overChild)
+                overChild = true;
+            mx = p.x - r.x;
+            my = p.y - r.y;
         }
-        else if(this.overChild){
-            this.overChild = false;
+        else if(overChild){
+            overChild = false;
         }
     }
 

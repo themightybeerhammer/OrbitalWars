@@ -34,11 +34,11 @@ public class CenterMass extends BaseClass {
      CenterMass(
                ArrayList<BaseClass> al
               ){
-       this.X = 0;
-       this.Y = 0;
-       this.M = 0;
-       this.RO = 0;
-       this.P = new Vector(0,0);
+       X = 0;
+       Y = 0;
+       M = 0;
+       RO = 0;
+       P = new Vector(0,0);
        ALBaseClass = al;
        ALBaseClass.add(this);
      }
@@ -59,9 +59,9 @@ public class CenterMass extends BaseClass {
            } 
         }
        
-       this.X = Xc;
-       this.Y = Yc;
-       this.M = Mc;
+       X = Xc;
+       Y = Yc;
+       M = Mc;
     }
       
     void draw_in_scr(Graphics g
@@ -81,10 +81,5 @@ public class CenterMass extends BaseClass {
     @Override
     void move(float Mtplr){
     }
-        
-      
-      
-      
-    
-    
+  
 }

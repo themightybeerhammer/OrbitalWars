@@ -55,13 +55,13 @@ public class Planet extends BaseClass {
     }
     Planet(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL, boolean player, boolean havegun){
         super(x, y, m, ro, vangle, vlength, AL);
-        this.IsPlayer = player;
-        this.HaveGun = havegun;
-        if(this.HaveGun){
-            this.Gun = new Vector(0, 20);
+        IsPlayer = player;
+        HaveGun = havegun;
+        if(HaveGun){
+            Gun = new Vector(0, 20);
         }  
-        this.GunPowerNeed = 200;
-        this.DeadSteps = 20;
+        GunPowerNeed = 200;
+        DeadSteps = 20;
     }
     
     @Override
@@ -74,47 +74,47 @@ public class Planet extends BaseClass {
         g2.setRenderingHints(rh);
         g2.setColor(Color.WHITE);
         if(DeadFlag==false){
-          g2.draw(new Ellipse2D.Float(x - this.RO, y - this.RO, this.RO * 2, this.RO * 2));
+          g2.draw(new Ellipse2D.Float(x - RO, y - RO, RO * 2, RO * 2));
         }
         
         /*Отрисовка прогрессбара зарядки планеты*/
         /*Заливка бара*/
         g2.setColor(Color.GRAY);
-        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 5), (int)(RO * 2), (int)(2));
+        g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2), (int)(2));
         /*Маркер необходимого для выстрела кол-ва энергии*/
         g2.setColor(Color.RED);
         g2.setBackground(Color.RED);
-        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 5), (int)(RO * 2 * (this.GunPowerNeed / this.MaxEnergy)), (int)(2)); 
+        g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (GunPowerNeed / MaxEnergy)), (int)(2)); 
         /*Текущий уровень заряда*/
         g2.setColor(Color.BLUE);
         g2.setBackground(Color.BLUE);
-        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 5), (int)(RO * 2 * (this.Energy / this.MaxEnergy)), (int)(2 )); 
+        g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (Energy / MaxEnergy)), (int)(2 )); 
         
         /*Отрисовка пушки*/
         float r = 20;
-        if(this.IsPlayer){
+        if(IsPlayer){
             g2.setColor(Color.GRAY);
             float mouseX = MouseInfo.getPointerInfo().getLocation().x;
             float mouseY = MouseInfo.getPointerInfo().getLocation().y;
-            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.Gun.angle) * r), (int)y + (int)(Math.sin(this.Gun.angle) * r));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(Gun.angle) * r), (int)y + (int)(Math.sin(Gun.angle) * r));
         }
         
         /*Направление равнодействующей*/
-        if((this.F.length != 0) & (v_F)){
+        if((F.length != 0) & (v_F)){
             g2.setColor(Color.BLUE);
-            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.F.angle) * r), (int)y + (int)(Math.sin(this.F.angle) * r));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(F.angle) * r), (int)y + (int)(Math.sin(F.angle) * r));
         }
          
         /*Направление Импульса*/
-        if((this.P.length != 0) & (v_P)){
+        if((P.length != 0) & (v_P)){
             g2.setColor(Color.GREEN);
-            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.P.angle) * r), (int)y + (int)(Math.sin(this.P.angle) * r));
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(P.angle) * r), (int)y + (int)(Math.sin(P.angle) * r));
         }
         
         /*Прорисовка гибели объекта*/
-        if(this.DeadFlag){
+        if(DeadFlag){
             Point2D center = new Point2D.Float(x, y); 
-            float radius = this.RO * ((float)this.DeadSteps / 20) + 2;
+            float radius = RO * ((float)DeadSteps / 20) + 2;
             if(radius <= 0) radius = 1;
            
             float[] dist = { 0.6f, 1.0f};
@@ -127,22 +127,22 @@ public class Planet extends BaseClass {
     
     /*Нацеливание пушки на точку*/
     void Aim(float x, float y){
-        this.Gun.SetAngle(this.X, this.Y, x, y);
+        Gun.SetAngle(X, Y, x, y);
     }
 
     /*Выстрел из орудия*/
     boolean Shoot(){
         try{
-            if(this.Energy >= this.GunPowerNeed){
-                this.Energy -= this.GunPowerNeed;
+            if(Energy >= GunPowerNeed){
+                Energy -= GunPowerNeed;
                 /*вектор учитывает скорость и направление движения планеты-стрелка*/
-                Vector ShotV = new Vector(this.P.angle, this.P.length / this.M).Plus(this.Gun);
-                switch(this.GunType){
-                    case 1: new Projectile(this.X + (float)(Math.cos(this.Gun.angle)) * this.Gun.length
-                                         , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length
+                Vector ShotV = new Vector(P.angle, P.length / M).Plus(Gun);
+                switch(GunType){
+                    case 1: new Projectile(X + (float)(Math.cos(Gun.angle)) * Gun.length
+                                         , Y + (float)(Math.sin(Gun.angle)) * Gun.length
                                          , 1, 1
                                          , ShotV.angle
-                                         , ShotV.length, this.ALBaseClass);
+                                         , ShotV.length, ALBaseClass);
                             break;
                     case 2: int bullets = 8;    /*Кол-во "дробинок"*/
                             for(int i = -(bullets / 2); i <= (bullets / 2); i++){
@@ -150,12 +150,12 @@ public class Planet extends BaseClass {
                                  * это смещение появляющихся снарядов
                                  * относительно дула - чтобы не столкнулись сразу
                                  */
-                                (new Projectile(this.X + (float)(Math.cos(this.Gun.angle + (float)(Math.PI / i / 5))) * (this.Gun.length)
-                                             , this.Y + (float)(Math.sin(this.Gun.angle + (float)(Math.PI / i / 5))) * (this.Gun.length)
+                                (new Projectile(X + (float)(Math.cos(Gun.angle + (float)(Math.PI / i / 5))) * (Gun.length)
+                                             , Y + (float)(Math.sin(Gun.angle + (float)(Math.PI / i / 5))) * (Gun.length)
                                              , 1, 1
                                              /*Math.PI / i / 12 - угол разлета снарядов*/
                                              , ShotV.angle + (float)(Math.PI / i / 12)
-                                             , ShotV.length, this.ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
+                                             , ShotV.length, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
                             }
                             break;
                 }
@@ -171,15 +171,15 @@ public class Planet extends BaseClass {
      * в будущем будем учитывать и другие (внутренние)
      */
     void Charge(){
-        if(this.Energy < this.MaxEnergy){
-            for(int i = 0; i < this.ALBaseClass.size(); i++){
-                if(this.ALBaseClass.get(i) != null){
-                    if(this.ALBaseClass.get(i).getClass().getName() == "main.Star"){
-                        this.Energy += 1 / this.Distance(this.ALBaseClass.get(i)) * 100000/*1000*/;
+        if(Energy < MaxEnergy){
+            for(int i = 0; i < ALBaseClass.size(); i++){
+                if(ALBaseClass.get(i) != null){
+                    if(ALBaseClass.get(i).getClass().getName() == "main.Star"){
+                        Energy += 1 / Distance(ALBaseClass.get(i)) * 100000/*1000*/;
                     }
                 }
             }
-            this.Energy = min(this.Energy, this.MaxEnergy);
+            Energy = min(Energy, MaxEnergy);
         }
     }
     
@@ -190,11 +190,11 @@ public class Planet extends BaseClass {
      */
     boolean SwitchGun(int gt){
         try{
-            this.GunType = gt;
+            GunType = gt;
             switch(gt){
-                case 1: this.GunPowerNeed = 200;
+                case 1: GunPowerNeed = 200;
                         break;
-                case 2: this.GunPowerNeed = 1000;
+                case 2: GunPowerNeed = 1000;
             }
             return true;
         }finally{
@@ -202,25 +202,28 @@ public class Planet extends BaseClass {
         }
     }
     
+    /*Взрыв - объект разлетается на куски*/
     void Explode(){
-        int objCount = (int)sqrt(this.RO);   /*Кол-во осколков, на которые распадется планета*/
-        int objSize = this.RO / objCount;    /*Размер осколков*/
+        int objCount = (int)sqrt(RO);   /*Кол-во осколков, на которые распадется планета*/
+        int objSize = RO / objCount;    /*Размер осколков*/
         float objMass = objSize; /*Масса осколков*/
         float nx, ny;       /*Координаты появления осколка*/
         Vector dirbuff;         /*Вектор полета осколка*/
         Projectile projbuff;    /*Осколок*/
         /*Расстановка осколков внутри периметра планеты*/
         for(double i = 0; i < objCount; i++){
-            nx = this.X + (float)(this.RO / 2 * Math.cos(i));
-            ny = this.Y + (float)(this.RO / 2 * Math.sin(i));
-            dirbuff = (new Vector().SetAngle(this.X, this.Y, nx, ny));
-            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, 30, this.ALBaseClass);
-            projbuff.Transparent = this.DeadSteps;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
+            nx = X + (float)(RO / 2 * Math.cos(i));
+            ny = Y + (float)(RO / 2 * Math.sin(i));
+            dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
+            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, 30, ALBaseClass);
+            projbuff.Transparent = DeadSteps;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
         }
     }
     
+    /*Обработка гибели объекта*/
+    @Override
     void Die(){
-        this.DeadFlag = true;
-        this.Explode();
+        DeadFlag = true;
+        Explode();
     }
 }

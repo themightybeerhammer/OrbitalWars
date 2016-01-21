@@ -99,26 +99,29 @@ public class Star extends BaseClass {
         /*Направление равнодействующей*/
     } 
     
+    /*Взрыв - объект разлетается на куски*/
     void Explode(){
-        int objCount = (int)sqrt(this.RO);   /*Кол-во осколков, на которые распадется планета*/
-        int objSize = this.RO / objCount;    /*Размер осколков*/
+        int objCount = (int)sqrt(RO);   /*Кол-во осколков, на которые распадется планета*/
+        int objSize = RO / objCount;    /*Размер осколков*/
         float objMass = objSize; /*Масса осколков*/
         float nx, ny;       /*Координаты появления осколка*/
         Vector dirbuff;         /*Вектор полета осколка*/
         Projectile projbuff;    /*Осколок*/
         /*Расстановка осколков внутри периметра планеты*/
         for(double i = 0; i < objCount; i++){
-            nx = this.X + (float)(this.RO / 2 * Math.cos(i));
-            ny = this.Y + (float)(this.RO / 2 * Math.sin(i));
-            dirbuff = (new Vector().SetAngle(this.X, this.Y, nx, ny));
-            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, 30, this.ALBaseClass);
-            projbuff.Transparent = this.DeadSteps;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
+            nx = X + (float)(RO / 2 * Math.cos(i));
+            ny = Y + (float)(RO / 2 * Math.sin(i));
+            dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
+            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, 30, ALBaseClass);
+            projbuff.Transparent = DeadSteps;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
         }
     }
     
+    /*Обработка гибели объекта*/
+    @Override
     void Die(){
-        this.DeadFlag = true;
-        this.Explode();
+        DeadFlag = true;
+        Explode();
     }
     
 }

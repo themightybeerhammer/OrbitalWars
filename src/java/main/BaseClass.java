@@ -57,10 +57,10 @@ public class BaseClass {
    
     
      BaseClass(){
-       this.X = 0;
-       this.Y = 0;
-       this.M = 1;
-       this.RO = 1;
+       X = 0;
+       Y = 0;
+       M = 1;
+       RO = 1;
        P = new Vector(1,1);
        F = new Vector();
        dw_orbit = false;
@@ -76,11 +76,11 @@ public class BaseClass {
               ,float vlength
               ,ArrayList<BaseClass> AL
               ){
-       this.X = x;
-       this.Y = y;
-       this.M = m;
-       this.RO = ro;
-       this.P = new Vector(vangle,vlength);
+       X = x;
+       Y = y;
+       M = m;
+       RO = ro;
+       P = new Vector(vangle,vlength);
        AL.add(this);
        //ALBaseClass =new ArrayList<>(AL);
        ALBaseClass = AL;
@@ -90,7 +90,7 @@ public class BaseClass {
        dw_orbit = false;
        DeadSteps = ro*20;
        
-        HealthMax = this.M;    /*Максимальное здоровье*/
+        HealthMax = M;    /*Максимальное здоровье*/
         HealthCur = HealthMax;
       
      }
@@ -123,11 +123,11 @@ public class BaseClass {
        /*Отрисовка прогрессбара здоровья объекта*/
         /*Заливка бара*/
         g2.setColor(Color.GRAY);
-        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 7), (int)(RO * 2), (int)(2));
+        g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2), (int)(2));
       
         g2.setColor(Color.GREEN);
         g2.setBackground(Color.GREEN);
-        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 7), (int)(RO * 2 * (this.HealthCur / this.HealthMax)), (int)(2)); 
+        g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2 * (HealthCur / HealthMax)), (int)(2)); 
       
         
      
@@ -327,7 +327,7 @@ public class BaseClass {
          }
         F.length = F.length/Mtplr;
          
-        this.P.Plus(F);
+        P.Plus(F);
          
     }
          
@@ -355,16 +355,18 @@ public class BaseClass {
            
          }
        
-     this.Transparent = max(--this.Transparent, 0);
+     Transparent = max(--Transparent, 0);
      
     }
      
+    /*Расстояние от текущего до заданного объекта*/
     float Distance(BaseClass bc){
-        return (float)sqrt((this.X - bc.X) * (this.X - bc.X) + (this.Y - bc.Y) * (this.Y - bc.Y));
+        return (float)sqrt((X - bc.X) * (X - bc.X) + (Y - bc.Y) * (Y - bc.Y));
     }
     
+    /*Обработка гибели объекта*/
     void Die(){
-        this.DeadFlag = true;
+        DeadFlag = true;
     }
      
 }
