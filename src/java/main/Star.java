@@ -99,29 +99,11 @@ public class Star extends BaseClass {
         /*Направление равнодействующей*/
     } 
     
-    /*Взрыв - объект разлетается на куски*/
-    void Explode(){
-        int objCount = (int)sqrt(RO);   /*Кол-во осколков, на которые распадется планета*/
-        int objSize = RO / objCount;    /*Размер осколков*/
-        float objMass = objSize; /*Масса осколков*/
-        float nx, ny;       /*Координаты появления осколка*/
-        Vector dirbuff;         /*Вектор полета осколка*/
-        Projectile projbuff;    /*Осколок*/
-        /*Расстановка осколков внутри периметра планеты*/
-        for(double i = 0; i < objCount; i++){
-            nx = X + (float)(RO / 2 * Math.cos(i));
-            ny = Y + (float)(RO / 2 * Math.sin(i));
-            dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
-            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, 30, ALBaseClass);
-            projbuff.Transparent = DeadSteps;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
-        }
-    }
-    
     /*Обработка гибели объекта*/
     @Override
     void Die(){
         DeadFlag = true;
-        Explode();
+        Disruption();//Explode();
     }
     
 }

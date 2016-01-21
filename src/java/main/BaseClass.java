@@ -26,6 +26,8 @@ import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import static java.lang.Integer.max;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import javafx.scene.shape.Ellipse;
@@ -362,6 +364,41 @@ public class BaseClass {
     /*Расстояние от текущего до заданного объекта*/
     float Distance(BaseClass bc){
         return (float)sqrt((X - bc.X) * (X - bc.X) + (Y - bc.Y) * (Y - bc.Y));
+    }
+    
+    /*Взрыв - объект разлетается на куски*/
+    void Explode(){
+        int objCount = (int)sqrt(RO);   /*Кол-во осколков, на которые распадется планета*/
+        int objSize = RO / objCount;    /*Размер осколков*/
+        float objMass = objSize; /*Масса осколков*/
+        float nx, ny;       /*Координаты появления осколка*/
+        Vector dirbuff;         /*Вектор полета осколка*/
+        Projectile projbuff;    /*Осколок*/
+        /*Расстановка осколков внутри периметра планеты*/
+        for(double i = 0; i < objCount; i++){
+            nx = X + (float)(RO / 2 * Math.cos(i));
+            ny = Y + (float)(RO / 2 * Math.sin(i));
+            dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
+            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, RO, ALBaseClass);
+            projbuff.Transparent = 1;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
+        }
+    }
+    
+    /**Взрыв - вариант распада на молекулы :) 4fun
+     * Правда, а вдруг пригодится?
+     */
+    void Disruption(){
+        float nx, ny;       /*Координаты появления осколка*/
+        Vector dirbuff;         /*Вектор полета осколка*/
+        Projectile projbuff;    /*Осколок*/
+        /*Расстановка осколков внутри периметра планеты*/
+        for(double i = 0; i < RO; i += 2){
+            for(double j = 0; j < PI * 2; j += (PI * 2) / i / 2){
+                dirbuff = new Vector((float)j, (float)i);
+                projbuff = new Projectile(X + dirbuff.GetX(), Y + dirbuff.GetY(), 1, 1, dirbuff.angle, RO, ALBaseClass);
+                projbuff.Transparent = 1;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
+            }
+        }
     }
     
     /*Обработка гибели объекта*/
