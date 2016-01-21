@@ -77,8 +77,8 @@ public class Vector {
     public Vector Minus(Vector nv){
         float nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при вычитании)*/
-        nx = (float) (nv.length * cos(nv.angle) - this.length * cos(this.angle));
-        ny = (float) (nv.length * sin(nv.angle) - this.length * sin(this.angle));
+        nx = (float) (this.GetX() - nv.GetX());
+        ny = (float) (this.GetY() - nv.GetY());
         /*вычисление новых значений*/
         this.length = (float) sqrt(nx * nx + ny * ny);
         this.angle = (float) acos(nx / this.length) * signum(ny);
@@ -89,18 +89,28 @@ public class Vector {
     public Vector Plus(Vector nv){
         float nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при суммировании)*/
-        nx = (float) (this.length * cos(this.angle) + nv.length * cos(nv.angle));
-        ny = (float) (this.length * sin(this.angle) + nv.length * sin(nv.angle));
+        nx = (float) (this.GetX() + nv.GetX());
+        ny = (float) (this.GetY() + nv.GetY());
         /*вычисление новых значений*/
-        this.length = (float) sqrt(nx * nx + ny * ny);
+        this.length = (float) sqrt(pow(nx, 2) + pow(ny, 2));
         this.angle = (float) acos(nx / this.length) * signum(ny);
         return this;
     }
     
     /*Установка угла вектора по двум точкам*/
     public Vector SetAngle(float x1, float y1, float x2, float y2){
-        this.angle = (float) acos((x2 - x1) / sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))) * signum(y2 - y1);
+        this.angle = (float) acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
         return this;
+    }
+    
+    /*Получение координаты X конца вектора*/
+    public float GetX(){
+        return (float)cos(this.angle) * this.length;
+    }
+    
+    /*Получение координаты Y конца вектора*/
+    public float GetY(){
+        return (float)sin(this.angle) * this.length;
     }
 
 }

@@ -119,7 +119,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                         ALBaseClass.get(i).calc_F_ravn(Mltplr);     /*пересчет импульса объекта*/
                         ALBaseClass.get(i).move(Mltplr);            /*движение объекта*/
                         if(ALBaseClass.get(i).getClass().getName() == "main.Planet"){
-                            ((Planet)ALBaseClass.get(i)).Charge(ALBaseClass);
+                            ((Planet)ALBaseClass.get(i)).Charge();
                         }
                     }
                 }
@@ -135,7 +135,8 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                                  &&(ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
                                  &&(ALBaseClass.get(i).DeadFlag==false)
                                  &&(ALBaseClass.get(j).DeadFlag==false)
-                                
+                                &&(ALBaseClass.get(i).Transparent==0)
+                                &&(ALBaseClass.get(j).Transparent==0)
                                 ){
                             float rr = (float)(Math.sqrt(Math.pow((ALBaseClass.get(i).X-ALBaseClass.get(j).X),2)+ Math.pow((ALBaseClass.get(i).Y-ALBaseClass.get(j).Y),2)));
                             
@@ -144,8 +145,8 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                                 ALBaseClass.get(i).HealthCur=(int)(ALBaseClass.get(i).HealthCur -  ALBaseClass.get(j).M);
                                 ALBaseClass.get(j).HealthCur=(int)(ALBaseClass.get(j).HealthCur -  ALBaseClass.get(i).M);
                                 
-                                if( ALBaseClass.get(i).HealthCur<=0) ALBaseClass.get(i).DeadFlag=true;
-                                if( ALBaseClass.get(j).HealthCur<=0) ALBaseClass.get(j).DeadFlag=true;
+                                if( ALBaseClass.get(i).HealthCur<=0) ALBaseClass.get(i).Die();//.DeadFlag=true;
+                                if( ALBaseClass.get(j).HealthCur<=0) ALBaseClass.get(j).Die();//.DeadFlag=true;
                                 /*if(ALBaseClass.get(i).getClass().getName()=="main.Projectile")
                                 {ALBaseClass.get(i).DeadFlag=true;}
                                 if(ALBaseClass.get(j).getClass().getName()=="main.Projectile")
@@ -160,7 +161,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                int j=0; 
                do{
                   if((ALBaseClass.get(j).DeadFlag)&&(ALBaseClass.get(j).DeadSteps<=0)){
-                     ALBaseClass.remove(j);
+                    ALBaseClass.remove(j);
                   }else{
                    j++;
                   }
@@ -184,7 +185,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     @Override 
     public void keyPressed(KeyEvent e) {
         switch(e.getKeyCode()){
-            case 32:    this.player.Shoot(this.ALBaseClass);    /*тест стрельбы по клавише ПРОБЕЛ*/
+            case 32:    this.player.Shoot(/*this.ALBaseClass*/);    /*тест стрельбы по клавише ПРОБЕЛ*/
                         break;
             /*клавиши 1-9 для переключения оружия*/
             case 49:    player.GunType = 1;
@@ -207,7 +208,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     @Override
     public void mousePressed(MouseEvent e) {
         if(e.getButton() == 1){
-            this.player.Shoot(this.ALBaseClass);
+            this.player.Shoot();
         }
         
         if(e.getButton() == 3){

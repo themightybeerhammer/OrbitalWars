@@ -25,6 +25,7 @@ import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import static java.lang.Integer.max;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import javafx.scene.shape.Ellipse;
@@ -41,7 +42,7 @@ public class BaseClass {
     Vector F;  /*Вектор равнодействующей*/
     float MinMassOrbit;     /*Минимальная масса объекта для участия в расчете орбиты*/
     private ArrayList<Point> Orbit; /*Кординаты орбиты*/
-    static ArrayList<BaseClass> aLBaseClass;
+    static ArrayList<BaseClass> ALBaseClass;
     boolean dw_orbit; /*Флаг рисования орбиты*/
     
     boolean DeadFlag=false; /*Флаг Гибели объекта*/
@@ -50,6 +51,8 @@ public class BaseClass {
     boolean dw_health=false; /*Флаг рисования здоровья*/ 
     float HealthMax=1    /*Максимальное здоровье*/
          ,HealthCur=1;   /*Текущие здоровье*/
+    
+    int Transparent = 0;    /*Счетчик отсрочки расчета столкновений. Необходим для создания объекта-в-объекте*/
     
    
     
@@ -79,7 +82,8 @@ public class BaseClass {
        this.RO = ro;
        this.P = new Vector(vangle,vlength);
        AL.add(this);
-       aLBaseClass =new ArrayList<>(AL);
+       //ALBaseClass =new ArrayList<>(AL);
+       ALBaseClass = AL;
        /*Орбита*/
        MinMassOrbit = m*10;
        Orbit = new ArrayList<Point>();
@@ -174,13 +178,13 @@ public class BaseClass {
         
        ArrayList<BaseClass> AL=new ArrayList<>();
         
-       for(int i=0;i<aLBaseClass.size();i++){
-            if((aLBaseClass.get(i).getClass().getName()!="main.CenterMass")
-             &&(aLBaseClass.get(i)!=this)
-             &&(aLBaseClass.get(i).M>=MinMassOrbit)
-             &&(aLBaseClass.get(i)!=null)){ 
+       for(int i=0;i<ALBaseClass.size();i++){
+            if((ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
+             &&(ALBaseClass.get(i)!=this)
+             &&(ALBaseClass.get(i).M>=MinMassOrbit)
+             &&(ALBaseClass.get(i)!=null)){ 
                  
-            AL.add(aLBaseClass.get(i));
+            AL.add(ALBaseClass.get(i));
             }
         }
        
@@ -294,16 +298,16 @@ public class BaseClass {
          
         F=new Vector(0,0);
          
-         for(int i=0;i<aLBaseClass.size();i++){
-             if((aLBaseClass.get(i).getClass().getName()!="main.CenterMass")
-              &&(aLBaseClass.get(i)!=this)
-              &&(aLBaseClass.get(i).M>M*10)
-              &&(aLBaseClass.get(i)!=null)       )
+         for(int i=0;i<ALBaseClass.size();i++){
+             if((ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
+              &&(ALBaseClass.get(i)!=this)
+              &&(ALBaseClass.get(i).M>M*10)
+              &&(ALBaseClass.get(i)!=null)       )
              {
-                x=aLBaseClass.get(i).X;
-                y=aLBaseClass.get(i).Y;
-                m=aLBaseClass.get(i).M;
-                ro=aLBaseClass.get(i).RO;
+                x=ALBaseClass.get(i).X;
+                y=ALBaseClass.get(i).Y;
+                m=ALBaseClass.get(i).M;
+                ro=ALBaseClass.get(i).RO;
                 
                 
                 r = (float)Math.sqrt(Math.pow(X-x,2)+Math.pow(Y-y,2));
@@ -351,12 +355,16 @@ public class BaseClass {
            
          }
        
-     
+     this.Transparent = max(--this.Transparent, 0);
      
     }
      
     float Distance(BaseClass bc){
         return (float)sqrt((this.X - bc.X) * (this.X - bc.X) + (this.Y - bc.Y) * (this.Y - bc.Y));
+    }
+    
+    void Die(){
+        this.DeadFlag = true;
     }
      
 }

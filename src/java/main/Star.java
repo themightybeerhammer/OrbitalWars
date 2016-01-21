@@ -24,6 +24,7 @@ import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 
 /**
@@ -97,5 +98,27 @@ public class Star extends BaseClass {
 
         /*Направление равнодействующей*/
     } 
+    
+    void Explode(){
+        int objCount = (int)sqrt(this.RO);   /*Кол-во осколков, на которые распадется планета*/
+        int objSize = this.RO / objCount;    /*Размер осколков*/
+        float objMass = objSize; /*Масса осколков*/
+        float nx, ny;       /*Координаты появления осколка*/
+        Vector dirbuff;         /*Вектор полета осколка*/
+        Projectile projbuff;    /*Осколок*/
+        /*Расстановка осколков внутри периметра планеты*/
+        for(double i = 0; i < objCount; i++){
+            nx = this.X + (float)(this.RO / 2 * Math.cos(i));
+            ny = this.Y + (float)(this.RO / 2 * Math.sin(i));
+            dirbuff = (new Vector().SetAngle(this.X, this.Y, nx, ny));
+            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, 30, this.ALBaseClass);
+            projbuff.Transparent = this.DeadSteps;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
+        }
+    }
+    
+    void Die(){
+        this.DeadFlag = true;
+        this.Explode();
+    }
     
 }

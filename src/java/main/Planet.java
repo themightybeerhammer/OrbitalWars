@@ -76,6 +76,7 @@ public class Planet extends BaseClass {
         if(DeadFlag==false){
           g2.draw(new Ellipse2D.Float(x - this.RO, y - this.RO, this.RO * 2, this.RO * 2));
         }
+        
         /*Отрисовка прогрессбара зарядки планеты*/
         /*Заливка бара*/
         g2.setColor(Color.GRAY);
@@ -110,21 +111,18 @@ public class Planet extends BaseClass {
             g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(this.P.angle) * r), (int)y + (int)(Math.sin(this.P.angle) * r));
         }
         
-        
-     
-         /*Прорисовка гибели объекта*/
-         if(DeadFlag){
-         
-             Point2D center = new Point2D.Float(x, y); 
-             float radius = RO*((float)DeadSteps/20)+2;
-             if(radius<=0) radius = 1;
-            
-             float[] dist = { 0.6f, 1.0f};
-             Color[] colors = { Color.YELLOW, new Color(1,0,0,0) };
-             RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
-             g2.setPaint(p);
-             g2.fill(new Ellipse2D.Float(x-radius, y-radius, radius*2, radius*2));
-         }
+        /*Прорисовка гибели объекта*/
+        if(this.DeadFlag){
+            Point2D center = new Point2D.Float(x, y); 
+            float radius = this.RO * ((float)this.DeadSteps / 20) + 2;
+            if(radius <= 0) radius = 1;
+           
+            float[] dist = { 0.6f, 1.0f};
+            Color[] colors = { Color.YELLOW, new Color(1, 0, 0, 0) };
+            RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+            g2.setPaint(p);
+            g2.fill(new Ellipse2D.Float(x - radius, y - radius, radius * 2, radius * 2));
+        }
      }
     
     /*Нацеливание пушки на точку*/
@@ -133,7 +131,7 @@ public class Planet extends BaseClass {
     }
 
     /*Выстрел из орудия*/
-    boolean Shoot(ArrayList<BaseClass> AL){
+    boolean Shoot(){
         try{
             if(this.Energy >= this.GunPowerNeed){
                 this.Energy -= this.GunPowerNeed;
@@ -144,21 +142,20 @@ public class Planet extends BaseClass {
                                          , this.Y + (float)(Math.sin(this.Gun.angle)) * this.Gun.length
                                          , 1, 1
                                          , ShotV.angle
-                                         , ShotV.length, AL);
+                                         , ShotV.length, this.ALBaseClass);
                             break;
-                    case 2: for(int i = -3; i <= 3; i++){ /*Количество "дробинок" (напр. от (-3) до 3 = 6 "дробинок"*/
+                    case 2: int bullets = 8;    /*Кол-во "дробинок"*/
+                            for(int i = -(bullets / 2); i <= (bullets / 2); i++){
                                 /**В первых двух параметрах Math.PI / i / 5
                                  * это смещение появляющихся снарядов
                                  * относительно дула - чтобы не столкнулись сразу
                                  */
-                                
-                                
-                                new Projectile(this.X + (float)(Math.cos(this.Gun.angle + (float)(Math.PI / i / 5))) * (this.Gun.length)
+                                (new Projectile(this.X + (float)(Math.cos(this.Gun.angle + (float)(Math.PI / i / 5))) * (this.Gun.length)
                                              , this.Y + (float)(Math.sin(this.Gun.angle + (float)(Math.PI / i / 5))) * (this.Gun.length)
                                              , 1, 1
                                              /*Math.PI / i / 12 - угол разлета снарядов*/
                                              , ShotV.angle + (float)(Math.PI / i / 12)
-                                             , ShotV.length, AL);
+                                             , ShotV.length, this.ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
                             }
                             break;
                 }
@@ -173,12 +170,12 @@ public class Planet extends BaseClass {
      * текущий вариант использует только звезды как источники энергии
      * в будущем будем учитывать и другие (внутренние)
      */
-    void Charge(ArrayList<BaseClass> AL){
+    void Charge(){
         if(this.Energy < this.MaxEnergy){
-            for(int i = 0; i < AL.size(); i++){
-                if(AL.get(i) != null){
-                    if(AL.get(i).getClass().getName() == "main.Star"){
-                        this.Energy += 1 / this.Distance(AL.get(i)) * 100000/*1000*/;
+            for(int i = 0; i < this.ALBaseClass.size(); i++){
+                if(this.ALBaseClass.get(i) != null){
+                    if(this.ALBaseClass.get(i).getClass().getName() == "main.Star"){
+                        this.Energy += 1 / this.Distance(this.ALBaseClass.get(i)) * 100000/*1000*/;
                     }
                 }
             }
@@ -203,5 +200,27 @@ public class Planet extends BaseClass {
         }finally{
             return false;
         }
+    }
+    
+    void Explode(){
+        int objCount = (int)sqrt(this.RO);   /*Кол-во осколков, на которые распадется планета*/
+        int objSize = this.RO / objCount;    /*Размер осколков*/
+        float objMass = objSize; /*Масса осколков*/
+        float nx, ny;       /*Координаты появления осколка*/
+        Vector dirbuff;         /*Вектор полета осколка*/
+        Projectile projbuff;    /*Осколок*/
+        /*Расстановка осколков внутри периметра планеты*/
+        for(double i = 0; i < objCount; i++){
+            nx = this.X + (float)(this.RO / 2 * Math.cos(i));
+            ny = this.Y + (float)(this.RO / 2 * Math.sin(i));
+            dirbuff = (new Vector().SetAngle(this.X, this.Y, nx, ny));
+            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, 30, this.ALBaseClass);
+            projbuff.Transparent = this.DeadSteps;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
+        }
+    }
+    
+    void Die(){
+        this.DeadFlag = true;
+        this.Explode();
     }
 }

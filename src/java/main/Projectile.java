@@ -54,7 +54,7 @@ public class Projectile extends BaseClass{
         Graphics2D g2 = (Graphics2D)g;
         Point2D center = new Point2D.Float(x, y);
         g2.setPaint(Color.BLUE);
-        g2.fill(new Rectangle2D.Float(x - RO, y - RO, RO * 2, RO * 2));
+        g2.fill(new Ellipse2D.Float(x - RO, y - RO, RO * 2, RO * 2));
         
          /*Прорисовка гибели объекта*/
          if(DeadFlag){
