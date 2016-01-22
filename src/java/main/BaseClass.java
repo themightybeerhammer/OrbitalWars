@@ -302,7 +302,8 @@ public class BaseClass {
         F=new Vector(0,0);
          
          for(int i=0;i<ALBaseClass.size();i++){
-             if((ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
+             if((ALBaseClass.get(i) != null)
+              &&(ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
               &&(ALBaseClass.get(i)!=this)
               &&(ALBaseClass.get(i).M>M*10)
               &&(ALBaseClass.get(i)!=null)       )

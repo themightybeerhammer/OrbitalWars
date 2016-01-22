@@ -28,7 +28,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import static java.lang.Math.PI;
+import static java.lang.Math.log;
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
 import static java.lang.Math.random;
+import static java.lang.Math.signum;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -64,15 +70,26 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         CM = new CenterMass(ALBaseClass);
         setSize(DisplayW, DisplayH);
         p_Delta = new Point(0,0);
-        p_display = new Point(0,0);
+        p_display = new Point(DisplayW / 2, DisplayH / 2);
        
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
-        player = new Planet(200, 30, 10, 10, 0, 78, ALBaseClass, true, true);
-        new Planet(100, 200, 10, 10, (float)Math.PI * 2 / 4, 100, ALBaseClass, false, false);
-        new Planet(200, 70, 10, 10, (float)Math.PI, 90, ALBaseClass, false, false);    
-        new Star(200, 200, 10000, 40, 0, 0, ALBaseClass);
+        player = new Planet(0, -170, 10, 10, 0, 78, ALBaseClass, true, true);
+        //new Planet(-100, 0, 10, 10, (float)Math.PI / 2, 100, ALBaseClass, false, false);
+        //new Planet(0, -130, 10, 10, (float)Math.PI, 90, ALBaseClass, false, false);
+        float testDist;
+        float testMass;
+        float starMass;
+        float testP;
+        for(int i = 1; i < 20; i++){
+            testDist = -i * 50;
+            testMass = 10;
+            starMass = 10000;
+            testP = (starMass / testDist);
+            new Planet(0, testDist, testMass, 10, (float)Math.PI, testP, ALBaseClass, false, false);
+        }
+        new Star(0, 0, 10000, 40, 0, 0, ALBaseClass);
         
         /*Система сиськи*/
       /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
@@ -159,21 +176,50 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                     }  
                 }
                 
-               /*Удаление погибших объектов*/ 
-               int j=0; 
-               do{
-                  if((ALBaseClass.get(j).DeadFlag)&&(ALBaseClass.get(j).DeadSteps<=0)){
-                    ALBaseClass.remove(j);
-                  }else{
-                   j++;
-                  }
-                   
-               }while(j<ALBaseClass.size());
+                /*Удаление погибших объектов*/ 
+                int j=0; 
+                do{
+                    if((ALBaseClass.get(j).DeadFlag)&&(ALBaseClass.get(j).DeadSteps<=0)){
+                        ALBaseClass.remove(j);
+                    }else{
+                        j++;
+                    }   
+                }while(j<ALBaseClass.size());
+               
+                //System.out.println("---------------------------");
+                for(int i = 0; i < ALBaseClass.size(); i++){
+                    if((i < ALBaseClass.size()) && (ALBaseClass.get(i) != null)){
+                        if((ALBaseClass.get(i).F !=null) && (ALBaseClass.get(i).P != null))
+                            System.out.print(ALBaseClass.get(i).F.length + " " + ALBaseClass.get(i).P.length + " | ");
+                        ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
+                    }
+                }
+                System.out.println();
             }
         };
         oTimer.schedule(oTimerTask, 0, 50);
         setFocusable(true);
         requestFocusInWindow();
+    }
+    
+    void SendNewPlanet(){
+        float MaxDist = 0; /*Расстояние до самой дальней планеты*/
+        float NewM;
+        int NewRO;
+        float NewDist;
+        Planet NewPlanet;
+        for(BaseClass AL : ALBaseClass){
+            if((AL != null) 
+            && ("main.Planet".equals(AL.getClass().getName()))){
+                MaxDist = (float)max(MaxDist, sqrt(pow(AL.X, 2) + pow(AL.Y, 2)));
+            }
+        }
+        NewM = (float)random() * 50;
+        NewRO = (int)(random() * 50);
+        NewDist = -MaxDist - NewRO * 2;
+        NewPlanet = new Planet(0, NewDist, NewM, NewRO, (float)(PI * signum(random() - 0.5)), NewDist, ALBaseClass, false, false);
+        //NewPlanet.P.length *= NewPlanet.M;
+        for(BaseClass AL : ALBaseClass)if("main.Planet".equals(AL.getClass().getName()))AL.calc_orbit();
     }
     
     @Override
@@ -189,6 +235,9 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         switch(e.getKeyCode()){
             case 32:    player.Shoot();    /*тест стрельбы по клавише ПРОБЕЛ*/
                         break;
+            case 36:    p_display.x = DisplayW / 2;    /*Home - возрат камеры к центру системы*/
+                        p_display.y = DisplayH / 2;
+                        break;
             /*клавиши 1-9 для переключения оружия*/
             case 49:    player.GunType = 1;
                         break;
@@ -198,10 +247,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                         break;
             default: System.out.println(e.getKeyCode());
         }
-    }
-    
-    void SendNewPlanet(){
-        new Planet(200, 70, (float)random() * 50, (int)(random() * 50), (float)Math.PI, 90, ALBaseClass, false, false);    
     }
     
     @Override 
