@@ -47,15 +47,15 @@ public class Planet extends BaseClass {
     public boolean HaveGun = IsPlayer;  /*Наличие пушки у планеты*/
     private Vector Gun;                 /*Вектор пушки*/
     public int GunType = 1;             /*Тип задействованного орудия*/
-    public float Energy = 0;            /*Энергия планеты*/
-    public float MaxEnergy = 10000/*1000*/;      /*Максимальное количество запасаемой энергии планеты*/
-    private float GunPowerNeed = 200;   /*Заряд в пушке для выстрела*/
+    public double Energy = 0;            /*Энергия планеты*/
+    public double MaxEnergy = 10000/*1000*/;      /*Максимальное количество запасаемой энергии планеты*/
+    private double GunPowerNeed = 200;   /*Заряд в пушке для выстрела*/
     
     /*Конструкторы класса*/
     Planet(){
         super();
     }
-    Planet(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL, boolean player, boolean havegun){
+    Planet(double x, double y, double m, int ro, double vangle, double vlength, ArrayList<BaseClass> AL, boolean player, boolean havegun){
         super(x, y, m, ro, vangle, vlength, AL);
         IsPlayer = player;
         HaveGun = havegun;
@@ -67,7 +67,7 @@ public class Planet extends BaseClass {
     }
     
     @Override
-    void draw_in_scr(Graphics g, float x, float y, boolean v_F, boolean v_P ){
+    void draw_in_scr(Graphics g, double x, double y, boolean v_F, boolean v_P ){
         RenderingHints rh = new RenderingHints(
         RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
@@ -76,7 +76,7 @@ public class Planet extends BaseClass {
         g2.setRenderingHints(rh);
         g2.setColor(Color.WHITE);
         if(DeadFlag==false){
-          g2.draw(new Ellipse2D.Float(x - RO, y - RO, RO * 2, RO * 2));
+          g2.draw(new Ellipse2D.Double(x - RO, y - RO, RO * 2, RO * 2));
         }
         
         /*Отрисовка прогрессбара зарядки планеты*/
@@ -93,11 +93,11 @@ public class Planet extends BaseClass {
         g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (Energy / MaxEnergy)), (int)(2 )); 
         
         /*Отрисовка пушки*/
-        float r = 20;
+        double r = 20;
         if(IsPlayer){
             g2.setColor(Color.GRAY);
-            float mouseX = MouseInfo.getPointerInfo().getLocation().x;
-            float mouseY = MouseInfo.getPointerInfo().getLocation().y;
+            double mouseX = MouseInfo.getPointerInfo().getLocation().x;
+            double mouseY = MouseInfo.getPointerInfo().getLocation().y;
             g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(Gun.angle) * r), (int)y + (int)(Math.sin(Gun.angle) * r));
         }
         
@@ -115,24 +115,21 @@ public class Planet extends BaseClass {
         
         /*Прорисовка гибели объекта*/
         if(DeadFlag){
-            Point2D center = new Point2D.Float(x, y); 
-            float radius = RO * ((float)DeadSteps / 20) + 2;
+            Point2D center = new Point2D.Double(x, y); 
+            float radius = RO * (DeadSteps / 20) + 2;
             if(radius <= 0) radius = 1;
            
             float[] dist = { 0.6f, 1.0f};
             Color[] colors = { Color.YELLOW, new Color(1, 0, 0, 0) };
             RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
             g2.setPaint(p);
-            g2.fill(new Ellipse2D.Float(x - radius, y - radius, radius * 2, radius * 2));
+            g2.fill(new Ellipse2D.Double(x - radius, y - radius, radius * 2, radius * 2));
         }
      }
     
     /*Нацеливание пушки на точку*/
-    void Aim(float x, float y){
-        Gun.SetAngle(X, Y, x, y);
-        
-        
-        
+    void Aim(double x, double y){
+        Gun.SetAngle(X, Y, x, y);  
     }
 
     /*Выстрел из орудия*/
@@ -143,8 +140,8 @@ public class Planet extends BaseClass {
                 /*вектор учитывает скорость и направление движения планеты-стрелка*/
                 Vector ShotV = new Vector(P.angle, P.length / M).Plus(Gun);
                 switch(GunType){
-                    case 1: new Projectile(X + (float)(Math.cos(Gun.angle)) * Gun.length
-                                         , Y + (float)(Math.sin(Gun.angle)) * Gun.length
+                    case 1: new Projectile(X + (Math.cos(Gun.angle)) * Gun.length
+                                         , Y + (Math.sin(Gun.angle)) * Gun.length
                                          , 1, 1
                                          , ShotV.angle
                                          , ShotV.length, ALBaseClass);
@@ -155,11 +152,11 @@ public class Planet extends BaseClass {
                                  * это смещение появляющихся снарядов
                                  * относительно дула - чтобы не столкнулись сразу
                                  */
-                                (new Projectile(X + (float)(Math.cos(Gun.angle + (float)(Math.PI / i / 5))) * (Gun.length)
-                                             , Y + (float)(Math.sin(Gun.angle + (float)(Math.PI / i / 5))) * (Gun.length)
+                                (new Projectile(X + (Math.cos(Gun.angle + (Math.PI / i / 5))) * (Gun.length)
+                                             , Y + (Math.sin(Gun.angle + (Math.PI / i / 5))) * (Gun.length)
                                              , 1, 1
                                              /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + (float)(Math.PI / i / 12)
+                                             , ShotV.angle + (Math.PI / i / 12)
                                              , ShotV.length, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
                             }
                             break;

@@ -40,9 +40,8 @@ public class DrawPanel extends JPanel{
         /*замена курсора на прицел*/
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Image image = toolkit.getImage("icons/crosshair.png");
-        Cursor c = toolkit.createCustomCursor(image , new Point(getX(), 
-        getY()), "img");
-        setCursor (c);
+        Cursor c = toolkit.createCustomCursor(image , new Point(getX(), getY()), "img");
+        setCursor(c);
         DisplayH = displayh;
         DisplayW = displayw;
         
@@ -126,7 +125,7 @@ public class DrawPanel extends JPanel{
 
     @Override
     public Dimension getPreferredSize(){
-        return new Dimension(DisplayW, DisplayH);
+        return this.getParent().getSize();//new Dimension(DisplayW, DisplayH);
     }
 
 }
