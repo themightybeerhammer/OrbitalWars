@@ -42,7 +42,7 @@ public class Star extends BaseClass {
     } 
     Star(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL){
         super(x, y, m, ro, vangle, vlength, AL);
-        HealthMax = 10000;    /*Максимальное здоровье*/
+        HealthMax = 500;    /*Максимальное здоровье*/
         HealthCur = HealthMax;
         DeadFlag = false;
         DeadSteps = 30; 

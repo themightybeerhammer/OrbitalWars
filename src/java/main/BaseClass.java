@@ -109,7 +109,7 @@ public class BaseClass {
          
          
          /*Отрисовка объекта*/
-         draw_in_scr(g,X+p_display.x,Y+p_display.y,v_F,v_P);
+         draw_in_scr(g,(float)(X+p_display.getX()),(float)(Y+p_display.getY()),v_F,v_P);
          /*Орбита объекта*/
          if(dw_orbit)draw_orbit(g,p_display.x,p_display.y); 
          if(dw_health)draw_health(g,X+p_display.x,Y+p_display.y); 
@@ -123,8 +123,9 @@ public class BaseClass {
          RenderingHints.KEY_ANTIALIASING,
          RenderingHints.VALUE_ANTIALIAS_ON);
      
-       /*Отрисовка прогрессбара здоровья объекта*/
+        /*Отрисовка прогрессбара здоровья объекта*/
         /*Заливка бара*/
+        g2.setRenderingHints(rh);
         g2.setColor(Color.GRAY);
         g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2), (int)(2));
       
@@ -274,17 +275,14 @@ public class BaseClass {
              RenderingHints.KEY_ANTIALIASING,
              RenderingHints.VALUE_ANTIALIAS_ON);
          g2.setRenderingHints(rh);
-         g2.setColor(Color.WHITE);
+         g2.setColor(Color.GRAY);
          
          for(int i=0;i<Orbit.size();i++){
             if(i==0){
               g2.draw(new Ellipse2D.Float(Orbit.get(0).x+(int)x,Orbit.get(0).y+(int)y, 1, 1));
-              //g2.drawOval(Orbit.get(0).x-1+(int)x,Orbit.get(0).y-1+(int)y, 2, 2);  
             }else{
               g2.draw(new Ellipse2D.Float(Orbit.get(0).x+Orbit.get(i).x+(int)x,Orbit.get(0).y+Orbit.get(i).y+(int)y, 1, 1));
-              //g2.drawOval(Orbit.get(0).x+Orbit.get(i).x-1+(int)x,Orbit.get(0).y+Orbit.get(i).y-1+(int)y, 2, 2);  
-              
-            }
+             }
              
            
          }
@@ -350,6 +348,7 @@ public class BaseClass {
           xd = xd/Mtplr;
           yd = yd/Mtplr;
          
+          
           X = X+xd;
           Y = Y+yd;
           

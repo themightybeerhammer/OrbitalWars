@@ -130,6 +130,9 @@ public class Planet extends BaseClass {
     /*Нацеливание пушки на точку*/
     void Aim(float x, float y){
         Gun.SetAngle(X, Y, x, y);
+        
+        
+        
     }
 
     /*Выстрел из орудия*/

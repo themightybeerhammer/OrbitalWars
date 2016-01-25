@@ -62,7 +62,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public int un_end_X=1000,un_end_Y=1000;     /*Края вселеной вылетая за которые объект погибает*/
     
     /*Параметры для дебугагинга начало*/
-    public float Mltplr = 5f;                   /*Множитель замедления*/      
+    public float Mltplr = 10f;                   /*Множитель замедления*/      
     public boolean v_F = false;                 /*Рисовать вектор равнодействующей*/
     public boolean v_P = false;                 /*Рисовать вектор импульса*/ 
     /*Параметры для дебугагинга конец*/
@@ -78,11 +78,15 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
-        player = new Planet(0, -170, 10, 10, 0, 78, ALBaseClass, true, true);
-        new Planet(-100, 0, 10, 10, (float)Math.PI / 2, 100, ALBaseClass, false, false);
-        new Planet(0, -130, 10, 10, (float)Math.PI, 90, ALBaseClass, false, false);
+        player = new Planet(0, -400, 30, 10, 0, 480, ALBaseClass, true, true);
+        new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
+        new Planet(-350, -350, 30, 10, -(float)Math.PI / 4, 425, ALBaseClass, false, false);
+        new Planet(-325, 325, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, false, false);
+        new Planet(-250, -250, 30, 10, -(float)Math.PI/4, 510, ALBaseClass, false, false);
+        new Planet(-250, 0, 30, 10, (float)Math.PI / 2, 600, ALBaseClass, false, false);
+        
       
-        new Star(0, 0, 10000, 40, 0, 0, ALBaseClass);
+        new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
         
         /*Система сиськи*/
       /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
@@ -125,7 +129,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             public void run(){
                 player.Aim(mx - p_display.x, my - p_display.y);     /*постоянно нацеливаем орудие на последние координаты мыши*/
                 CM.CalcCenterMass();                                /*пересчет центра масс*/
-                Display.AssignList(ALBaseClass,p_display,v_F,v_P);  /*передача игровому экрану списка объектов для отрисовки*/ 
+                Display.AssignList(ALBaseClass,player,p_display,v_F,v_P);  /*передача игровому экрану списка объектов для отрисовки*/ 
                 /*Перерасчет импульса объекта, движение объекта и удаление вылетивших за пределы*/
                 for(int i = 0; i < ALBaseClass.size(); i++){
                     if(ALBaseClass.get(i) != null){
@@ -204,7 +208,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                
             }
         };
-        oTimer.schedule(oTimerTask, 0, 50);
+        oTimer.schedule(oTimerTask, 0,25);
         setFocusable(true);
         requestFocusInWindow();
     }

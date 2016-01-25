@@ -34,6 +34,7 @@ public class DrawPanel extends JPanel{
     Point P_Display;
     public int DisplayW = 800;                  /*Ширина экрана*/
     public int DisplayH = 600;                  /*Высота экрана*/
+    Planet Player;
     
     public DrawPanel(int displayw, int displayh){
         /*замена курсора на прицел*/
@@ -63,11 +64,13 @@ public class DrawPanel extends JPanel{
     public void AssignList(ArrayList<BaseClass> ALBC){
         ALBaseClass = new ArrayList<>(ALBC);
     }
-    public void AssignList(ArrayList<BaseClass> ALBC,Point p_display, boolean V_F, boolean V_P ){
+    public void AssignList(ArrayList<BaseClass> ALBC,Planet player,Point p_display, boolean V_F, boolean V_P ){
         v_F = V_F;
         v_P = V_P; 
         ALBaseClass = new ArrayList<>(ALBC);
         P_Display = new Point(p_display);
+        Player = new Planet();
+        Player = player;
     }
 
     @Override
@@ -80,6 +83,45 @@ public class DrawPanel extends JPanel{
                ALBaseClass.get(i).draw(g, P_Display, v_F, v_P);
             }      
         }
+        
+         Graphics2D g2 = (Graphics2D)g;
+         RenderingHints rh = new RenderingHints(
+         RenderingHints.KEY_ANTIALIASING,
+         RenderingHints.VALUE_ANTIALIAS_ON
+         );
+     
+        /*Отрисовка прогрессбара здоровья объекта*/
+        /*Заливка бара*/
+        g2.setRenderingHints(rh);
+        g2.setColor(Color.GRAY);
+        g2.fillRect(20, 20, 200, 15);
+        if(Player.HealthCur==Player.HealthMax){ g2.setColor(Color.GREEN); }
+        if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur>Player.HealthMax*0.4))){g2.setColor(Color.YELLOW);        }
+        if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.RED);        }
+        g2.fillRect(20, 20, (int)(200 * (Player.HealthCur / Player.HealthMax)), (int)(15)); 
+       
+        rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2.setRenderingHints(rh);
+        g.setColor(Color.WHITE);
+        if(Player.HealthCur==Player.HealthMax){ g2.setColor(Color.BLACK); }
+        if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur>Player.HealthMax*0.4))){g2.setColor(Color.BLACK);        }
+        if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.WHITE);        }
+        g2.drawString((int)Player.HealthCur+"/"+(int)Player.HealthMax, 22, 32);
+      
+        /*Отрисовка прогрессбара заряда энергии*/
+        /*Заливка бара*/
+        rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHints(rh);
+        g2.setColor(Color.GRAY);
+        g2.fillRect(20, 40, 200, 15);
+        g2.setColor(Color.BLUE); 
+        g2.fillRect(20, 40, (int)(200 * (Player.Energy / Player.MaxEnergy)), (int)(15)); 
+        rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
+        g2.setRenderingHints(rh);
+        g2.setColor(Color.WHITE);
+        g2.drawString((int)Player.Energy+"/"+(int)Player.MaxEnergy, 22, 52);
+      
+        
     }
 
     @Override
