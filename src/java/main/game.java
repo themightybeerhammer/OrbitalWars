@@ -259,6 +259,11 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                         p_display.y = DisplayH / 2;*/
                         p_display.setLocation(DisplayW / 2,DisplayH / 2);
                         break;
+            
+            case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
+                        break;
+                        
+                        
             /*клавиши 1-9 для переключения оружия*/
             case 49:    player.GunType = 1;
                         break;
@@ -330,5 +335,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             overChild = false;
         }
     }
+
 
 }

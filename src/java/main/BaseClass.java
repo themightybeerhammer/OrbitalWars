@@ -287,12 +287,11 @@ public class BaseClass {
                       ,_y = Orbit.get(0).y+y;
               g2.draw(new Ellipse2D.Double(_x,_y, 1, 1));
             }else{
-                double _x = Orbit.get(0).x+x
-                      ,_y = Orbit.get(0).y+y;
+                double _x = (float)Orbit.get(0).x+(float)Orbit.get(i).x+(float)x
+                      ,_y = (float)Orbit.get(0).y+(float)Orbit.get(i).y+(float)y;
               g2.draw(new Ellipse2D.Double(_x,_y, 1, 1));
              }
-             
-           
+              
          }
      }
      
