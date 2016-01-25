@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import static java.lang.Math.PI;
 import static java.lang.Math.log;
 import static java.lang.Math.max;
@@ -51,7 +52,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     private CenterMass CM;                      /*Центр масс*/ 
     protected DrawPanel Display;                /*Панель для отображения*/
     public Planet player;
-    public Point p_Delta                        /*Изменение координат при нажатии правой кнопки мыши  */
+    public Point2D p_Delta                        /*Изменение координат при нажатии правой кнопки мыши  */
                , p_display;                     /*Координаты центра экрана*/
     public int DisplayW = 800;                  /*Ширина экрана*/
     public int DisplayH = 600;                  /*Высота экрана*/
@@ -72,8 +73,9 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
         setSize(DisplayW, DisplayH);
-        p_Delta = new Point(0,0);
-        p_display = new Point(DisplayW / 2, DisplayH / 2);
+        p_Delta = new Point2D.Double(0,0);
+        p_display = new Point2D.Double(DisplayW / 2, DisplayH / 2);
+       
        
         /*тестовые болванки НАЧАЛО*/
         
@@ -127,7 +129,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             /*в ране описываются периодические действия*/
             @Override 
             public void run(){
-                player.Aim(mx - p_display.x, my - p_display.y);     /*постоянно нацеливаем орудие на последние координаты мыши*/
+                player.Aim((int)(mx - p_display.getX()),(int)( my - p_display.getY()));     /*постоянно нацеливаем орудие на последние координаты мыши*/
                 CM.CalcCenterMass();                                /*пересчет центра масс*/
                 Display.AssignList(ALBaseClass,player,p_display,v_F,v_P);  /*передача игровому экрану списка объектов для отрисовки*/ 
                 /*Перерасчет импульса объекта, движение объекта и удаление вылетивших за пределы*/
@@ -151,8 +153,15 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 }
                 /*Следование экрана за объектом*/
                 if(ScrFlwPlr){
-                    p_display.x = DisplayW / 2-(int)player.X;    /*End - возрат камеры к планете игрока*/
-                    p_display.y = DisplayH / 2-(int)player.Y;
+                      /*End - возрат камеры к планете игрока*/
+                    /*p_display.x = DisplayW / 2-(int)Math.floor(player.X);  
+                    p_display.y = DisplayH / 2-(int)Math.floor(player.Y);*/
+                    double __x = (double)(DisplayW / 2-player.X);
+                    double __y = (double)(DisplayH / 2-player.Y);
+                    
+                    System.out.println("X="+__x+"Y="+__y);
+                    p_display.setLocation(__x,__y);
+                    
                 }        
                 /*Обработка столкновения*/
                 for(int i = 0 ;i < ALBaseClass.size(); i++){
@@ -208,7 +217,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                
             }
         };
-        oTimer.schedule(oTimerTask, 0,25);
+        oTimer.schedule(oTimerTask, 0,50);
         setFocusable(true);
         requestFocusInWindow();
     }
@@ -246,8 +255,10 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         switch(e.getKeyCode()){
             case 32:    player.Shoot();    /*тест стрельбы по клавише ПРОБЕЛ*/
                         break;
-            case 36:    p_display.x = DisplayW / 2;    /*Home - возрат камеры к центру системы*/
-                        p_display.y = DisplayH / 2;
+            case 36:       /*Home - возрат камеры к центру системы*/
+                        /*p_display.x = DisplayW / 2; 
+                        p_display.y = DisplayH / 2;*/
+                        p_display.setLocation(DisplayW / 2,DisplayH / 2);
                         break;
             
             case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
@@ -303,8 +314,10 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     @Override
     public void mouseDragged(MouseEvent e) {
             if(RMBPressed){
-              p_display.x = p_display.x + (e.getPoint().x - p_Delta.x);
-              p_display.y = p_display.y + (e.getPoint().y - p_Delta.y);
+              /*p_display.x = p_display.x + (e.getPoint().x - p_Delta.x);
+              p_display.y = p_display.y + (e.getPoint().y - p_Delta.y);*/
+              p_display.setLocation(p_display.getX() + (e.getPoint().x - p_Delta.getX()),p_display.getY() + (e.getPoint().y - p_Delta.getY()));
+              
               p_Delta = e.getPoint();
            }
     }

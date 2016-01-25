@@ -76,7 +76,10 @@ public class Planet extends BaseClass {
         g2.setRenderingHints(rh);
         g2.setColor(Color.WHITE);
         if(DeadFlag==false){
-          g2.draw(new Ellipse2D.Float(x - RO, y - RO, RO * 2, RO * 2));
+          float _x  = (x - RO);
+          float _y  = (y - RO);
+          System.out.println(" X="+_x+" Y="+_y);
+          g2.fill(new Ellipse2D.Float(_x,_y, RO * 2, RO * 2));
         }
         
         /*Отрисовка прогрессбара зарядки планеты*/

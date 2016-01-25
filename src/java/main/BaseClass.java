@@ -99,7 +99,7 @@ public class BaseClass {
      }
     
      void draw(Graphics g
-             ,Point p_display /*,ВОТ ЗДЕСЬ БУДЕТ ПЕРЕМЕНАЯ ЭКРАН*/
+             ,Point2D p_display /*,ВОТ ЗДЕСЬ БУДЕТ ПЕРЕМЕНАЯ ЭКРАН*/
              ,boolean v_F  /*Рисовать вектор равнодействующей*/
              ,boolean v_P  /*Рисовать вектор импульса*/     
             ){
@@ -109,11 +109,15 @@ public class BaseClass {
          
          
          /*Отрисовка объекта*/
+        // System.out.println(p_display.getX()+" "+p_display.getY());
          draw_in_scr(g,(float)(X+p_display.getX()),(float)(Y+p_display.getY()),v_F,v_P);
          /*Орбита объекта*/
-         if(dw_orbit)draw_orbit(g,p_display.x,p_display.y); 
-         if(dw_health)draw_health(g,X+p_display.x,Y+p_display.y); 
-        
+         if(dw_orbit)draw_orbit(g,(float)p_display.getX(),(float)p_display.getY()); 
+         if(dw_health)draw_health(g,(float)(X+p_display.getX()),(float)(Y+p_display.getY())); 
+       
+           /*Отрисовка объекта*/
+         draw_in_scr(g,(float)(X+p_display.getX()),(float)(Y+p_display.getY()),v_F,v_P);
+       
           
      }
      
@@ -279,9 +283,13 @@ public class BaseClass {
          
          for(int i=0;i<Orbit.size();i++){
             if(i==0){
-              g2.draw(new Ellipse2D.Float(Orbit.get(0).x+(int)x,Orbit.get(0).y+(int)y, 1, 1));
+                float _x = (float)Orbit.get(0).x+x
+                     ,_y = (float)Orbit.get(0).y+y;
+              g2.draw(new Ellipse2D.Float(_x,_y, 1, 1));
             }else{
-              g2.draw(new Ellipse2D.Float(Orbit.get(0).x+Orbit.get(i).x+(int)x,Orbit.get(0).y+Orbit.get(i).y+(int)y, 1, 1));
+                 float _x = (float)Orbit.get(0).x+(float)Orbit.get(i).x+(float)x
+                      ,_y = (float)Orbit.get(0).y+(float)Orbit.get(i).y+(float)y;
+              g2.draw(new Ellipse2D.Float(_x ,_y, 1, 1));
              }
              
            
