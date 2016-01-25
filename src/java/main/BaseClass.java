@@ -274,7 +274,7 @@ public class BaseClass {
      }
      
      void draw_orbit(Graphics g,float x,float y){
-         Graphics2D g2 = (Graphics2D)g;
+         Graphics2D g2 = (Graphics2D)g;/**/
          RenderingHints rh = new RenderingHints(
              RenderingHints.KEY_ANTIALIASING,
              RenderingHints.VALUE_ANTIALIAS_ON);
