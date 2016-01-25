@@ -29,37 +29,37 @@ public class Vector {
     
     /*Конструкторы класса*/
     Vector(){
-        this.angle = 0;
-        this.length = 0;
+        angle = 0;
+        length = 0;
     }   
     Vector(float na, float nl){
-        this.angle = na;
-        this.length = nl;
+        angle = na;
+        length = nl;
     }  
     Vector(Vector nv){
-        this.angle = nv.angle;
-        this.length = nv.length;
+        angle = nv.angle;
+        length = nv.length;
     }
     
     /*Установка угла вектора аналогично заданному*/
     public Vector AngleAs(Vector nv){
-        this.angle = nv.angle;
+        angle = nv.angle;
         return this;
     }
     
     /*Проверка на сонаправленность вектору*/
     public Boolean IsCodirectional(Vector nv){
-        return (this.angle == nv.angle);
+        return (angle == nv.angle);
     }
     
     /*Проверка на параллельность вектору*/
     public Boolean IsParallel(Vector nv){
-        return (this.angle == nv.angle)|(this.angle == (360 - nv.angle));
+        return (angle == nv.angle)|(angle == (360 - nv.angle));
     }
     
     /*Проверка на перпендикулярность вектору*/
     public Boolean IsPerpendicular(Vector nv){
-        return (this.angle == abs(nv.angle - 90))|(this.angle == abs(nv.angle + 90));
+        return (angle == abs(nv.angle - 90))|(angle == abs(nv.angle + 90));
     }
     
     /*Вычисление длины отрезка по двум координатам*/
@@ -69,7 +69,7 @@ public class Vector {
     
     /*Установка длины вектора аналогично заданному*/
     public Vector LengthAs(Vector nv){
-        this.length = nv.length;
+        length = nv.length;
         return this;
     }
     
@@ -77,11 +77,11 @@ public class Vector {
     public Vector Minus(Vector nv){
         float nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при вычитании)*/
-        nx = (float) (nv.length * cos(nv.angle) - this.length * cos(this.angle));
-        ny = (float) (nv.length * sin(nv.angle) - this.length * sin(this.angle));
+        nx = (float) (GetX() - nv.GetX());
+        ny = (float) (GetY() - nv.GetY());
         /*вычисление новых значений*/
-        this.length = (float) sqrt(nx * nx + ny * ny);
-        this.angle = (float) acos(nx / this.length) * signum(ny);
+        length = (float) sqrt(nx * nx + ny * ny);
+        angle = (float) acos(nx / length) * signum(ny);
         return this;
     }
     
@@ -89,18 +89,28 @@ public class Vector {
     public Vector Plus(Vector nv){
         float nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при суммировании)*/
-        nx = (float) (this.length * cos(this.angle) + nv.length * cos(nv.angle));
-        ny = (float) (this.length * sin(this.angle) + nv.length * sin(nv.angle));
+        nx = (float) (GetX() + nv.GetX());
+        ny = (float) (GetY() + nv.GetY());
         /*вычисление новых значений*/
-        this.length = (float) sqrt(nx * nx + ny * ny);
-        this.angle = (float) acos(nx / this.length) * signum(ny);
+        length = (float) sqrt(pow(nx, 2) + pow(ny, 2));
+        angle = (float) acos(nx / length) * signum(ny);
         return this;
     }
     
     /*Установка угла вектора по двум точкам*/
     public Vector SetAngle(float x1, float y1, float x2, float y2){
-        this.angle = (float) acos((x2 - x1) / sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))) * signum(y2 - y1);
+        angle = (float) acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
         return this;
+    }
+    
+    /*Получение координаты X конца вектора*/
+    public float GetX(){
+        return (float)cos(angle) * length;
+    }
+    
+    /*Получение координаты Y конца вектора*/
+    public float GetY(){
+        return (float)sin(angle) * length;
     }
 
 }

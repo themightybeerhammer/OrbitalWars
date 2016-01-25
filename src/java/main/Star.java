@@ -24,6 +24,7 @@ import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 
 /**
@@ -41,10 +42,10 @@ public class Star extends BaseClass {
     } 
     Star(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL){
         super(x, y, m, ro, vangle, vlength, AL);
-        HealthMax = 100;    /*Максимальное здоровье*/
+        HealthMax = 500;    /*Максимальное здоровье*/
         HealthCur = HealthMax;
         DeadFlag = false;
-        DeadSteps=30; 
+        DeadSteps = 30; 
     }
     
     @Override
@@ -97,5 +98,12 @@ public class Star extends BaseClass {
 
         /*Направление равнодействующей*/
     } 
+    
+    /*Обработка гибели объекта*/
+    @Override
+    void Die(){
+        DeadFlag = true;
+        Disruption();//Explode();
+    }
     
 }

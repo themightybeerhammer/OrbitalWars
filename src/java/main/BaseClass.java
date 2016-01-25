@@ -25,6 +25,10 @@ import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import static java.lang.Integer.max;
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+import static java.lang.Math.random;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import javafx.scene.shape.Ellipse;
@@ -41,7 +45,7 @@ public class BaseClass {
     Vector F;  /*Вектор равнодействующей*/
     float MinMassOrbit;     /*Минимальная масса объекта для участия в расчете орбиты*/
     private ArrayList<Point> Orbit; /*Кординаты орбиты*/
-    static ArrayList<BaseClass> aLBaseClass;
+    static ArrayList<BaseClass> ALBaseClass;
     boolean dw_orbit; /*Флаг рисования орбиты*/
     
     boolean DeadFlag=false; /*Флаг Гибели объекта*/
@@ -51,13 +55,15 @@ public class BaseClass {
     float HealthMax=1    /*Максимальное здоровье*/
          ,HealthCur=1;   /*Текущие здоровье*/
     
+    int Transparent = 0;    /*Счетчик отсрочки расчета столкновений. Необходим для создания объекта-в-объекте*/
+    
    
     
      BaseClass(){
-       this.X = 0;
-       this.Y = 0;
-       this.M = 1;
-       this.RO = 1;
+       X = 0;
+       Y = 0;
+       M = 1;
+       RO = 1;
        P = new Vector(1,1);
        F = new Vector();
        dw_orbit = false;
@@ -73,20 +79,21 @@ public class BaseClass {
               ,float vlength
               ,ArrayList<BaseClass> AL
               ){
-       this.X = x;
-       this.Y = y;
-       this.M = m;
-       this.RO = ro;
-       this.P = new Vector(vangle,vlength);
+       X = x;
+       Y = y;
+       M = m;
+       RO = ro;
+       P = new Vector(vangle,vlength);
        AL.add(this);
-       aLBaseClass =new ArrayList<>(AL);
+       //ALBaseClass =new ArrayList<>(AL);
+       ALBaseClass = AL;
        /*Орбита*/
        MinMassOrbit = m*10;
        Orbit = new ArrayList<Point>();
        dw_orbit = false;
        DeadSteps = ro*20;
        
-        HealthMax = this.M;    /*Максимальное здоровье*/
+        HealthMax = M;    /*Максимальное здоровье*/
         HealthCur = HealthMax;
       
      }
@@ -102,7 +109,7 @@ public class BaseClass {
          
          
          /*Отрисовка объекта*/
-         draw_in_scr(g,X+p_display.x,Y+p_display.y,v_F,v_P);
+         draw_in_scr(g,(float)(X+p_display.getX()),(float)(Y+p_display.getY()),v_F,v_P);
          /*Орбита объекта*/
          if(dw_orbit)draw_orbit(g,p_display.x,p_display.y); 
          if(dw_health)draw_health(g,X+p_display.x,Y+p_display.y); 
@@ -116,14 +123,15 @@ public class BaseClass {
          RenderingHints.KEY_ANTIALIASING,
          RenderingHints.VALUE_ANTIALIAS_ON);
      
-       /*Отрисовка прогрессбара здоровья объекта*/
+        /*Отрисовка прогрессбара здоровья объекта*/
         /*Заливка бара*/
+        g2.setRenderingHints(rh);
         g2.setColor(Color.GRAY);
-        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 7), (int)(RO * 2), (int)(2));
+        g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2), (int)(2));
       
         g2.setColor(Color.GREEN);
         g2.setBackground(Color.GREEN);
-        g2.fillRect((int)(x - this.RO), (int)(y - this.RO - 7), (int)(RO * 2 * (this.HealthCur / this.HealthMax)), (int)(2)); 
+        g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2 * (HealthCur / HealthMax)), (int)(2)); 
       
         
      
@@ -174,13 +182,13 @@ public class BaseClass {
         
        ArrayList<BaseClass> AL=new ArrayList<>();
         
-       for(int i=0;i<aLBaseClass.size();i++){
-            if((aLBaseClass.get(i).getClass().getName()!="main.CenterMass")
-             &&(aLBaseClass.get(i)!=this)
-             &&(aLBaseClass.get(i).M>=MinMassOrbit)
-             &&(aLBaseClass.get(i)!=null)){ 
+       for(int i=0;i<ALBaseClass.size();i++){
+            if((ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
+             &&(ALBaseClass.get(i)!=this)
+             &&(ALBaseClass.get(i).M>=MinMassOrbit)
+             &&(ALBaseClass.get(i)!=null)){ 
                  
-            AL.add(aLBaseClass.get(i));
+            AL.add(ALBaseClass.get(i));
             }
         }
        
@@ -267,17 +275,14 @@ public class BaseClass {
              RenderingHints.KEY_ANTIALIASING,
              RenderingHints.VALUE_ANTIALIAS_ON);
          g2.setRenderingHints(rh);
-         g2.setColor(Color.WHITE);
+         g2.setColor(Color.GRAY);
          
          for(int i=0;i<Orbit.size();i++){
             if(i==0){
               g2.draw(new Ellipse2D.Float(Orbit.get(0).x+(int)x,Orbit.get(0).y+(int)y, 1, 1));
-              //g2.drawOval(Orbit.get(0).x-1+(int)x,Orbit.get(0).y-1+(int)y, 2, 2);  
             }else{
               g2.draw(new Ellipse2D.Float(Orbit.get(0).x+Orbit.get(i).x+(int)x,Orbit.get(0).y+Orbit.get(i).y+(int)y, 1, 1));
-              //g2.drawOval(Orbit.get(0).x+Orbit.get(i).x-1+(int)x,Orbit.get(0).y+Orbit.get(i).y-1+(int)y, 2, 2);  
-              
-            }
+             }
              
            
          }
@@ -294,16 +299,17 @@ public class BaseClass {
          
         F=new Vector(0,0);
          
-         for(int i=0;i<aLBaseClass.size();i++){
-             if((aLBaseClass.get(i).getClass().getName()!="main.CenterMass")
-              &&(aLBaseClass.get(i)!=this)
-              &&(aLBaseClass.get(i).M>M*10)
-              &&(aLBaseClass.get(i)!=null)       )
+         for(int i=0;i<ALBaseClass.size();i++){
+             if((ALBaseClass.get(i) != null)
+              &&(ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
+              &&(ALBaseClass.get(i)!=this)
+              &&(ALBaseClass.get(i).M>M*10)
+              &&(ALBaseClass.get(i)!=null)       )
              {
-                x=aLBaseClass.get(i).X;
-                y=aLBaseClass.get(i).Y;
-                m=aLBaseClass.get(i).M;
-                ro=aLBaseClass.get(i).RO;
+                x=ALBaseClass.get(i).X;
+                y=ALBaseClass.get(i).Y;
+                m=ALBaseClass.get(i).M;
+                ro=ALBaseClass.get(i).RO;
                 
                 
                 r = (float)Math.sqrt(Math.pow(X-x,2)+Math.pow(Y-y,2));
@@ -323,7 +329,7 @@ public class BaseClass {
          }
         F.length = F.length/Mtplr;
          
-        this.P.Plus(F);
+        P.Plus(F);
          
     }
          
@@ -342,6 +348,7 @@ public class BaseClass {
           xd = xd/Mtplr;
           yd = yd/Mtplr;
          
+          
           X = X+xd;
           Y = Y+yd;
           
@@ -351,12 +358,53 @@ public class BaseClass {
            
          }
        
-     
+     Transparent = max(--Transparent, 0);
      
     }
      
+    /*Расстояние от текущего до заданного объекта*/
     float Distance(BaseClass bc){
-        return (float)sqrt((this.X - bc.X) * (this.X - bc.X) + (this.Y - bc.Y) * (this.Y - bc.Y));
+        return (float)sqrt((X - bc.X) * (X - bc.X) + (Y - bc.Y) * (Y - bc.Y));
+    }
+    
+    /*Взрыв - объект разлетается на куски*/
+    void Explode(){
+        int objCount = (int)sqrt(RO);   /*Кол-во осколков, на которые распадется планета*/
+        int objSize = RO / objCount;    /*Размер осколков*/
+        float objMass = objSize; /*Масса осколков*/
+        float nx, ny;       /*Координаты появления осколка*/
+        Vector dirbuff;         /*Вектор полета осколка*/
+        Projectile projbuff;    /*Осколок*/
+        /*Расстановка осколков внутри периметра планеты*/
+        for(double i = 0; i < objCount; i++){
+            nx = X + (float)(RO / 2 * Math.cos(i));
+            ny = Y + (float)(RO / 2 * Math.sin(i));
+            dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
+            projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, RO, ALBaseClass);
+            projbuff.Transparent = 1;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
+        }
+    }
+    
+    /**Взрыв - вариант распада на молекулы :) 4fun
+     * Правда, а вдруг пригодится?
+     */
+    void Disruption(){
+        float nx, ny;       /*Координаты появления осколка*/
+        Vector dirbuff;         /*Вектор полета осколка*/
+        Projectile projbuff;    /*Осколок*/
+        /*Расстановка осколков внутри периметра планеты*/
+        for(double i = 0; i < RO; i += 2){
+            for(double j = 0; j < PI * 2; j += (PI * 2) / i / (2 * random())){
+                dirbuff = new Vector((float)j, (float)i);
+                projbuff = new Projectile(X + dirbuff.GetX(), Y + dirbuff.GetY(), 1, 1, dirbuff.angle, RO, ALBaseClass);
+                projbuff.Transparent = 1;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
+            }
+        }
+    }
+    
+    /*Обработка гибели объекта*/
+    void Die(){
+        DeadFlag = true;
     }
      
 }
