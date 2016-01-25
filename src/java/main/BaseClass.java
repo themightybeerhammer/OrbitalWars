@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package main;
 
 import java.awt.Canvas;
@@ -39,12 +38,12 @@ import main.Vector;
  * @author Vladimir
  */
 public class BaseClass {
-    public double X,Y; /*Координаты объекта*/
-    double M;   /*Масса объекта */
+    public float X,Y; /*Координаты объекта*/
+    float M;   /*Масса объекта */
     int RO;    /*Радиус сферы(объекта)*/
     Vector P;  /*Вектор импульса*/
     Vector F;  /*Вектор равнодействующей*/
-    double MinMassOrbit;     /*Минимальная масса объекта для участия в расчете орбиты*/
+    float MinMassOrbit;     /*Минимальная масса объекта для участия в расчете орбиты*/
     private ArrayList<Point> Orbit; /*Кординаты орбиты*/
     static ArrayList<BaseClass> ALBaseClass;
     boolean dw_orbit; /*Флаг рисования орбиты*/
@@ -53,7 +52,7 @@ public class BaseClass {
     int DeadSteps=0;        /*Количество итераций гибели объекта*/
     
     boolean dw_health=false; /*Флаг рисования здоровья*/ 
-    double HealthMax=1    /*Максимальное здоровье*/
+    float HealthMax=1    /*Максимальное здоровье*/
          ,HealthCur=1;   /*Текущие здоровье*/
     
     int Transparent = 0;    /*Счетчик отсрочки расчета столкновений. Необходим для создания объекта-в-объекте*/
@@ -72,12 +71,12 @@ public class BaseClass {
      
      
      BaseClass(
-               double x
-              ,double y
-              ,double m
+               float x
+              ,float y
+              ,float m
               ,int ro
-              ,double vangle
-              ,double vlength
+              ,float vangle
+              ,float vlength
               ,ArrayList<BaseClass> AL
               ){
        X = x;
@@ -110,7 +109,8 @@ public class BaseClass {
          
          
          /*Отрисовка объекта*/
-         draw_in_scr(g,(X+p_display.getX()),(Y+p_display.getY()),v_F,v_P);
+        // System.out.println(p_display.getX()+" "+p_display.getY());
+         draw_in_scr(g,(float)(X+p_display.getX()),(float)(Y+p_display.getY()),v_F,v_P);
          /*Орбита объекта*/
          if(dw_orbit)draw_orbit(g,(float)p_display.getX(),(float)p_display.getY()); 
          if(dw_health)draw_health(g,(float)(X+p_display.getX()),(float)(Y+p_display.getY())); 
@@ -121,7 +121,7 @@ public class BaseClass {
           
      }
      
-     void draw_health(Graphics g,double x,double y){
+     void draw_health(Graphics g,float x,float y){
          Graphics2D g2 = (Graphics2D)g;
          RenderingHints rh = new RenderingHints(
          RenderingHints.KEY_ANTIALIASING,
@@ -143,8 +143,8 @@ public class BaseClass {
    
      
      void draw_in_scr(Graphics g
-                     ,double x
-                     ,double y
+                     ,float x
+                     ,float y
                      ,boolean v_F  
                      ,boolean v_P ){
          
@@ -154,11 +154,11 @@ public class BaseClass {
              RenderingHints.VALUE_ANTIALIAS_ON);
          g2.setRenderingHints(rh);
          g2.setColor(Color.WHITE);
-         g2.draw(new Ellipse2D.Double(x-RO, y-RO, RO*2, RO*2));
+         g2.draw(new Ellipse2D.Float(x-RO, y-RO, RO*2, RO*2));
         // g2.drawOval((int)x-RO, (int)y-RO, RO*2, RO*2);
 
           /*Направление равнодействующей*/
-         double r = 20;
+         float r = 20;
          if((F.length!=0)&(v_F))
             {
                 g2.setColor(Color.BLUE);
@@ -196,17 +196,17 @@ public class BaseClass {
             }
         }
        
-        double _r; /*Растояние между двумя объектами*/
-        double _f; /*Сила притяжения между двумя объектами*/
-        double _X =X,_Y=Y;   /*Координаты объекта текущего*/
-        double _x,_y;   /*Координаты объекта взаимодействия*/
-        double _m;      /*Масса объекта взаимодействия*/
-        double _ro;     /*Радиус орбиты объекта взаимодействия*/
-        double _a;      /*Направление вектора взаимодействия*/
+        float _r; /*Растояние между двумя объектами*/
+        float _f; /*Сила притяжения между двумя объектами*/
+        float _X =X,_Y=Y;   /*Координаты объекта текущего*/
+        float _x,_y;   /*Координаты объекта взаимодействия*/
+        float _m;      /*Масса объекта взаимодействия*/
+        float _ro;     /*Радиус орбиты объекта взаимодействия*/
+        float _a;      /*Направление вектора взаимодействия*/
         
         int j =0;
         
-        double _xd,_yd;  /*Кординаты смещения*/
+        float _xd,_yd;  /*Кординаты смещения*/
         
         Vector _F = new Vector(0,0); /*Вектор равнодействующей*/
         Vector _P = new Vector(P);   /*Импульс*/
@@ -228,35 +228,35 @@ public class BaseClass {
                 _ro=AL.get(i).RO;
                 
                 
-                _r = Math.sqrt(Math.pow(_X-_x,2)+Math.pow(_Y-_y,2));
+                _r = (float)Math.sqrt(Math.pow(_X-_x,2)+Math.pow(_Y-_y,2));
                 if(_r<RO+_ro) _r = RO+_ro;
                 if(_r<30) _r = 30;
-                _f =  (_m*M/Math.pow(_r,2));
-                _a = Math.asin((_y-_Y)/Math.sqrt((Math.pow(_x-_X,2)+Math.pow(_y-_Y,2))));
+                _f = (float) (_m*M/Math.pow(_r,2));
+                _a = (float)Math.asin((_y-_Y)/Math.sqrt((Math.pow(_x-_X,2)+Math.pow(_y-_Y,2))));
                 
-                 if((_x<_X)&&(_y>_Y))  { _a=_a*(-1)+Math.PI;}
-                 if((_x<_X)&&(_y==_Y)) { _a=_a*(-1)+Math.PI;}
-                 if((_x<_X)&&(_y<_Y))  { _a=_a*(-1)+Math.PI;}
-                 if((_x>_X)&&(_y<_Y))  { _a=_a+Math.PI*2;}
+                 if((_x<_X)&&(_y>_Y))  { _a=_a*(-1)+(float)Math.PI;}
+                 if((_x<_X)&&(_y==_Y)) { _a=_a*(-1)+(float)Math.PI;}
+                 if((_x<_X)&&(_y<_Y))  { _a=_a*(-1)+(float)Math.PI;}
+                 if((_x>_X)&&(_y<_Y))  { _a=_a+(float)Math.PI*2;}
          
                 _F.Plus(new Vector(_a,_f));
                 } 
          
             }
-            _F.length=(_F.length/3);
+            _F.length=(float)(_F.length/3);
             _P.Plus(_F);
             
             _xd=0; _yd=0;
             
-            _xd = (Math.cos(_P.angle)*_P.length/M/3);
-            _yd = (Math.sin(_P.angle)*_P.length/M/3);
+            _xd = (float)(Math.cos(_P.angle)*_P.length/M/3);
+            _yd = (float)(Math.sin(_P.angle)*_P.length/M/3);
             
             _X=_X+_xd;
             _Y=_Y+_yd;
             
             boolean flag = true;
             for(int i=0;i<Orbit.size();i++){
-                if(Math.sqrt((Math.pow((Orbit.get(i).x-(_X-X)),2)+ Math.pow((Orbit.get(i).y-(_Y-Y)),2)))<10 ){
+                if((float)Math.sqrt((Math.pow((Orbit.get(i).x-(_X-X)),2)+ Math.pow((Orbit.get(i).y-(_Y-Y)),2)))<10 ){
                     flag=false;
                 }
             }
@@ -265,7 +265,7 @@ public class BaseClass {
              Orbit.add(new Point((int)(_X-X),(int)(_Y-Y)));             
             }
              
-            if((Math.sqrt(Math.pow(_X-X, 2)+Math.pow(_Y-Y, 2))<RO)&&(_xd*j>2*RO))break;
+            if(((float)Math.sqrt(Math.pow(_X-X, 2)+Math.pow(_Y-Y, 2))<RO)&&(_xd*j>2*RO))break;
            j++;
        }while(j<1500);
        }         
@@ -273,8 +273,8 @@ public class BaseClass {
        
      }
      
-     void draw_orbit(Graphics g,double x,double y){
-         Graphics2D g2 = (Graphics2D)g;
+     void draw_orbit(Graphics g,float x,float y){
+         Graphics2D g2 = (Graphics2D)g;/**/
          RenderingHints rh = new RenderingHints(
              RenderingHints.KEY_ANTIALIASING,
              RenderingHints.VALUE_ANTIALIAS_ON);
@@ -283,26 +283,27 @@ public class BaseClass {
          
          for(int i=0;i<Orbit.size();i++){
             if(i==0){
-                double _x = Orbit.get(0).x+x
-                      ,_y = Orbit.get(0).y+y;
-              g2.draw(new Ellipse2D.Double(_x,_y, 1, 1));
+                float _x = (float)Orbit.get(0).x+x
+                     ,_y = (float)Orbit.get(0).y+y;
+              g2.draw(new Ellipse2D.Float(_x,_y, 1, 1));
             }else{
-                double _x = (float)Orbit.get(0).x+(float)Orbit.get(i).x+(float)x
+                 float _x = (float)Orbit.get(0).x+(float)Orbit.get(i).x+(float)x
                       ,_y = (float)Orbit.get(0).y+(float)Orbit.get(i).y+(float)y;
-              g2.draw(new Ellipse2D.Double(_x,_y, 1, 1));
+              g2.draw(new Ellipse2D.Float(_x ,_y, 1, 1));
              }
-              
+             
+           
          }
      }
      
-     void calc_F_ravn(double Mtplr){
+     void calc_F_ravn(float Mtplr){
          
-         double r; /*Растояние между двумя объектами*/
-         double f; /*Сила притяжения между двумя объектами*/
-         double x,y;  /*Координаты объекта*/
-         double m;    /*Масса объекта*/
-         double ro;   /*Радиус орбиты объекта*/
-         double a;    /*Направление вектора*/
+         float r; /*Растояние между двумя объектами*/
+         float f; /*Сила притяжения между двумя объектами*/
+         float x,y;  /*Координаты объекта*/
+         float m;    /*Масса объекта*/
+         float ro;   /*Радиус орбиты объекта*/
+         float a;    /*Направление вектора*/
          
         F=new Vector(0,0);
          
@@ -319,16 +320,16 @@ public class BaseClass {
                 ro=ALBaseClass.get(i).RO;
                 
                 
-                r = Math.sqrt(Math.pow(X-x,2)+Math.pow(Y-y,2));
+                r = (float)Math.sqrt(Math.pow(X-x,2)+Math.pow(Y-y,2));
                 if(r<RO+ro) r = RO+ro;
                 if(r<30) r = 30;
-                f =  (m*M/Math.pow(r,2));
-                a = Math.asin((y-Y)/Math.sqrt((Math.pow(x-X,2)+Math.pow(y-Y,2))));
+                f = (float) (m*M/Math.pow(r,2));
+                a = (float)Math.asin((y-Y)/Math.sqrt((Math.pow(x-X,2)+Math.pow(y-Y,2))));
                 
-                 if((x<X)&&(y>Y))  { a=a*(-1)+Math.PI;}
-                 if((x<X)&&(y==Y)) { a=a*(-1)+Math.PI;}
-                 if((x<X)&&(y<Y))  { a=a*(-1)+Math.PI;}
-                 if((x>X)&&(y<Y))  { a=a+Math.PI*2;}
+                 if((x<X)&&(y>Y))  { a=a*(-1)+(float)Math.PI;}
+                 if((x<X)&&(y==Y)) { a=a*(-1)+(float)Math.PI;}
+                 if((x<X)&&(y<Y))  { a=a*(-1)+(float)Math.PI;}
+                 if((x>X)&&(y<Y))  { a=a+(float)Math.PI*2;}
          
                 F.Plus(new Vector(a,f));
              }
@@ -342,15 +343,15 @@ public class BaseClass {
          
      
 
-     void move(double Mtplr){
+     void move(float Mtplr){
          
-         double xd ;
-         double yd ;
-          //xd = (Math.cos(F.angle)*F.length/M);
-          //yd = (Math.sin(F.angle)*F.length/M);
+         float xd ;
+         float yd ;
+          //xd = (float)(Math.cos(F.angle)*F.length/M);
+          //yd = (float)(Math.sin(F.angle)*F.length/M);
          
-          xd = (Math.cos(P.angle)*P.length/M);
-          yd = (Math.sin(P.angle)*P.length/M);
+          xd = (float)(Math.cos(P.angle)*P.length/M);
+          yd = (float)(Math.sin(P.angle)*P.length/M);
           
           xd = xd/Mtplr;
           yd = yd/Mtplr;
@@ -370,22 +371,22 @@ public class BaseClass {
     }
      
     /*Расстояние от текущего до заданного объекта*/
-    double Distance(BaseClass bc){
-        return sqrt((X - bc.X) * (X - bc.X) + (Y - bc.Y) * (Y - bc.Y));
+    float Distance(BaseClass bc){
+        return (float)sqrt((X - bc.X) * (X - bc.X) + (Y - bc.Y) * (Y - bc.Y));
     }
     
     /*Взрыв - объект разлетается на куски*/
     void Explode(){
         int objCount = (int)sqrt(RO);   /*Кол-во осколков, на которые распадется планета*/
         int objSize = RO / objCount;    /*Размер осколков*/
-        double objMass = objSize; /*Масса осколков*/
-        double nx, ny;       /*Координаты появления осколка*/
+        float objMass = objSize; /*Масса осколков*/
+        float nx, ny;       /*Координаты появления осколка*/
         Vector dirbuff;         /*Вектор полета осколка*/
         Projectile projbuff;    /*Осколок*/
         /*Расстановка осколков внутри периметра планеты*/
         for(double i = 0; i < objCount; i++){
-            nx = X + (RO / 2 * Math.cos(i));
-            ny = Y + (RO / 2 * Math.sin(i));
+            nx = X + (float)(RO / 2 * Math.cos(i));
+            ny = Y + (float)(RO / 2 * Math.sin(i));
             dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
             projbuff = new Projectile(nx, ny, objMass, objSize, dirbuff.angle, RO, ALBaseClass);
             projbuff.Transparent = 1;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
@@ -396,13 +397,13 @@ public class BaseClass {
      * Правда, а вдруг пригодится?
      */
     void Disruption(){
-        double nx, ny;       /*Координаты появления осколка*/
+        float nx, ny;       /*Координаты появления осколка*/
         Vector dirbuff;         /*Вектор полета осколка*/
         Projectile projbuff;    /*Осколок*/
         /*Расстановка осколков внутри периметра планеты*/
         for(double i = 0; i < RO; i += 2){
             for(double j = 0; j < PI * 2; j += (PI * 2) / i / (2 * random())){
-                dirbuff = new Vector(j, i);
+                dirbuff = new Vector((float)j, (float)i);
                 projbuff = new Projectile(X + dirbuff.GetX(), Y + dirbuff.GetY(), 1, 1, dirbuff.angle, RO, ALBaseClass);
                 projbuff.Transparent = 1;   /*Временно делает осколок "эфирным", чтобы сразу не взорвался*/
             }

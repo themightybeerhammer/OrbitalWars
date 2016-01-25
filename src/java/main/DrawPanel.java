@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package main;
 
 import java.awt.*;
@@ -42,8 +41,9 @@ public class DrawPanel extends JPanel{
         /*замена курсора на прицел*/
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Image image = toolkit.getImage("icons/crosshair.png");
-        Cursor c = toolkit.createCustomCursor(image , new Point(getX(), getY()), "img");
-        setCursor(c);
+        Cursor c = toolkit.createCustomCursor(image , new Point(getX(), 
+        getY()), "img");
+        setCursor (c);
         DisplayH = displayh;
         DisplayW = displayw;
         
@@ -128,7 +128,7 @@ public class DrawPanel extends JPanel{
 
     @Override
     public Dimension getPreferredSize(){
-        return this.getParent().getSize();//new Dimension(DisplayW, DisplayH);
+        return new Dimension(DisplayW, DisplayH);
     }
 
 }
