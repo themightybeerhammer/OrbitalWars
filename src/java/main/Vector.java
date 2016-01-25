@@ -24,15 +24,15 @@ import static java.lang.Math.*;
  */
 public class Vector {
     
-    public float angle;    /*угол вектора, в радианах*/
-    public float length;   /*длина вектора*/
+    public double angle;    /*угол вектора, в радианах*/
+    public double length;   /*длина вектора*/
     
     /*Конструкторы класса*/
     Vector(){
         angle = 0;
         length = 0;
     }   
-    Vector(float na, float nl){
+    Vector(double na, double nl){
         angle = na;
         length = nl;
     }  
@@ -63,8 +63,8 @@ public class Vector {
     }
     
     /*Вычисление длины отрезка по двум координатам*/
-    public float Length(float x1, float y1, float x2, float y2){
-        return (float) sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    public double Length(double x1, double y1, double x2, double y2){
+        return  sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
     
     /*Установка длины вектора аналогично заданному*/
@@ -75,42 +75,42 @@ public class Vector {
     
     /*Вычитание вектора из вектора*/
     public Vector Minus(Vector nv){
-        float nx, ny;   /*координаты конца суммарного вектора*/
+        double nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при вычитании)*/
-        nx = (float) (GetX() - nv.GetX());
-        ny = (float) (GetY() - nv.GetY());
+        nx =  (GetX() - nv.GetX());
+        ny =  (GetY() - nv.GetY());
         /*вычисление новых значений*/
-        length = (float) sqrt(nx * nx + ny * ny);
-        angle = (float) acos(nx / length) * signum(ny);
+        length =  sqrt(nx * nx + ny * ny);
+        angle =  acos(nx / length) * signum(ny);
         return this;
     }
     
     /*Прибавление к вектору вертора*/
     public Vector Plus(Vector nv){
-        float nx, ny;   /*координаты конца суммарного вектора*/
+        double nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при суммировании)*/
-        nx = (float) (GetX() + nv.GetX());
-        ny = (float) (GetY() + nv.GetY());
+        nx =  (GetX() + nv.GetX());
+        ny =  (GetY() + nv.GetY());
         /*вычисление новых значений*/
-        length = (float) sqrt(pow(nx, 2) + pow(ny, 2));
-        angle = (float) acos(nx / length) * signum(ny);
+        length =  sqrt(pow(nx, 2) + pow(ny, 2));
+        angle =  acos(nx / length) * signum(ny);
         return this;
     }
     
     /*Установка угла вектора по двум точкам*/
-    public Vector SetAngle(float x1, float y1, float x2, float y2){
-        angle = (float) acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
+    public Vector SetAngle(double x1, double y1, double x2, double y2){
+        angle =  acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
         return this;
     }
     
     /*Получение координаты X конца вектора*/
-    public float GetX(){
-        return (float)cos(angle) * length;
+    public double GetX(){
+        return cos(angle) * length;
     }
     
     /*Получение координаты Y конца вектора*/
-    public float GetY(){
-        return (float)sin(angle) * length;
+    public double GetY(){
+        return sin(angle) * length;
     }
 
 }

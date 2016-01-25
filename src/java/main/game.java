@@ -58,12 +58,12 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public int DisplayH = 600;                  /*Высота экрана*/
     public boolean RMBPressed = false;          /*Нажата правая кнопка мыши*/
     boolean overChild;                          /*Буфер для перемещения по контейнерам*/
-    float mx, my;                               /*Последние известные координаты мыши*/
+    double mx, my;                               /*Последние известные координаты мыши*/
     public boolean ScrFlwPlr=false;             /*Экран следует за планетой игрока*/     
     public int un_end_X=1000,un_end_Y=1000;     /*Края вселеной вылетая за которые объект погибает*/
     
     /*Параметры для дебугагинга начало*/
-    public float Mltplr = 10f;                   /*Множитель замедления*/      
+    public double Mltplr = 10f;                  /*Множитель замедления*/      
     public boolean v_F = false;                 /*Рисовать вектор равнодействующей*/
     public boolean v_P = false;                 /*Рисовать вектор импульса*/ 
     /*Параметры для дебугагинга конец*/
@@ -81,17 +81,17 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         
         /*Одна звезда и 3 планеты*/
         player = new Planet(0, -400, 30, 10, 0, 480, ALBaseClass, true, true);
-        new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
-        new Planet(-350, -350, 30, 10, -(float)Math.PI / 4, 425, ALBaseClass, false, false);
-        new Planet(-325, 325, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, false, false);
-        new Planet(-250, -250, 30, 10, -(float)Math.PI/4, 510, ALBaseClass, false, false);
-        new Planet(-250, 0, 30, 10, (float)Math.PI / 2, 600, ALBaseClass, false, false);
+        new Planet(400, 400, 30, 10, Math.PI *3/ 4, 395, ALBaseClass, false, false);
+        new Planet(-350, -350, 30, 10, -Math.PI / 4, 425, ALBaseClass, false, false);
+        new Planet(-325, 325, 30, 10, Math.PI*5/4, 440, ALBaseClass, false, false);
+        new Planet(-250, -250, 30, 10, -Math.PI/4, 510, ALBaseClass, false, false);
+        new Planet(-250, 0, 30, 10, Math.PI / 2, 600, ALBaseClass, false, false);
         
       
         new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
         
         /*Система сиськи*/
-      /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
+      /*  player = new Planet(375, 375, 10, 10, Math.PI*200/207,80, ALBaseClass, true, true);
         player.dw_orbit = true;
         new Star(250, 250, 8000, 40, 0, 0, ALBaseClass);
         new Star(500, 500, 8000, 40, 0, 0, ALBaseClass);
@@ -106,11 +106,10 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         addKeyListener(this);
         Display.addMouseListener(this);
         Display.addMouseMotionListener(this);
-        Display.setAlignmentX(0);
         
         for(int i = 0 ;i < ALBaseClass.size(); i++){
             if(ALBaseClass.get(i).getClass().getName()=="main.Star"){
-              ALBaseClass.get(i).dw_health = true;   
+              ALBaseClass.get(i).dw_health = true;
             }
            
             if(ALBaseClass.get(i).getClass().getName()=="main.Planet"){
@@ -136,9 +135,9 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 for(int i = 0; i < ALBaseClass.size(); i++){
                     if(ALBaseClass.get(i) != null){
                           /*пересчет импульса объекта*/
-                        ALBaseClass.get(i).calc_F_ravn(Mltplr);   
+                        ALBaseClass.get(i).calc_F_ravn(Mltplr);
                         /*движение объекта*/
-                        ALBaseClass.get(i).move(Mltplr);            
+                        ALBaseClass.get(i).move(Mltplr);
                         /*Проверка что объект в приделах системы иначе СМЕРТЬ!!! ХА-ХА-ХА!!!!!!!*/
                         if ((ALBaseClass.get(i).X>un_end_X)
                            |(ALBaseClass.get(i).X<-un_end_X)
@@ -147,7 +146,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                         {ALBaseClass.get(i).DeadFlag=true;}
                         /*Подзарядка планеты*/
                         if(ALBaseClass.get(i).getClass().getName() == "main.Planet"){
-                            ((Planet)ALBaseClass.get(i)).Charge();  
+                            ((Planet)ALBaseClass.get(i)).Charge();
                         }
                     }
                 }
@@ -177,7 +176,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                                  &&(ALBaseClass.get(i).Transparent==0)
                                  &&(ALBaseClass.get(j).Transparent==0)
                                 ){
-                            float rr = (float)(Math.sqrt(Math.pow((ALBaseClass.get(i).X-ALBaseClass.get(j).X),2)+ Math.pow((ALBaseClass.get(i).Y-ALBaseClass.get(j).Y),2)));
+                            double rr = (Math.sqrt(Math.pow((ALBaseClass.get(i).X-ALBaseClass.get(j).X),2)+ Math.pow((ALBaseClass.get(i).Y-ALBaseClass.get(j).Y),2)));
                             
                             if(rr<(ALBaseClass.get(i).RO+ALBaseClass.get(j).RO)){
                                 
@@ -223,21 +222,21 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     }
     
     void SendNewPlanet(){
-        float MaxDist = 0; /*Расстояние до самой дальней планеты*/
-        float NewM;
+        double MaxDist = 0; /*Расстояние до самой дальней планеты*/
+        double NewM;
         int NewRO;
-        float NewDist;
+        double NewDist;
         Planet NewPlanet;
         for(BaseClass AL : ALBaseClass){
             if((AL != null) 
             && ("main.Planet".equals(AL.getClass().getName()))){
-                MaxDist = (float)max(MaxDist, sqrt(pow(AL.X, 2) + pow(AL.Y, 2)));
+                MaxDist = max(MaxDist, sqrt(pow(AL.X, 2) + pow(AL.Y, 2)));
             }
         }
-        NewM = (float)random() * 50;
+        NewM = random() * 50;
         NewRO = (int)(random() * 50);
         NewDist = -MaxDist - NewRO * 2;
-        NewPlanet = new Planet(0, NewDist, NewM, NewRO, (float)(PI * signum(random() - 0.5)), NewDist, ALBaseClass, false, false);
+        NewPlanet = new Planet(0, NewDist, NewM, NewRO, (PI * signum(random() - 0.5)), NewDist, ALBaseClass, false, false);
         //NewPlanet.P.length *= NewPlanet.M;
         for(BaseClass AL : ALBaseClass)if("main.Planet".equals(AL.getClass().getName()))AL.calc_orbit();
     }
@@ -260,11 +259,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                         p_display.y = DisplayH / 2;*/
                         p_display.setLocation(DisplayW / 2,DisplayH / 2);
                         break;
-            
-            case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
-                        break;
-                        
-                        
             /*клавиши 1-9 для переключения оружия*/
             case 49:    player.GunType = 1;
                         break;
@@ -329,8 +323,8 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         if(r.contains(p)){
             if(!overChild)
                 overChild = true;
-            mx = p.x - r.x;
-            my = p.y - r.y;
+            mx = p.x - r.x + 20;
+            my = p.y - r.y + 20;
         }
         else if(overChild){
             overChild = false;
