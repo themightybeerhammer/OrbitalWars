@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package main;
 
 import java.awt.Color;
@@ -76,7 +77,10 @@ public class Planet extends BaseClass {
         g2.setRenderingHints(rh);
         g2.setColor(Color.WHITE);
         if(DeadFlag==false){
-          g2.draw(new Ellipse2D.Double(x - RO, y - RO, RO * 2, RO * 2));
+          double _x  = (x - RO);
+          double _y  = (y - RO);
+          System.out.println(" X="+_x+" Y="+_y);
+          g2.fill(new Ellipse2D.Double(_x,_y, RO * 2, RO * 2));
         }
         
         /*Отрисовка прогрессбара зарядки планеты*/

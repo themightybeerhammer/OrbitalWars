@@ -14,10 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package main;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -31,7 +33,7 @@ public class DrawPanel extends JPanel{
     static boolean v_F;
     static boolean v_P; 
     static ArrayList<BaseClass> ALBaseClass;
-    Point P_Display;
+    Point2D P_Display;
     public int DisplayW = 800;                  /*Ширина экрана*/
     public int DisplayH = 600;                  /*Высота экрана*/
     Planet Player;
@@ -63,11 +65,12 @@ public class DrawPanel extends JPanel{
     public void AssignList(ArrayList<BaseClass> ALBC){
         ALBaseClass = new ArrayList<>(ALBC);
     }
-    public void AssignList(ArrayList<BaseClass> ALBC,Planet player,Point p_display, boolean V_F, boolean V_P ){
+    public void AssignList(ArrayList<BaseClass> ALBC,Planet player,Point2D p_display, boolean V_F, boolean V_P ){
         v_F = V_F;
         v_P = V_P; 
         ALBaseClass = new ArrayList<>(ALBC);
-        P_Display = new Point(p_display);
+        //P_Display = new Point2D(p_display);
+        P_Display = p_display;
         Player = new Planet();
         Player = player;
     }
