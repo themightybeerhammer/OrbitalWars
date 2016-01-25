@@ -78,7 +78,7 @@ public class Planet extends BaseClass {
         if(DeadFlag==false){
           float _x  = (x - RO);
           float _y  = (y - RO);
-          System.out.println(" X="+_x+" Y="+_y);
+          //System.out.println(" X="+_x+" Y="+_y);
           g2.fill(new Ellipse2D.Float(_x,_y, RO * 2, RO * 2));
         }
         

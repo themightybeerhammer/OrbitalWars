@@ -159,7 +159,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                     double __x = (double)(DisplayW / 2-player.X);
                     double __y = (double)(DisplayH / 2-player.Y);
                     
-                    System.out.println("X="+__x+"Y="+__y);
+                    //System.out.println("X="+__x+"Y="+__y);
                     p_display.setLocation(__x,__y);
                     
                 }        
@@ -217,7 +217,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                
             }
         };
-        oTimer.schedule(oTimerTask, 0,50);
+        oTimer.schedule(oTimerTask, 0,25);
         setFocusable(true);
         requestFocusInWindow();
     }

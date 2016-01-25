@@ -16,6 +16,7 @@
  */
 package main;
 
+import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -23,7 +24,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import static java.lang.Integer.max;
 import static java.lang.Math.PI;
@@ -32,6 +35,7 @@ import static java.lang.Math.random;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Path;
 import main.Vector;
 /**
  *
@@ -44,7 +48,7 @@ public class BaseClass {
     Vector P;  /*Вектор импульса*/
     Vector F;  /*Вектор равнодействующей*/
     float MinMassOrbit;     /*Минимальная масса объекта для участия в расчете орбиты*/
-    private ArrayList<Point> Orbit; /*Кординаты орбиты*/
+    private ArrayList<Point2D> Orbit; /*Кординаты орбиты*/
     static ArrayList<BaseClass> ALBaseClass;
     boolean dw_orbit; /*Флаг рисования орбиты*/
     
@@ -89,7 +93,7 @@ public class BaseClass {
        ALBaseClass = AL;
        /*Орбита*/
        MinMassOrbit = m*10;
-       Orbit = new ArrayList<Point>();
+       Orbit = new ArrayList<Point2D>();
        dw_orbit = false;
        DeadSteps = ro*20;
        
@@ -256,13 +260,13 @@ public class BaseClass {
             
             boolean flag = true;
             for(int i=0;i<Orbit.size();i++){
-                if((float)Math.sqrt((Math.pow((Orbit.get(i).x-(_X-X)),2)+ Math.pow((Orbit.get(i).y-(_Y-Y)),2)))<10 ){
+                if((float)Math.sqrt((Math.pow((Orbit.get(i).getX()-(_X-X)),2)+ Math.pow((Orbit.get(i).getY()-(_Y-Y)),2)))<10 ){
                     flag=false;
                 }
             }
             
             if(flag){
-             Orbit.add(new Point((int)(_X-X),(int)(_Y-Y)));             
+             Orbit.add(new Point2D.Double((_X-X),(_Y-Y)));             
             }
              
             if(((float)Math.sqrt(Math.pow(_X-X, 2)+Math.pow(_Y-Y, 2))<RO)&&(_xd*j>2*RO))break;
@@ -278,22 +282,44 @@ public class BaseClass {
          RenderingHints rh = new RenderingHints(
              RenderingHints.KEY_ANTIALIASING,
              RenderingHints.VALUE_ANTIALIAS_ON);
-         g2.setRenderingHints(rh);
-         g2.setColor(Color.GRAY);
          
+         
+         g2.setRenderingHints(rh);
+         
+         g2.setColor(Color.DARK_GRAY);
+         
+         GeneralPath path= new GeneralPath();
+         
+         path.moveTo((float)Orbit.get(0).getX()+(float)x, (float)Orbit.get(0).getY()+(float)y);
+         
+         for(int i=1;i<Orbit.size();i++){
+            path.lineTo((float)Orbit.get(0).getX()+(float)Orbit.get(i).getX()+(float)x
+                      , (float)Orbit.get(0).getY()+(float)Orbit.get(i).getY()+(float)y);
+         }
+         
+         path.closePath();
+      
+         g2.setStroke(new BasicStroke(2f));
+         g2.draw(path);
+     
+         
+         
+         /*        
          for(int i=0;i<Orbit.size();i++){
             if(i==0){
-                float _x = (float)Orbit.get(0).x+x
-                     ,_y = (float)Orbit.get(0).y+y;
+                float _x = (float)Orbit.get(0).getX()+x
+                     ,_y = (float)Orbit.get(0).getY()+y;
               g2.draw(new Ellipse2D.Float(_x,_y, 1, 1));
             }else{
-                 float _x = (float)Orbit.get(0).x+(float)Orbit.get(i).x+(float)x
-                      ,_y = (float)Orbit.get(0).y+(float)Orbit.get(i).y+(float)y;
+                 float _x = (float)Orbit.get(0).getX()+(float)Orbit.get(i).getX()+(float)x
+                      ,_y = (float)Orbit.get(0).getY()+(float)Orbit.get(i).getY()+(float)y;
               g2.draw(new Ellipse2D.Float(_x ,_y, 1, 1));
              }
              
            
          }
+         */
+         
      }
      
      void calc_F_ravn(float Mtplr){
