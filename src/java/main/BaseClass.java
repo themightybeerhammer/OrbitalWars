@@ -283,13 +283,13 @@ public class BaseClass {
          
          for(int i=0;i<Orbit.size();i++){
             if(i==0){
-                float _x = Orbit.get(0).x+x
-                     ,_y = Orbit.get(0).y+y;
+                float _x = (float)Orbit.get(0).x+x
+                     ,_y = (float)Orbit.get(0).y+y;
               g2.draw(new Ellipse2D.Float(_x,_y, 1, 1));
             }else{
-                float _x = Orbit.get(0).x+x
-                     ,_y = Orbit.get(0).y+y;
-              g2.draw(new Ellipse2D.Float(_x,_y, 1, 1));
+                 float _x = (float)Orbit.get(0).x+(float)Orbit.get(i).x+(float)x
+                      ,_y = (float)Orbit.get(0).y+(float)Orbit.get(i).y+(float)y;
+              g2.draw(new Ellipse2D.Float(_x ,_y, 1, 1));
              }
              
            
