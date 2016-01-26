@@ -38,23 +38,23 @@ public class Projectile extends BaseClass{
     Projectile(){
         super();
     }
-    Projectile(float x, float y, float m, int ro, float vangle, float vlength, ArrayList<BaseClass> AL){
+    Projectile(double x, double y, double m, int ro, double vangle, double vlength, ArrayList<BaseClass> AL){
         super(x, y, m, ro, vangle, vlength, AL);
         DeadSteps = 2;
     }
     
     @Override
     void draw_in_scr(Graphics g
-                    ,float x
-                    ,float y
+                    ,double x
+                    ,double y
                     ,boolean v_F  
                     ,boolean v_P ){ 
         
         
         Graphics2D g2 = (Graphics2D)g;
-        Point2D center = new Point2D.Float(x, y);
+        Point2D center = new Point2D.Double(x, y);
         g2.setPaint(Color.BLUE);
-        g2.fill(new Ellipse2D.Float(x - RO, y - RO, RO * 2, RO * 2));
+        g2.fill(new Ellipse2D.Double(x - RO, y - RO, RO * 2, RO * 2));
         
          /*Прорисовка гибели объекта*/
          if(DeadFlag){
@@ -67,7 +67,7 @@ public class Projectile extends BaseClass{
              Color[] colors = { Color.YELLOW, new Color(1,0,0,0) };
              RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
              g2.setPaint(p);
-             g2.fill(new Ellipse2D.Float(x-radius, y-radius, radius*2, radius*2));
+             g2.fill(new Ellipse2D.Double(x-radius, y-radius, radius*2, radius*2));
          }
         
     } 

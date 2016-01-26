@@ -46,9 +46,9 @@ public class CenterMass extends BaseClass {
      
       public void CalcCenterMass(){
         /*Вычисление центра масс*/
-       float Xc=0;
-       float Yc=0;
-       float Mc=0; 
+       double Xc=0;
+       double Yc=0;
+       double Mc=0; 
        
         for(int i=0;i<ALBaseClass.size();i++){
            if((ALBaseClass.get(i)!=this)&&(ALBaseClass.get(i)!=null))
@@ -65,8 +65,8 @@ public class CenterMass extends BaseClass {
     }
       
     void draw_in_scr(Graphics g
-                    ,float x
-                    ,float y
+                    ,double x
+                    ,double y
                     ,boolean v_F  
                     ,boolean v_P){     
         Graphics2D g2 = (Graphics2D)g;
@@ -75,11 +75,11 @@ public class CenterMass extends BaseClass {
         RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHints(rh);
         g2.setColor(Color.ORANGE);
-        g2.draw(new Ellipse2D.Float(x-5, y-5, 10, 10));
+        g2.draw(new Ellipse2D.Double(x-5, y-5, 10, 10));
     }
     
     @Override
-    void move(float Mtplr){
+    void move(double Mtplr){
     }
   
 }
