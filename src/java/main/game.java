@@ -18,10 +18,12 @@
 package main;
 
 import java.applet.Applet;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -29,6 +31,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeListener;
 import static java.lang.Math.PI;
 import static java.lang.Math.log;
 import static java.lang.Math.max;
@@ -40,6 +43,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.lang.Object;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 
 /**
  *
@@ -48,6 +55,7 @@ import java.lang.Object;
 
 public class game extends Applet implements KeyListener, MouseListener, MouseMotionListener {
     
+    public final byte FPS = 100;                /*Частота обновлений*/
     private ArrayList<BaseClass> ALBaseClass;   /*Коллекция всех объектов*/
     private CenterMass CM;                      /*Центр масс*/ 
     protected DrawPanel Display;                /*Панель для отображения*/
@@ -61,32 +69,85 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     float mx, my;                               /*Последние известные координаты мыши*/
     public boolean ScrFlwPlr=false;             /*Экран следует за планетой игрока*/     
     public int un_end_X=1000,un_end_Y=1000;     /*Края вселеной вылетая за которые объект погибает*/
+    public boolean pause = false;
+    public boolean gamestarted = false;
     
     /*Параметры для дебугагинга начало*/
-    public float Mltplr = 10f;                   /*Множитель замедления*/      
+    public float Mltplr = 100f / (1000 / FPS);                   /*Множитель замедления*/      
     public boolean v_F = false;                 /*Рисовать вектор равнодействующей*/
     public boolean v_P = false;                 /*Рисовать вектор импульса*/ 
     /*Параметры для дебугагинга конец*/
     
     @Override
     public void init() {
+        addMouseMotionListener(this);
+        addKeyListener(this);
+        addMouseListener(this);
+        JButton b_startgame = new JButton();
+        JButton b_exit = new JButton();
+        add(b_startgame);
+        add(b_exit);
+        b_startgame.setAction(new Action() {
+            @Override
+            public Object getValue(String key) {
+                return null;
+            }
+
+            @Override
+            public void putValue(String key, Object value) {
+            }
+
+            @Override
+            public void setEnabled(boolean b) {
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return !gamestarted;
+            }
+
+            @Override
+            public void addPropertyChangeListener(PropertyChangeListener listener) {
+            }
+
+            @Override
+            public void removePropertyChangeListener(PropertyChangeListener listener) {
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gamestarted = true;
+                pause = false;
+                b_startgame.setVisible(false);
+                b_exit.setVisible(false);
+                StartGame();
+            }
+        });
+        b_startgame.setText("Start game");
+        b_exit.setText("Exit");
+        //StartGame();
+    }
+    
+    void Menu(){
+    }
+    
+    void StartGame(){
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
         setSize(DisplayW, DisplayH);
         p_Delta = new Point2D.Double(0,0);
         p_display = new Point2D.Double(DisplayW / 2, DisplayH / 2);
-       
-       
+        
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
         player = new Planet(0, -400, 30, 10, 0, 480, ALBaseClass, true, true);
-        new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
+        /*new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
         new Planet(-350, -350, 30, 10, -(float)Math.PI / 4, 425, ALBaseClass, false, false);
         new Planet(-325, 325, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, false, false);
         new Planet(-250, -250, 30, 10, -(float)Math.PI/4, 510, ALBaseClass, false, false);
         new Planet(-250, 0, 30, 10, (float)Math.PI / 2, 600, ALBaseClass, false, false);
-        
+        */
       
         new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
         
@@ -101,9 +162,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
          /*создаем новый игровой экран*/
         Display = new DrawPanel((int)(DisplayW * 0.9), (int)(DisplayH * 0.9));
         add(Display);
-        //Display.addMouseMotionListener(new MotionSensor(this));
-        Display.addMouseMotionListener(this);
-        addKeyListener(this);
         Display.addMouseListener(this);
         Display.addMouseMotionListener(this);
         Display.setAlignmentX(0);
@@ -138,16 +196,16 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                           /*пересчет импульса объекта*/
                         ALBaseClass.get(i).calc_F_ravn(Mltplr);   
                         /*движение объекта*/
-                        ALBaseClass.get(i).move(Mltplr);            
+                        ALBaseClass.get(i).move(Mltplr);   
                         /*Проверка что объект в приделах системы иначе СМЕРТЬ!!! ХА-ХА-ХА!!!!!!!*/
                         if ((ALBaseClass.get(i).X>un_end_X)
                            |(ALBaseClass.get(i).X<-un_end_X)
                            |(ALBaseClass.get(i).Y<-un_end_Y)
                            |(ALBaseClass.get(i).Y>un_end_Y))
                         {ALBaseClass.get(i).DeadFlag=true;}
-                        /*Подзарядка планеты*/
                         if(ALBaseClass.get(i).getClass().getName() == "main.Planet"){
-                            ((Planet)ALBaseClass.get(i)).Charge();  
+                            ((Planet)ALBaseClass.get(i)).Charge();  /*Подзарядка планеты*/
+                            ((Planet)ALBaseClass.get(i)).Reload(1000 / FPS);  /*Перезарядка орудия*/
                         }
                     }
                 }
@@ -159,7 +217,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                     double __x = (double)(DisplayW / 2-player.X);
                     double __y = (double)(DisplayH / 2-player.Y);
                     
-                    //System.out.println("X="+__x+"Y="+__y);
                     p_display.setLocation(__x,__y);
                     
                 }        
@@ -217,7 +274,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                
             }
         };
-        oTimer.schedule(oTimerTask, 0,25);
+        oTimer.schedule(oTimerTask, 0, 1000 / FPS);
         setFocusable(true);
         requestFocusInWindow();
     }
@@ -252,27 +309,28 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     @Override 
     public void keyPressed(KeyEvent e) {
-        switch(e.getKeyCode()){
-            case 32:    player.Shoot();    /*тест стрельбы по клавише ПРОБЕЛ*/
-                        break;
-            case 36:       /*Home - возрат камеры к центру системы*/
-                        /*p_display.x = DisplayW / 2; 
-                        p_display.y = DisplayH / 2;*/
-                        p_display.setLocation(DisplayW / 2,DisplayH / 2);
-                        break;
-            
-            case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
-                        break;
-                        
-                        
-            /*клавиши 1-9 для переключения оружия*/
-            case 49:    player.GunType = 1;
-                        break;
-            case 50:    player.GunType = 2;
-                        break;
-            case 112:   SendNewPlanet();
-                        break;
-            default: System.out.println(e.getKeyCode());
+        if(gamestarted && !pause ){
+            switch(e.getKeyCode()){
+                case 32:    player.Shoot();    /*тест стрельбы по клавише ПРОБЕЛ*/
+                            break;
+                case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
+                          
+                            break;
+                case 36:       /*Home - возрат камеры к центру системы*/
+                            /*p_display.x = DisplayW / 2; 
+                            p_display.y = DisplayH / 2;*/
+                            p_display.setLocation(DisplayW / 2,DisplayH / 2);
+                            break;
+                /*клавиши 1-9 для переключения оружия*/
+                case 49:    player.GunType = 1;
+                            break;
+                case 50:    player.GunType = 2;
+                            break;
+                case 112:   SendNewPlanet();
+                            break;
+                default: System.out.println(e.getKeyCode());
+            }
+           
         }
     }
     
@@ -287,12 +345,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
     @Override
     public void mousePressed(MouseEvent e) {
-        switch(e.getButton()){
-            case 1: player.Shoot();
-                    break;
-            case 3: RMBPressed = true;
-                    p_Delta  = e.getPoint();
-                    break;
+        if(gamestarted && !pause ){
+            switch(e.getButton()){
+                case 1: player.Shoot();
+                        break;
+                case 3: RMBPressed = true;
+                        p_Delta  = e.getPoint();
+                        break;
+            }
         }
     }
 
@@ -317,23 +377,24 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
               /*p_display.x = p_display.x + (e.getPoint().x - p_Delta.x);
               p_display.y = p_display.y + (e.getPoint().y - p_Delta.y);*/
               p_display.setLocation(p_display.getX() + (e.getPoint().x - p_Delta.getX()),p_display.getY() + (e.getPoint().y - p_Delta.getY()));
-              
               p_Delta = e.getPoint();
            }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        Point p = e.getPoint();
-        Rectangle r = Display.getBounds();
-        if(r.contains(p)){
-            if(!overChild)
-                overChild = true;
-            mx = p.x - r.x;
-            my = p.y - r.y;
-        }
-        else if(overChild){
-            overChild = false;
+        if(gamestarted && !pause ){
+            Point p = e.getPoint();
+            Rectangle r = Display.getBounds();
+            if(r.contains(p)){
+                if(!overChild)
+                    overChild = true;
+                mx = p.x - r.x + 16;
+                my = p.y - r.y + 16;
+            }
+            else if(overChild){
+                overChild = false;
+            }
         }
     }
 
