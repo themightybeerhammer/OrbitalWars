@@ -81,7 +81,7 @@ public class Planet extends BaseClass {
         if(DeadFlag==false){
           double _x  = (x - RO);
           double _y  = (y - RO);
-          System.out.println(" X="+_x+" Y="+_y);
+          //System.out.println(" X="+_x+" Y="+_y);
           g2.fill(new Ellipse2D.Double(_x,_y, RO * 2, RO * 2));
         }
         
