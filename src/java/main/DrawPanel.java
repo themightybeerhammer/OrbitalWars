@@ -68,10 +68,10 @@ public class DrawPanel extends JPanel{
     public void AssignList(ArrayList<BaseClass> ALBC,Planet player,Point2D p_display, boolean V_F, boolean V_P ){
         v_F = V_F;
         v_P = V_P; 
-        ALBaseClass = new ArrayList<>(ALBC);
+        ALBaseClass = ALBC;//new ArrayList<>(ALBC);
         //P_Display = new Point2D(p_display);
         P_Display = p_display;
-        Player = new Planet();
+        //Player = new Planet();
         Player = player;
     }
 
@@ -80,7 +80,9 @@ public class DrawPanel extends JPanel{
         super.paintComponent(g);
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
+        if(ALBaseClass != null)
         for(int i = 0 ;i < ALBaseClass.size(); i++){
+            if(i < ALBaseClass.size())
             if(ALBaseClass.get(i) != null){
                ALBaseClass.get(i).draw(g, P_Display, v_F, v_P);
             }      
@@ -94,34 +96,36 @@ public class DrawPanel extends JPanel{
      
         /*Отрисовка прогрессбара здоровья объекта*/
         /*Заливка бара*/
-        g2.setRenderingHints(rh);
-        g2.setColor(Color.GRAY);
-        g2.fillRect(20, 20, 200, 15);
-        if(Player.HealthCur==Player.HealthMax){ g2.setColor(Color.GREEN); }
-        if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur>Player.HealthMax*0.4))){g2.setColor(Color.YELLOW);        }
-        if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.RED);        }
-        g2.fillRect(20, 20, (int)(200 * (Player.HealthCur / Player.HealthMax)), (int)(15)); 
-       
-        rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2.setRenderingHints(rh);
-        g.setColor(Color.WHITE);
-        if(Player.HealthCur==Player.HealthMax){ g2.setColor(Color.BLACK); }
-        if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur>Player.HealthMax*0.4))){g2.setColor(Color.BLACK);        }
-        if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.WHITE);        }
-        g2.drawString((int)Player.HealthCur+"/"+(int)Player.HealthMax, 22, 32);
-      
-        /*Отрисовка прогрессбара заряда энергии*/
-        /*Заливка бара*/
-        rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHints(rh);
-        g2.setColor(Color.GRAY);
-        g2.fillRect(20, 40, 200, 15);
-        g2.setColor(Color.BLUE); 
-        g2.fillRect(20, 40, (int)(200 * (Player.Energy / Player.MaxEnergy)), (int)(15)); 
-        rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
-        g2.setRenderingHints(rh);
-        g2.setColor(Color.WHITE);
-        g2.drawString((int)Player.Energy+"/"+(int)Player.MaxEnergy, 22, 52);
+        if(Player != null){
+            g2.setRenderingHints(rh);
+            g2.setColor(Color.GRAY);
+            g2.fillRect(20, 20, 200, 15);
+            if(Player.HealthCur==Player.HealthMax){ g2.setColor(Color.GREEN); }
+            if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur>Player.HealthMax*0.4))){g2.setColor(Color.YELLOW);        }
+            if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.RED);        }
+            g2.fillRect(20, 20, (int)(200 * (Player.HealthCur / Player.HealthMax)), (int)(15)); 
+
+            rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.setRenderingHints(rh);
+            g.setColor(Color.WHITE);
+            if(Player.HealthCur==Player.HealthMax){ g2.setColor(Color.BLACK); }
+            if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur>Player.HealthMax*0.4))){g2.setColor(Color.BLACK);        }
+            if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.WHITE);        }
+            g2.drawString((int)Player.HealthCur+"/"+(int)Player.HealthMax, 22, 32);
+
+            /*Отрисовка прогрессбара заряда энергии*/
+            /*Заливка бара*/
+            rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHints(rh);
+            g2.setColor(Color.GRAY);
+            g2.fillRect(20, 40, 200, 15);
+            g2.setColor(Color.BLUE); 
+            g2.fillRect(20, 40, (int)(200 * (Player.Energy / Player.MaxEnergy)), (int)(15)); 
+            rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
+            g2.setRenderingHints(rh);
+            g2.setColor(Color.WHITE);
+            g2.drawString((int)Player.Energy+"/"+(int)Player.MaxEnergy, 22, 52);
+        }
       
         
     }

@@ -33,6 +33,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeListener;
 import static java.lang.Math.PI;
+import static java.lang.Math.abs;
 import static java.lang.Math.log;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
@@ -73,7 +74,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public boolean gamestarted = false;
     
     /*Параметры для дебугагинга начало*/
-    public float Mltplr = 100f / (1000 / FPS);                   /*Множитель замедления*/      
+    public float Mltplr = 200f / (1000 / FPS);                   /*Множитель замедления*/      
     public boolean v_F = false;                 /*Рисовать вектор равнодействующей*/
     public boolean v_P = false;                 /*Рисовать вектор импульса*/ 
     /*Параметры для дебугагинга конец*/
@@ -128,9 +129,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         //StartGame();
     }
     
-    void Menu(){
-    }
-    
+    /*Инициализация игровой среды*/
     void StartGame(){
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
@@ -142,6 +141,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         
         /*Одна звезда и 3 планеты*/
         player = new Planet(0, -400, 30, 10, 0, 480, ALBaseClass, true, true);
+        new Planet(0, -450, 50, 10, 0, 745, ALBaseClass, false, true);
         /*new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
         new Planet(-350, -350, 30, 10, -(float)Math.PI / 4, 425, ALBaseClass, false, false);
         new Planet(-325, 325, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, false, false);
@@ -187,91 +187,94 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             /*в ране описываются периодические действия*/
             @Override 
             public void run(){
-                player.Aim((int)(mx - p_display.getX()),(int)( my - p_display.getY()));     /*постоянно нацеливаем орудие на последние координаты мыши*/
-                CM.CalcCenterMass();                                /*пересчет центра масс*/
-                Display.AssignList(ALBaseClass,player,p_display,v_F,v_P);  /*передача игровому экрану списка объектов для отрисовки*/ 
-                /*Перерасчет импульса объекта, движение объекта и удаление вылетивших за пределы*/
-                for(int i = 0; i < ALBaseClass.size(); i++){
-                    if(ALBaseClass.get(i) != null){
-                          /*пересчет импульса объекта*/
-                        ALBaseClass.get(i).calc_F_ravn(Mltplr);   
-                        /*движение объекта*/
-                        ALBaseClass.get(i).move(Mltplr);   
-                        /*Проверка что объект в приделах системы иначе СМЕРТЬ!!! ХА-ХА-ХА!!!!!!!*/
-                        if ((ALBaseClass.get(i).X>un_end_X)
-                           |(ALBaseClass.get(i).X<-un_end_X)
-                           |(ALBaseClass.get(i).Y<-un_end_Y)
-                           |(ALBaseClass.get(i).Y>un_end_Y))
-                        {ALBaseClass.get(i).DeadFlag=true;}
-                        if(ALBaseClass.get(i).getClass().getName() == "main.Planet"){
-                            ((Planet)ALBaseClass.get(i)).Charge();  /*Подзарядка планеты*/
-                            ((Planet)ALBaseClass.get(i)).Reload(1000 / FPS);  /*Перезарядка орудия*/
-                        }
-                    }
-                }
-                /*Следование экрана за объектом*/
-                if(ScrFlwPlr){
-                      /*End - возрат камеры к планете игрока*/
-                    /*p_display.x = DisplayW / 2-(int)Math.floor(player.X);  
-                    p_display.y = DisplayH / 2-(int)Math.floor(player.Y);*/
-                    double __x = (double)(DisplayW / 2-player.X);
-                    double __y = (double)(DisplayH / 2-player.Y);
-                    
-                    p_display.setLocation(__x,__y);
-                    
-                }        
-                /*Обработка столкновения*/
-                for(int i = 0 ;i < ALBaseClass.size(); i++){
-                    for(int j = 0 ;j < ALBaseClass.size(); j++){
-                        if((i!=j)&&(ALBaseClass.size()>i)
-                                 &&(ALBaseClass.size()>j)
-                                 &&(ALBaseClass.get(i)!=null)
-                                 &&(ALBaseClass.get(j)!=null)
-                                 &&(ALBaseClass.get(j).getClass().getName()!="main.CenterMass")
-                                 &&(ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
-                                 &&(ALBaseClass.get(i).DeadFlag==false)
-                                 &&(ALBaseClass.get(j).DeadFlag==false)
-                                 &&(ALBaseClass.get(i).Transparent==0)
-                                 &&(ALBaseClass.get(j).Transparent==0)
-                                ){
-                            float rr = (float)(Math.sqrt(Math.pow((ALBaseClass.get(i).X-ALBaseClass.get(j).X),2)+ Math.pow((ALBaseClass.get(i).Y-ALBaseClass.get(j).Y),2)));
-                            
-                            if(rr<(ALBaseClass.get(i).RO+ALBaseClass.get(j).RO)){
-                                
-                                ALBaseClass.get(i).HealthCur=(int)(ALBaseClass.get(i).HealthCur -  ALBaseClass.get(j).M);
-                                ALBaseClass.get(j).HealthCur=(int)(ALBaseClass.get(j).HealthCur -  ALBaseClass.get(i).M);
-                                
-                                if( ALBaseClass.get(i).HealthCur<=0) ALBaseClass.get(i).Die();//.DeadFlag=true;
-                                if( ALBaseClass.get(j).HealthCur<=0) ALBaseClass.get(j).Die();//.DeadFlag=true;
-                                /*if(ALBaseClass.get(i).getClass().getName()=="main.Projectile")
-                                {ALBaseClass.get(i).DeadFlag=true;}
-                                if(ALBaseClass.get(j).getClass().getName()=="main.Projectile")
-                                {ALBaseClass.get(j).DeadFlag=true;}*/
-                            
+                    if(gamestarted && !pause ){
+                    player.Aim((mx - p_display.getX()),( my - p_display.getY()));     /*постоянно нацеливаем орудие на последние координаты мыши*/
+                    CM.CalcCenterMass();                                /*пересчет центра масс*/
+                    Display.AssignList(ALBaseClass,player,p_display,v_F,v_P);  /*передача игровому экрану списка объектов для отрисовки*/ 
+                    /*Перерасчет импульса объекта, движение объекта и удаление вылетивших за пределы*/
+                    for(int i = 0; i < ALBaseClass.size(); i++){
+                        if(ALBaseClass.get(i) != null){
+                              /*пересчет импульса объекта*/
+                            ALBaseClass.get(i).calc_F_ravn(Mltplr);   
+                            /*движение объекта*/
+                            ALBaseClass.get(i).move(Mltplr);   
+                            /*Проверка что объект в приделах системы иначе СМЕРТЬ!!! ХА-ХА-ХА!!!!!!!*/
+                            if ((ALBaseClass.get(i).X>un_end_X)
+                               |(ALBaseClass.get(i).X<-un_end_X)
+                               |(ALBaseClass.get(i).Y<-un_end_Y)
+                               |(ALBaseClass.get(i).Y>un_end_Y))
+                            {ALBaseClass.get(i).DeadFlag=true;}
+                            if(ALBaseClass.get(i).getClass().getName() == "main.Planet"){
+                                ((Planet)ALBaseClass.get(i)).Charge();  /*Подзарядка планеты*/
+                                ((Planet)ALBaseClass.get(i)).Reload(1000 / FPS);  /*Перезарядка орудия*/
                             }
                         }
-                    }  
-                }
-                
-                /*Удаление погибших объектов*/ 
-                int j=0; 
-                do{
-                    if((ALBaseClass.get(j).DeadFlag)&&(ALBaseClass.get(j).DeadSteps<=0)){
-                        ALBaseClass.remove(j);
-                    }else{
-                        j++;
-                    }   
-                }while(j<ALBaseClass.size());
-               
-                //System.out.println("---------------------------");
-                /*for(int i = 0; i < ALBaseClass.size(); i++){
-                    if((i < ALBaseClass.size()) && (ALBaseClass.get(i) != null)){
-                        if((ALBaseClass.get(i).F !=null) && (ALBaseClass.get(i).P != null))
-                            System.out.print(ALBaseClass.get(i).F.length + " " + ALBaseClass.get(i).P.length + " | ");
-                        ALBaseClass.get(i).calc_orbit();  
                     }
-                }*/
-               
+                    /*Следование экрана за объектом*/
+                    if(ScrFlwPlr){
+                          /*End - возрат камеры к планете игрока*/
+                        /*p_display.x = DisplayW / 2-(int)Math.floor(player.X);  
+                        p_display.y = DisplayH / 2-(int)Math.floor(player.Y);*/
+                        double __x = (double)(DisplayW / 2-player.X);
+                        double __y = (double)(DisplayH / 2-player.Y);
+
+                        //System.out.println("X="+__x+"Y="+__y);
+                        p_display.setLocation(__x,__y);
+
+                    }        
+                    /*Обработка столкновения*/
+                    for(int i = 0 ;i < ALBaseClass.size(); i++){
+                        for(int j = 0 ;j < ALBaseClass.size(); j++){
+                            if((i!=j)&&(ALBaseClass.size()>i)
+                                     &&(ALBaseClass.size()>j)
+                                     &&(ALBaseClass.get(i)!=null)
+                                     &&(ALBaseClass.get(j)!=null)
+                                     &&(ALBaseClass.get(j).getClass().getName()!="main.CenterMass")
+                                     &&(ALBaseClass.get(i).getClass().getName()!="main.CenterMass")
+                                     &&(ALBaseClass.get(i).DeadFlag==false)
+                                     &&(ALBaseClass.get(j).DeadFlag==false)
+                                     &&(ALBaseClass.get(i).Transparent==0)
+                                     &&(ALBaseClass.get(j).Transparent==0)
+                                    ){
+                                float rr = (float)(Math.sqrt(Math.pow((ALBaseClass.get(i).X-ALBaseClass.get(j).X),2)+ Math.pow((ALBaseClass.get(i).Y-ALBaseClass.get(j).Y),2)));
+
+                                if(rr<(ALBaseClass.get(i).RO+ALBaseClass.get(j).RO)){
+
+                                    ALBaseClass.get(i).HealthCur=(int)(ALBaseClass.get(i).HealthCur -  ALBaseClass.get(j).M);
+                                    ALBaseClass.get(j).HealthCur=(int)(ALBaseClass.get(j).HealthCur -  ALBaseClass.get(i).M);
+
+                                    if( ALBaseClass.get(i).HealthCur<=0) ALBaseClass.get(i).Die();//.DeadFlag=true;
+                                    if( ALBaseClass.get(j).HealthCur<=0) ALBaseClass.get(j).Die();//.DeadFlag=true;
+                                    /*if(ALBaseClass.get(i).getClass().getName()=="main.Projectile")
+                                    {ALBaseClass.get(i).DeadFlag=true;}
+                                    if(ALBaseClass.get(j).getClass().getName()=="main.Projectile")
+                                    {ALBaseClass.get(j).DeadFlag=true;}*/
+
+                                }
+                            }
+                        }  
+                    }
+
+                    /*Удаление погибших объектов*/ 
+                    int j=0; 
+                    do{
+                        if((ALBaseClass.get(j).DeadFlag)&&(ALBaseClass.get(j).DeadSteps<=0)){
+                            ALBaseClass.remove(j);
+                        }else{
+                            j++;
+                        }   
+                    }while(j<ALBaseClass.size());
+
+                    //System.out.println("---------------------------");
+                    /*for(int i = 0; i < ALBaseClass.size(); i++){
+                        if((i < ALBaseClass.size()) && (ALBaseClass.get(i) != null)){
+                            if((ALBaseClass.get(i).F !=null) && (ALBaseClass.get(i).P != null))
+                                System.out.print(ALBaseClass.get(i).F.length + " " + ALBaseClass.get(i).P.length + " | ");
+                            ALBaseClass.get(i).calc_orbit();  
+                        }
+                    }*/
+
+                }
             }
         };
         oTimer.schedule(oTimerTask, 0, 1000 / FPS);
@@ -279,23 +282,37 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         requestFocusInWindow();
     }
     
+    /*Добавляет новую планету в уже существующую систему*/
     void SendNewPlanet(){
-        float MaxDist = 0; /*Расстояние до самой дальней планеты*/
-        float NewM;
+        double MaxDist = 0; /*Расстояние до самой дальней планеты*/
+        double NewM;
         int NewRO;
-        float NewDist;
+        double NewDist;
+        double StarMass = 100000;
         Planet NewPlanet;
         for(BaseClass AL : ALBaseClass){
             if((AL != null) 
             && ("main.Planet".equals(AL.getClass().getName()))){
-                MaxDist = (float)max(MaxDist, sqrt(pow(AL.X, 2) + pow(AL.Y, 2)));
+                MaxDist = max(MaxDist, sqrt(pow(AL.X, 2) + pow(AL.Y, 2)));
             }
         }
-        NewM = (float)random() * 50;
+        NewM = random() * 50;
         NewRO = (int)(random() * 50);
         NewDist = -MaxDist - NewRO * 2;
-        NewPlanet = new Planet(0, NewDist, NewM, NewRO, (float)(PI * signum(random() - 0.5)), NewDist, ALBaseClass, false, false);
-        //NewPlanet.P.length *= NewPlanet.M;
+        NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * signum(random() - 0.5), NewDist, ALBaseClass, false, false);
+        NewPlanet.calc_F_ravn(Mltplr);
+        NewPlanet.P.length = NewPlanet.M * sqrt(StarMass / abs(NewDist));
+        System.out.println(new StringBuilder()
+                .append("Created new planet:")
+                .append(" M=").append(NewPlanet.M)
+                .append(" R=").append(NewPlanet.RO)
+                .append(" X=").append(0)
+                .append(" Y=").append(NewDist)
+                .append(" angle(P)=").append(NewPlanet.P.angle)
+                .append(" length(P)=").append(NewPlanet.P.length)
+                .append(" angle(F)=").append(NewPlanet.F.angle)
+                .append(" length(F)=").append(NewPlanet.F.length)
+                .toString());
         for(BaseClass AL : ALBaseClass)if("main.Planet".equals(AL.getClass().getName()))AL.calc_orbit();
     }
     
@@ -309,12 +326,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     @Override 
     public void keyPressed(KeyEvent e) {
-        if(gamestarted && !pause ){
+        if(gamestarted){ /*игра запущена и не на паузе*/
             switch(e.getKeyCode()){
+                case 19:    pause = !pause; /*кнопка pause вкл/выкл паузу*/
+                            System.out.println(pause);
+                            break;
                 case 32:    player.Shoot();    /*тест стрельбы по клавише ПРОБЕЛ*/
                             break;
                 case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
-                          
                             break;
                 case 36:       /*Home - возрат камеры к центру системы*/
                             /*p_display.x = DisplayW / 2; 
@@ -326,11 +345,15 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             break;
                 case 50:    player.GunType = 2;
                             break;
+                case 51:    player.GunType = 3;
+                            break;            
                 case 112:   SendNewPlanet();
                             break;
-                default: System.out.println(e.getKeyCode());
+                default: System.out.println(new StringBuilder()
+                        .append("Keycode pressed: ")
+                        .append(e.getKeyCode())
+                        .toString());
             }
-           
         }
     }
     
@@ -345,14 +368,12 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(gamestarted && !pause ){
-            switch(e.getButton()){
-                case 1: player.Shoot();
-                        break;
-                case 3: RMBPressed = true;
-                        p_Delta  = e.getPoint();
-                        break;
-            }
+        switch(e.getButton()){
+            case 1: if(gamestarted && !pause)player.Shoot();
+                    break;
+            case 3: RMBPressed = true;
+                    p_Delta  = e.getPoint();
+                    break;
         }
     }
 

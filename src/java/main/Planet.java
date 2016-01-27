@@ -53,6 +53,7 @@ public class Planet extends BaseClass {
     private double GunPowerNeed = 200;          /*Заряд в пушке для выстрела*/
     private double FireRate = 10;               /*Скорострельность орудия*/
     private double FireTimer;                   /*Таймер перезарядки*/
+    private Point2D p_aim;
     
     /*Конструкторы класса*/
     Planet(){
@@ -67,6 +68,7 @@ public class Planet extends BaseClass {
         }  
         GunPowerNeed = 200;
         DeadSteps = 20;
+        p_aim = new Point2D.Double();
     }
     
     @Override
@@ -136,6 +138,7 @@ public class Planet extends BaseClass {
     /*Нацеливание пушки на точку*/
     void Aim(double x, double y){
         Gun.SetAngle(X, Y, x, y);
+        p_aim.setLocation(x,y);
     }
 
     /*Выстрел из орудия*/
@@ -165,6 +168,30 @@ public class Planet extends BaseClass {
                                              , ShotV.length, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
                             }
                             break;
+                    case 3: 
+                            for(int i=0;i<ALBaseClass.size();i++){
+                                if((ALBaseClass.get(i).getClass().getName()=="main.Star")
+                                  |(ALBaseClass.get(i).getClass().getName()=="main.Planet"))
+                                    {
+                                        double r = Math.sqrt(Math.pow((ALBaseClass.get(i).X-p_aim.getX()),2)+Math.pow((ALBaseClass.get(i).Y-p_aim.getY()),2));
+                                        if(ALBaseClass.get(i).RO>r){
+                                           new  Roket(X + Math.cos(Gun.angle) * Gun.length*1.5f
+                                                         , Y + Math.sin(Gun.angle) * Gun.length*1.5f
+                                                         , 1, 4
+                                                         , Gun.angle
+                                                         , 5
+                                                         , ALBaseClass
+                                                         ,ALBaseClass.get(i) );
+                                           
+                                           System.out.println(p_aim.getX()+" "+p_aim.getY());
+
+                                        }
+                                    }
+                                } 
+                        
+                            break;
+                        
+                            
                 }
                 Energy -= GunPowerNeed;
                 FireTimer += 1000 / FireRate;

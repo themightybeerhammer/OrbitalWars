@@ -118,12 +118,14 @@ public class BaseClass {
          /*Орбита объекта*/
          if(dw_orbit)draw_orbit(g,p_display.getX(),p_display.getY()); 
          if(dw_health)draw_health(g,(X+p_display.getX()),(Y+p_display.getY())); 
-       
+         
            /*Отрисовка объекта*/
          draw_in_scr(g,(X+p_display.getX()),(Y+p_display.getY()),v_F,v_P);
        
           
      }
+     
+     /*Пламя за ракетой, кометой или ещё какой херней*/ 
      
      void draw_health(Graphics g, double x, double y){
          Graphics2D g2 = (Graphics2D)g;
