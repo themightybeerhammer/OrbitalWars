@@ -34,31 +34,36 @@ public class Vector {
     }   
     Vector(double na, double nl){
         angle = na;
-        length = nl;
+        length = abs(nl);
     }  
     Vector(Vector nv){
+        if(nv == null)throw new NullPointerException();
         angle = nv.angle;
         length = nv.length;
     }
     
     /*Установка угла вектора аналогично заданному*/
     public Vector AngleAs(Vector nv){
+        if(nv == null)throw new NullPointerException();
         angle = nv.angle;
         return this;
     }
     
     /*Проверка на сонаправленность вектору*/
     public Boolean IsCodirectional(Vector nv){
+        if(nv == null)throw new NullPointerException();
         return (angle == nv.angle);
     }
     
     /*Проверка на параллельность вектору*/
     public Boolean IsParallel(Vector nv){
+        if(nv == null)throw new NullPointerException();
         return (angle == nv.angle)|(angle == (360 - nv.angle));
     }
     
     /*Проверка на перпендикулярность вектору*/
     public Boolean IsPerpendicular(Vector nv){
+        if(nv == null)throw new NullPointerException();
         return (angle == abs(nv.angle - 90))|(angle == abs(nv.angle + 90));
     }
     
@@ -69,37 +74,46 @@ public class Vector {
     
     /*Установка длины вектора аналогично заданному*/
     public Vector LengthAs(Vector nv){
+        if(nv == null)throw new NullPointerException();
         length = nv.length;
         return this;
     }
     
     /*Вычитание вектора из вектора*/
     public Vector Minus(Vector nv){
+        if(nv == null)throw new NullPointerException();
         double nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при вычитании)*/
         nx = GetX() - nv.GetX();
         ny = GetY() - nv.GetY();
         /*вычисление новых значений*/
         length = sqrt(nx * nx + ny * ny);
-        angle = acos(nx / length) * signum(ny);
+        try{
+            angle = acos(nx / length) * signum(ny);
+        }catch(Error e){}
         return this;
     }
     
     /*Прибавление к вектору вертора*/
     public Vector Plus(Vector nv){
+        if(nv == null)throw new NullPointerException();
         double nx, ny;   /*координаты конца суммарного вектора*/
         /*вычисление координат конца последовательности векторов (как при суммировании)*/
         nx = GetX() + nv.GetX();
         ny = GetY() + nv.GetY();
         /*вычисление новых значений*/
         length = sqrt(pow(nx, 2) + pow(ny, 2));
-        angle = acos(nx / length) * signum(ny);
+        try{
+            angle = acos(nx / length) * signum(ny);
+        }catch(Error e){}
         return this;
     }
     
     /*Установка угла вектора по двум точкам*/
     public Vector SetAngle(double x1, double y1, double x2, double y2){
-        angle = acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
+        try{
+            angle = acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
+        }catch(Error e){}
         return this;
     }
     
