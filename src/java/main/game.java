@@ -267,10 +267,10 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     /*Добавляет новую планету в уже существующую систему*/
     public void SendNewPlanet(){
         double MaxDist = 0; /*Расстояние до самой дальней планеты*/
-        double NewM = 0;
-        int NewRO = 0;
+        double NewM;
+        int NewRO;
         int MaxRO = 0;
-        double NewDist = 0;
+        double NewDist;
         double StarMass = 0;
         Planet NewPlanet;
         for(BaseClass AL : ALBaseClass){
@@ -283,7 +283,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             }
         }
         NewM = random() * 50;
-        NewRO = (int)(random() * 50);
+        NewRO = (int)(random() * 50 + 5);
         NewDist = (MaxDist + NewRO * 2 * (random() + 1) + MaxRO * 2) * signum(random() - 1);
         NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * (round(random() * 2) / 2), NewDist, ALBaseClass, false, false);
         NewPlanet.calc_F_ravn(Mltplr);
