@@ -132,15 +132,34 @@ public class DrawPanel extends JPanel{
         }
         
         /*Прорисовка Иконок Оружия*/
-         rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING
+        
+        
+        
+        Point2D center = new Point2D.Double(40, Player.GunType*50+30);
+        float radius = 25;
+        float rr = (float)(Math.random()*4+20)/100;
+        float[] dist = { 0.8f, 1.0f};
+        Color[] colors = { Color.GREEN, new Color(1,0,0,0) };
+        RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+        g2.setPaint(p);
+      //  g2.setClip(new Ellipse2D.Double(20,Player.GunType*50-5,50,50));
+        g2.fill(new Ellipse2D.Double(15, Player.GunType*50+5, 50, 50));
+        
+        
+        
+       for(int i=1;i<9;i++){
+            rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING
                                 ,RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHints(rh);
-        g2.setStroke(new BasicStroke(1f));
-        g2.fill(new Ellipse2D.Double(20,60,40,40));
-        g2.fill(new Ellipse2D.Double(20,110,40,40));
-        g2.fill(new Ellipse2D.Double(20,160,40,40));
-        g2.fill(new Ellipse2D.Double(20,210,40,40));
-        g2.fill(new Ellipse2D.Double(20,260,40,40));
+            g2.setRenderingHints(rh);
+            String str = "icons/weapon"+i+".png";
+            Image img = Toolkit.getDefaultToolkit().getImage(str);
+            g2.setStroke(new BasicStroke(1f));
+            g2.setClip(new Ellipse2D.Double(20,i*50+10,40,40));
+            g2.drawImage(img, 20,i*50+10, this);
+        }
+        
+     
+       
         
         
       

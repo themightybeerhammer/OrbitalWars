@@ -211,13 +211,13 @@ public class Roket extends BaseClass {
              
            
            P.Plus(FP);
-           P.length = P.length*40/Mtplr;
-           RocketFuel = RocketFuel-FP.length;
+           //P.length = P.length;
+           RocketFuel = RocketFuel-FP.length/Mtplr;
            flame.add(new Point2D.Double(X,Y));
            
          }
          
-         if(flame.size()>10){flame.remove(0);}
+         if(flame.size()>Mtplr/4){flame.remove(0);}
          if((RocketFuel<=0)&&flame.size()>0){flame.remove(0);} 
         
         
