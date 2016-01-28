@@ -19,22 +19,17 @@ package main;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.List;
 import java.awt.MouseInfo;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import static java.lang.Math.PI;
-import static java.lang.Math.cos;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static java.lang.Math.pow;
 import static java.lang.Math.random;
-import static java.lang.Math.sin;
-import static java.lang.Math.sqrt;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -56,6 +51,12 @@ public class Planet extends BaseClass {
     private double FireTimer;                   /*Таймер перезарядки*/
     private Point2D p_aim;
     public String Name;
+    
+    String Names[] = new String[]{"Alderaan", "Anoat", "Bespin", "Corellia", "Coruscant", "D'Qar", "Dagobah", "Dantooine"
+                                ,"Dathomir", "Endor", "Felucia", "Geonosis", "Hosnian Prime", "Hoth", "Jakku", "Kamino"
+                                ,"Kashyyyk", "Kessel", "Lothal", "Mon Calamari", "Moraband", "Mustafar", "Mygeeto"
+                                ,"Naboo", "Nal Hutta", "Rodia", "Ryloth", "Sullust", "Takodana", "Tatooine", "Umbara"
+                                ,"Utapau", "Yavin"};
     
     /*Конструкторы класса*/
     Planet(){
@@ -80,15 +81,7 @@ public class Planet extends BaseClass {
         if(IsPlayer){
             Name = "Earth";
         }else{
-            switch((int)(random() * 6)){
-                case 0: Name = "Tatuine";   break;
-                case 1: Name = "Alderaan";  break;
-                case 2: Name = "Corusant";  break;
-                case 3: Name = "Kashiik";   break;
-                case 4: Name = "Hoth";      break;
-                case 5: Name = "Mustafaar"; break;
-                case 6: Name = "Naboo";     break;
-            }
+            Name = Names[(int)(random() * Names.length)];
         }
         calc_orbit();
     }
