@@ -195,7 +195,32 @@ public class Roket extends BaseClass {
     
     public void move(double Mtplr){
          
+         if(RocketFuel>0){
+             
+           
+           Vector FP = new Vector(0,P.length);
+           /*Движение в сторону цели*/  
+           FP.SetAngle(X, Y, Target.X, Target.Y);
+           if(Math.abs(FP.angle-P.angle)>Math.PI/12){
+                FP.Minus(P);
+           }else{
+                if (P.length<20) {FP.length=0.5;} else FP.length = 0; 
+           }
+           
          
+             
+           
+           P.Plus(FP);
+           P.length = P.length*40/Mtplr;
+           RocketFuel = RocketFuel-FP.length;
+           flame.add(new Point2D.Double(X,Y));
+           
+         }
+         
+         if(flame.size()>10){flame.remove(0);}
+         if((RocketFuel<=0)&&flame.size()>0){flame.remove(0);} 
+        
+        
          double xd ;
          double yd ;
           //xd = (Math.cos(F.angle)*F.length/M);
@@ -209,28 +234,6 @@ public class Roket extends BaseClass {
          
           X = X+xd;
           Y = Y+yd;
-          
-         
-         
-         
-         
-         if(RocketFuel>0){
-           Vector FP = new Vector(0,P.length);
-           FP.SetAngle(X, Y, Target.X, Target.Y);
-           
-           if(Math.abs(FP.angle-P.angle)>Math.PI/12){
-           FP.Minus(P);
-           }else{if (P.length<20) {FP.length=0.5;} else FP.length = 0; }
-           
-           P.Plus(FP);
-      
-              
-           RocketFuel = RocketFuel-FP.length;
-           flame.add(new Point2D.Double(X,Y));
-         }
-         
-         if(flame.size()>10){flame.remove(0);}
-         if((RocketFuel<=0)&&flame.size()>0){flame.remove(0);}
          
          if(DeadFlag){
            DeadSteps--;  

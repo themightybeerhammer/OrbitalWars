@@ -39,6 +39,7 @@ public class Star extends BaseClass {
     /*Конструкторы класса*/
     Star(){
         super();
+        dw_health = true;
     } 
     Star(double x, double y, double m, int ro, double vangle, double vlength, ArrayList<BaseClass> AL){
         super(x, y, m, ro, vangle, vlength, AL);
@@ -46,21 +47,11 @@ public class Star extends BaseClass {
         HealthCur = HealthMax;
         DeadFlag = false;
         DeadSteps = 30; 
+        dw_health = true;
     }
     
     @Override
-    void move(double Mtplr){
-          if(DeadFlag){
-           DeadSteps--;  
-           if(DeadSteps<0) DeadSteps = 0;}
-    }
-    
-    @Override
-    void draw_in_scr(Graphics g
-                    ,double x
-                    ,double y
-                    ,boolean v_F  
-                    ,boolean v_P ){
+    void draw_in_scr(Graphics g, double x, double y, boolean v_F, boolean v_P ){
         Graphics2D g2 = (Graphics2D)g;
         Point2D center = new Point2D.Double(x, y);
         float radius = RO;
@@ -98,6 +89,13 @@ public class Star extends BaseClass {
 
         /*Направление равнодействующей*/
     } 
+    
+    @Override
+    void move(double Mtplr){
+          if(DeadFlag){
+           DeadSteps--;  
+           if(DeadSteps<0) DeadSteps = 0;}
+    }
     
     /*Обработка гибели объекта*/
     @Override

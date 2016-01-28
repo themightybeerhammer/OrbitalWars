@@ -56,6 +56,7 @@ public class BaseClass {
     int DeadSteps=0;        /*Количество итераций гибели объекта*/
     
     boolean dw_health=false; /*Флаг рисования здоровья*/ 
+    boolean dw_energy=false;    /*Флаг рисования энергии*/
     double HealthMax=1    /*Максимальное здоровье*/
          ,HealthCur=1;   /*Текущие здоровье*/
     
@@ -273,7 +274,7 @@ public class BaseClass {
              
             if((Math.sqrt(Math.pow(_X-X, 2)+Math.pow(_Y-Y, 2))<RO)&&(_xd*j>2*RO))break;
            j++;
-       }while(j<1500);
+       }while(j<3000);
        }         
       }
        

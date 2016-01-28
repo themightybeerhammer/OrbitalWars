@@ -44,11 +44,7 @@ public class Projectile extends BaseClass{
     }
     
     @Override
-    void draw_in_scr(Graphics g
-                    ,double x
-                    ,double y
-                    ,boolean v_F  
-                    ,boolean v_P ){ 
+    void draw_in_scr(Graphics g, double x, double y, boolean v_F, boolean v_P ){ 
         
         
         Graphics2D g2 = (Graphics2D)g;

@@ -18,6 +18,7 @@ package main;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -105,7 +106,8 @@ public class DrawPanel extends JPanel{
             if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.RED);        }
             g2.fillRect(20, 20, (int)(200 * (Player.HealthCur / Player.HealthMax)), (int)(15)); 
 
-            rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING
+                                   ,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             g2.setRenderingHints(rh);
             g.setColor(Color.WHITE);
             if(Player.HealthCur==Player.HealthMax){ g2.setColor(Color.BLACK); }
@@ -115,7 +117,9 @@ public class DrawPanel extends JPanel{
 
             /*Отрисовка прогрессбара заряда энергии*/
             /*Заливка бара*/
-            rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+             rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING
+                                   ,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            
             g2.setRenderingHints(rh);
             g2.setColor(Color.GRAY);
             g2.fillRect(20, 40, 200, 15);
@@ -126,6 +130,19 @@ public class DrawPanel extends JPanel{
             g2.setColor(Color.WHITE);
             g2.drawString((int)Player.Energy+"/"+(int)Player.MaxEnergy, 22, 52);
         }
+        
+        /*Прорисовка Иконок Оружия*/
+         rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING
+                                ,RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHints(rh);
+        g2.setStroke(new BasicStroke(1f));
+        g2.fill(new Ellipse2D.Double(20,60,40,40));
+        g2.fill(new Ellipse2D.Double(20,110,40,40));
+        g2.fill(new Ellipse2D.Double(20,160,40,40));
+        g2.fill(new Ellipse2D.Double(20,210,40,40));
+        g2.fill(new Ellipse2D.Double(20,260,40,40));
+        
+        
       
         
     }
