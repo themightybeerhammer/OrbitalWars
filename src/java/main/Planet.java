@@ -31,6 +31,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.pow;
+import static java.lang.Math.random;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
@@ -54,10 +55,14 @@ public class Planet extends BaseClass {
     private double FireRate = 10;               /*Скорострельность орудия*/
     private double FireTimer;                   /*Таймер перезарядки*/
     private Point2D p_aim;
+    public String Name;
     
     /*Конструкторы класса*/
     Planet(){
         super();
+        dw_orbit = true;
+        dw_health = true;
+        calc_orbit();
     }
     Planet(double x, double y, double m, int ro, double vangle, double vlength, ArrayList<BaseClass> AL, boolean player, boolean havegun){
         super(x, y, m, ro, vangle, vlength, AL);
@@ -69,6 +74,23 @@ public class Planet extends BaseClass {
         GunPowerNeed = 200;
         DeadSteps = 20;
         p_aim = new Point2D.Double();
+        dw_orbit = true;
+        dw_health = true;
+        dw_energy = true;
+        if(IsPlayer){
+            Name = "Earth";
+        }else{
+            switch((int)(random() * 6)){
+                case 0: Name = "Tatuine";   break;
+                case 1: Name = "Alderaan";  break;
+                case 2: Name = "Corusant";  break;
+                case 3: Name = "Kashiik";   break;
+                case 4: Name = "Hoth";      break;
+                case 5: Name = "Mustafaar"; break;
+                case 6: Name = "Naboo";     break;
+            }
+        }
+        calc_orbit();
     }
     
     @Override
@@ -78,6 +100,16 @@ public class Planet extends BaseClass {
         RenderingHints.VALUE_ANTIALIAS_ON);
         
         Graphics2D g2 = (Graphics2D)g;
+        
+        /*Отрисовка пушки*/
+        double r = 20;
+        if(IsPlayer){
+            g2.setColor(Color.GRAY);
+            double mouseX = MouseInfo.getPointerInfo().getLocation().x;
+            double mouseY = MouseInfo.getPointerInfo().getLocation().y;
+            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(Gun.angle) * r), (int)y + (int)(Math.sin(Gun.angle) * r));
+        }
+        
         g2.setRenderingHints(rh);
         g2.setColor(Color.WHITE);
         if(DeadFlag==false){
@@ -87,6 +119,12 @@ public class Planet extends BaseClass {
           g2.fill(new Ellipse2D.Double(_x,_y, RO * 2, RO * 2));
         }
         
+        if(IsPlayer){
+            g2.setColor(Color.GREEN);
+        }else{
+            g2.setColor(Color.RED);
+        }
+        g2.drawString(Name, (int)(x - (Name.length() / 2) * 6), (int)(y - RO - 10));
         /*Отрисовка прогрессбара зарядки планеты*/
         /*Заливка бара*/
         g2.setColor(Color.GRAY);
@@ -99,15 +137,6 @@ public class Planet extends BaseClass {
         g2.setColor(Color.BLUE);
         g2.setBackground(Color.BLUE);
         g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (Energy / MaxEnergy)), (int)(2 )); 
-        
-        /*Отрисовка пушки*/
-        double r = 20;
-        if(IsPlayer){
-            g2.setColor(Color.GRAY);
-            double mouseX = MouseInfo.getPointerInfo().getLocation().x;
-            double mouseY = MouseInfo.getPointerInfo().getLocation().y;
-            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(Gun.angle) * r), (int)y + (int)(Math.sin(Gun.angle) * r));
-        }
         
         /*Направление равнодействующей*/
         if((F.length != 0) & (v_F)){
@@ -143,8 +172,8 @@ public class Planet extends BaseClass {
 
     /*Выстрел из орудия*/
     boolean Shoot(){
-        try{
-            if((Energy >= GunPowerNeed) && (FireTimer <= 0)){
+        if((Energy >= GunPowerNeed) && (FireTimer <= 0)){
+            try{
                 /*вектор учитывает скорость и направление движения планеты-стрелка*/
                 Vector ShotV = new Vector(P.angle, P.length / M).Plus(Gun);
                 switch(GunType){
@@ -168,8 +197,7 @@ public class Planet extends BaseClass {
                                              , ShotV.length, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
                             }
                             break;
-                    case 3: 
-                            for(int i=0;i<ALBaseClass.size();i++){
+                    case 3: for(int i=0;i<ALBaseClass.size();i++){
                                 if((ALBaseClass.get(i).getClass().getName()=="main.Star")
                                   |(ALBaseClass.get(i).getClass().getName()=="main.Planet"))
                                     {
@@ -184,26 +212,26 @@ public class Planet extends BaseClass {
                                                          ,ALBaseClass.get(i) );
                                            
                                            System.out.println(p_aim.getX()+" "+p_aim.getY());
-
                                         }
                                     }
                                 } 
-                        
                             break;
-                        
-                            
                 }
                 Energy -= GunPowerNeed;
                 FireTimer += 1000 / FireRate;
-                return true;   
+            }catch(Error e){
+                System.err.println("ERROR: Failed to shoot!");
+                return false;
             }
-        }finally{
+            return true;
+        }else{
+            System.err.println("Failed to shoot!");
             return false;
         }
     }
     
-    /*Перезарядка оружия
-     *возвращает остаток времени до перезарядки
+    /**Перезарядка оружия
+     * возвращает остаток времени до перезарядки
      */
     double Reload(double elapsed){
         if(FireTimer > 0)FireTimer = max(0, FireTimer - elapsed);
@@ -242,9 +270,13 @@ public class Planet extends BaseClass {
                 case 2: GunPowerNeed = 1000;
                         FireRate = 4;
                         break;
+                case 3: GunPowerNeed = 5000;
+                        FireRate = 2;
+                        break;
             }
             return true;
-        }finally{
+        }catch(Error e){
+            System.err.println("ERROR: Failed to switch weapon!");
             return false;
         }
     }

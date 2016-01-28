@@ -56,6 +56,7 @@ public class BaseClass {
     int DeadSteps=0;        /*Количество итераций гибели объекта*/
     
     boolean dw_health=false; /*Флаг рисования здоровья*/ 
+    boolean dw_energy=false;    /*Флаг рисования энергии*/
     double HealthMax=1    /*Максимальное здоровье*/
          ,HealthCur=1;   /*Текущие здоровье*/
     

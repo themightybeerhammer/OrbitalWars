@@ -38,6 +38,7 @@ import static java.lang.Math.log;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
 import static java.lang.Math.random;
+import static java.lang.Math.round;
 import static java.lang.Math.signum;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public boolean gamestarted = false;
     
     /*Параметры для дебугагинга начало*/
-    public float Mltplr = 200f / (1000 / FPS);                   /*Множитель замедления*/      
+    public float Mltplr = 400f / (1000 / FPS);                   /*Множитель замедления*/      
     public boolean v_F = false;                 /*Рисовать вектор равнодействующей*/
     public boolean v_P = false;                 /*Рисовать вектор импульса*/ 
     /*Параметры для дебугагинга конец*/
@@ -85,52 +86,47 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         addKeyListener(this);
         addMouseListener(this);
         JButton b_startgame = new JButton();
-        JButton b_exit = new JButton();
         add(b_startgame);
-        add(b_exit);
         b_startgame.setAction(new Action() {
-            @Override
-            public Object getValue(String key) {
-                return null;
-            }
-
-            @Override
-            public void putValue(String key, Object value) {
-            }
-
-            @Override
-            public void setEnabled(boolean b) {
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return !gamestarted;
-            }
-
-            @Override
-            public void addPropertyChangeListener(PropertyChangeListener listener) {
-            }
-
-            @Override
-            public void removePropertyChangeListener(PropertyChangeListener listener) {
-            }
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 gamestarted = true;
                 pause = false;
                 b_startgame.setVisible(false);
-                b_exit.setVisible(false);
                 StartGame();
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return !gamestarted;
+            }
+            
+            @Override
+            public Object getValue(String key) {
+                return null;
+            }
+
+            
+            
+            @Override
+            public void setEnabled(boolean b) {
+            }
+            @Override
+            public void addPropertyChangeListener(PropertyChangeListener listener) {
+            }
+            @Override
+            public void removePropertyChangeListener(PropertyChangeListener listener) {
+            }
+            @Override
+            public void putValue(String key, Object value) {
             }
         });
         b_startgame.setText("Start game");
-        b_exit.setText("Exit");
-        //StartGame();
     }
     
     /*Инициализация игровой среды*/
-    void StartGame(){
+    private void StartGame(){
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
         setSize(DisplayW, DisplayH);
@@ -140,6 +136,8 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
+        new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
+        
         player = new Planet(0, -400, 30, 10, 0, 480, ALBaseClass, true, true);
         new Planet(0, -450, 50, 10, 0, 745, ALBaseClass, false, true);
         /*new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
@@ -148,8 +146,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         new Planet(-250, -250, 30, 10, -(float)Math.PI/4, 510, ALBaseClass, false, false);
         new Planet(-250, 0, 30, 10, (float)Math.PI / 2, 600, ALBaseClass, false, false);
         */
-      
-        new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
         
         /*Система сиськи*/
       /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
@@ -165,20 +161,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         Display.addMouseListener(this);
         Display.addMouseMotionListener(this);
         Display.setAlignmentX(0);
-        
-        for(int i = 0 ;i < ALBaseClass.size(); i++){
-            if(ALBaseClass.get(i).getClass().getName()=="main.Star"){
-              ALBaseClass.get(i).dw_health = true;   
-            }
-           
-            if(ALBaseClass.get(i).getClass().getName()=="main.Planet"){
-              ALBaseClass.get(i).dw_orbit = true;
-              ALBaseClass.get(i).dw_health = true;
-            }
-            
-            ALBaseClass.get(i).calc_orbit();  /*Расчет орбит*/
-            
-        }
         /*тестовые болванки КОНЕЦ*/
         
         /*таймер обновления мира*/
@@ -283,27 +265,33 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     }
     
     /*Добавляет новую планету в уже существующую систему*/
-    void SendNewPlanet(){
+    public void SendNewPlanet(){
         double MaxDist = 0; /*Расстояние до самой дальней планеты*/
-        double NewM;
-        int NewRO;
-        double NewDist;
-        double StarMass = 100000;
+        double NewM = 0;
+        int NewRO = 0;
+        int MaxRO = 0;
+        double NewDist = 0;
+        double StarMass = 0;
         Planet NewPlanet;
         for(BaseClass AL : ALBaseClass){
-            if((AL != null) 
-            && ("main.Planet".equals(AL.getClass().getName()))){
+            if(AL != null) 
+            if("main.Planet".equals(AL.getClass().getName())){
                 MaxDist = max(MaxDist, sqrt(pow(AL.X, 2) + pow(AL.Y, 2)));
+                if(MaxDist == sqrt(pow(AL.X, 2) + pow(AL.Y, 2)))MaxRO = AL.RO;  /*смотрим на радиус самой дальней планеты - что не наступить на нее*/
+            }else if("main.Star".equals(AL.getClass().getName())){
+                StarMass += AL.M;
             }
         }
         NewM = random() * 50;
         NewRO = (int)(random() * 50);
-        NewDist = -MaxDist - NewRO * 2;
-        NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * signum(random() - 0.5), NewDist, ALBaseClass, false, false);
+        NewDist = (MaxDist + NewRO * 2 * (random() + 1) + MaxRO * 2) * signum(random() - 1);
+        NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * (round(random() * 2) / 2), NewDist, ALBaseClass, false, false);
         NewPlanet.calc_F_ravn(Mltplr);
         NewPlanet.P.length = NewPlanet.M * sqrt(StarMass / abs(NewDist));
         System.out.println(new StringBuilder()
-                .append("Created new planet:")
+                .append("Created new planet '")
+                .append(NewPlanet.Name)
+                .append("' :")
                 .append(" M=").append(NewPlanet.M)
                 .append(" R=").append(NewPlanet.RO)
                 .append(" X=").append(0)
@@ -317,89 +305,41 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     }
     
     @Override
-    public void destroy(){
-    }
-    
-    @Override 
-    public void keyTyped(KeyEvent e) {
-    }
-    
-    @Override 
     public void keyPressed(KeyEvent e) {
         if(gamestarted){ /*игра запущена и не на паузе*/
             switch(e.getKeyCode()){
                 case 19:    pause = !pause; /*кнопка pause вкл/выкл паузу*/
                             System.out.println(pause);
                             break;
-                case 32:    player.Shoot();    /*тест стрельбы по клавише ПРОБЕЛ*/
+                case 32:    if(player.Shoot())  /*тест стрельбы по клавише ПРОБЕЛ*/
+                            System.out.println(new StringBuilder().append("Player shoot!").toString());
                             break;
                 case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
                             break;
-                case 36:       /*Home - возрат камеры к центру системы*/
+                case 36:    /*Home - возрат камеры к центру системы*/
                             /*p_display.x = DisplayW / 2; 
                             p_display.y = DisplayH / 2;*/
                             p_display.setLocation(DisplayW / 2,DisplayH / 2);
                             break;
                 /*клавиши 1-9 для переключения оружия*/
                 case 49:    player.GunType = 1;
+                            System.out.println(new StringBuilder().append("Player switch weapon to 1").toString());
                             break;
                 case 50:    player.GunType = 2;
+                            System.out.println(new StringBuilder().append("Player switch weapon to 2").toString());
                             break;
                 case 51:    player.GunType = 3;
+                            System.out.println(new StringBuilder().append("Player switch weapon to 3").toString());
                             break;            
                 case 112:   SendNewPlanet();
                             break;
-                default: System.out.println(new StringBuilder()
-                        .append("Keycode pressed: ")
+                default: System.err.println(new StringBuilder()
+                        .append("Keycode ")
                         .append(e.getKeyCode())
+                        .append(" not yet implemented!")
                         .toString());
             }
         }
-    }
-    
-    @Override 
-    public void keyReleased(KeyEvent e) {
-        
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        switch(e.getButton()){
-            case 1: if(gamestarted && !pause)player.Shoot();
-                    break;
-            case 3: RMBPressed = true;
-                    p_Delta  = e.getPoint();
-                    break;
-        }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-       if(RMBPressed){
-         RMBPressed = false;
-       }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-            if(RMBPressed){
-              /*p_display.x = p_display.x + (e.getPoint().x - p_Delta.x);
-              p_display.y = p_display.y + (e.getPoint().y - p_Delta.y);*/
-              p_display.setLocation(p_display.getX() + (e.getPoint().x - p_Delta.getX()),p_display.getY() + (e.getPoint().y - p_Delta.getY()));
-              p_Delta = e.getPoint();
-           }
     }
 
     @Override
@@ -417,6 +357,56 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 overChild = false;
             }
         }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        switch(e.getButton()){
+            case 1: if(gamestarted && !pause)player.Shoot();
+                    break;
+            case 3: RMBPressed = true;
+                    p_Delta  = e.getPoint();
+                    break;
+        }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+            if(RMBPressed){
+              /*p_display.x = p_display.x + (e.getPoint().x - p_Delta.x);
+              p_display.y = p_display.y + (e.getPoint().y - p_Delta.y);*/
+              p_display.setLocation(p_display.getX() + (e.getPoint().x - p_Delta.getX()),p_display.getY() + (e.getPoint().y - p_Delta.getY()));
+              p_Delta = e.getPoint();
+           }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+       if(RMBPressed){
+         RMBPressed = false;
+       }
+    }
+    
+    
+    
+    /*Подвал для пустых методов*/
+    @Override
+    public void destroy(){
+    }
+    @Override 
+    public void keyTyped(KeyEvent e) {
+    }
+    @Override 
+    public void keyReleased(KeyEvent e) {
+    }
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 
 }
