@@ -58,7 +58,7 @@ public class BaseClass {
     boolean dw_health=false; /*Флаг рисования здоровья*/ 
     boolean dw_energy=false;    /*Флаг рисования энергии*/
     double HealthMax=1    /*Максимальное здоровье*/
-         ,HealthCur=1;   /*Текущие здоровье*/
+          ,HealthCur=1;   /*Текущие здоровье*/
     
     int Transparent = 0;    /*Счетчик отсрочки расчета столкновений. Необходим для создания объекта-в-объекте*/
     

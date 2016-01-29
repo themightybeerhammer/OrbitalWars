@@ -190,6 +190,7 @@ public class Planet extends BaseClass {
                                              , ShotV.length, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
                             }
                             break;
+                            
                     case 3: for(int i=0;i<ALBaseClass.size();i++){
                                 if((ALBaseClass.get(i).getClass().getName()=="main.Star")
                                   |(ALBaseClass.get(i).getClass().getName()=="main.Planet"))
@@ -209,6 +210,13 @@ public class Planet extends BaseClass {
                                     }
                                 } 
                             break;
+                    case 4: new    Grenede(X + Math.cos(Gun.angle) * Gun.length
+                                         , Y + Math.sin(Gun.angle) * Gun.length
+                                         , 1, 2
+                                         , ShotV.angle
+                                         , ShotV.length
+                                         , ALBaseClass);
+                            break;                            
                 }
                 Energy -= GunPowerNeed;
                 FireTimer += 1000 / FireRate;

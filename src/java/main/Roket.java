@@ -37,7 +37,7 @@ public class Roket extends BaseClass {
      BaseClass Target;         /*Объект цель*/
      public double RocketFuel; /*Запас топлива ракеты*/
      
-     Roket(){
+    Roket(){
         super();
     }
     Roket(double x
@@ -47,7 +47,7 @@ public class Roket extends BaseClass {
             , double vangle
             , double vlength
             , ArrayList<BaseClass> AL
-            ,BaseClass target
+            , BaseClass target
             ){
         
         

@@ -378,6 +378,9 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 case 51:    player.GunType = 3;
                             System.out.println(new StringBuilder().append("Player switch weapon to 3").toString());
                             break;
+                case 52:    player.GunType = 4;
+                            System.out.println(new StringBuilder().append("Player switch weapon to 4").toString());
+                            break;            
                 case 112:   SendNewPlanet();    /*F1 - генерация новой планеты*/
                             break;
                 case 113:   SendNewComet();     /*F2 - генерация новой кометы*/
