@@ -57,7 +57,7 @@ import javax.swing.JLabel;
 
 public class game extends Applet implements KeyListener, MouseListener, MouseMotionListener {
     
-    public final byte FPS = 100;                /*Частота обновлений*/
+    public final byte FPS = 20;                /*Частота обновлений*/
     private ArrayList<BaseClass> ALBaseClass;   /*Коллекция всех объектов*/
     private CenterMass CM;                      /*Центр масс*/ 
     protected DrawPanel Display;                /*Панель для отображения*/
@@ -156,7 +156,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
       
       
          /*создаем новый игровой экран*/
-        Display = new DrawPanel((int)(DisplayW * 0.9), (int)(DisplayH * 0.9));
+        Display = new DrawPanel((int)(DisplayW), (int)(DisplayH));
         add(Display);
         Display.addMouseListener(this);
         Display.addMouseMotionListener(this);
@@ -264,6 +264,51 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         requestFocusInWindow();
     }
     
+    /*Генерация случайной кометы на краю системы*/
+    public void SendNewComet(){
+        int NewRO;
+        NewRO = (int)max(1, (random() * 3));
+        double NewM;
+        NewM = NewRO;
+        /*Определяет с какой границы системы создать комету*/
+        int SpawnSeed = (int)round(random() * 100);
+        double NX = 1000, NY = 1000;
+        if(SpawnSeed <= 50){
+            NX = random() * un_end_X * signum(random() * 2 - 1);
+            NY -= NewRO * signum(NX);
+        }else{
+            NY = random() * un_end_Y * signum(random() * 2 - 1);
+            NX -= NewRO * signum(NY);
+        }
+        double NewDist;
+        NewDist = sqrt(pow(NX, 2) + pow(NY, 2));
+        /*Поиск радиуса системы для нацеливания кометы*/
+        double MaxDist = 0; /*Расстояние до самой дальней планеты*/
+        for(BaseClass AL : ALBaseClass){
+            if(AL != null)
+                if("main.Planet".equals(AL.getClass().getName()))
+                    MaxDist = max(MaxDist, sqrt(pow(AL.X, 2) + pow(AL.Y, 2)));
+        }
+        /*Непосредственно создается комета, направляется и просчитывается*/
+        Comet NewComet;
+        NewComet = new Comet(NX, NY, NewM, NewRO, (new Vector().SetAngle(NX, NY, (random() * 2 - 1) * MaxDist, (random() * 2 - 1) * MaxDist)).angle /** ((random() - 0.5) / 3.14)*/, NewDist, ALBaseClass);
+        NewComet.P.length = random() * NewM * 50;
+        NewComet.calc_F_ravn(Mltplr);
+        for(BaseClass AL : ALBaseClass)if("main.Planet".equals(AL.getClass().getName()))AL.calc_orbit();
+        /*Коммент в консоли о создании кометы с основной инфой*/
+        System.out.println(new StringBuilder()
+                .append("Created new comet:")
+                .append(" M=").append(NewComet.M)
+                .append(" R=").append(NewComet.RO)
+                .append(" X=").append(NewComet.X)
+                .append(" Y=").append(NewComet.Y)
+                .append(" angle(P)=").append(NewComet.P.angle)
+                .append(" length(P)=").append(NewComet.P.length)
+                .append(" angle(F)=").append(NewComet.F.angle)
+                .append(" length(F)=").append(NewComet.F.length)
+                .toString());
+    }
+    
     /*Добавляет новую планету в уже существующую систему*/
     public void SendNewPlanet(){
         double MaxDist = 0; /*Расстояние до самой дальней планеты*/
@@ -272,6 +317,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         int MaxRO = 0;
         double NewDist;
         double StarMass = 0;
+        double StarRO = 0;
         Planet NewPlanet;
         for(BaseClass AL : ALBaseClass){
             if(AL != null) 
@@ -280,11 +326,12 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 if(MaxDist == sqrt(pow(AL.X, 2) + pow(AL.Y, 2)))MaxRO = AL.RO;  /*смотрим на радиус самой дальней планеты - что не наступить на нее*/
             }else if("main.Star".equals(AL.getClass().getName())){
                 StarMass += AL.M;
+                StarRO = max(StarRO, AL.RO);
             }
         }
         NewM = random() * 50;
-        NewRO = (int)(random() * 50 + 5);
-        NewDist = (MaxDist + NewRO * 2 * (random() + 1) + MaxRO * 2) * signum(random() - 1);
+        NewRO = (int)max(5, (random() * 50));
+        NewDist = max(StarRO * 1.5, (MaxDist + NewRO * 2 * (random() + 1) + MaxRO * 2) * signum(random() - 1));
         NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * (round(random() * 2) / 2), NewDist, ALBaseClass, false, false);
         NewPlanet.calc_F_ravn(Mltplr);
         NewPlanet.P.length = NewPlanet.M * sqrt(StarMass / abs(NewDist));
@@ -330,8 +377,10 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             break;
                 case 51:    player.GunType = 3;
                             System.out.println(new StringBuilder().append("Player switch weapon to 3").toString());
-                            break;            
-                case 112:   SendNewPlanet();
+                            break;
+                case 112:   SendNewPlanet();    /*F1 - генерация новой планеты*/
+                            break;
+                case 113:   SendNewComet();     /*F2 - генерация новой кометы*/
                             break;
                 default: System.err.println(new StringBuilder()
                         .append("Keycode ")
@@ -341,7 +390,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             }
         }
     }
-
     @Override
     public void mouseMoved(MouseEvent e) {
         if(gamestarted && !pause ){
@@ -386,7 +434,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
          RMBPressed = false;
        }
     }
-    
     
     
     /*Подвал для пустых методов*/
