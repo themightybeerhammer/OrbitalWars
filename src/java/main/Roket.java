@@ -71,9 +71,7 @@ public class Roket extends BaseClass {
          Т.Е. ВХОДИТ ЛИ ОБЪЕКТ В ОТОБРАЖАЕМУЮ ОБЛАСТЬ */
          
          
-         /*Отрисовка объекта*/
-        // System.out.println(p_display.getX()+" "+p_display.getY());
-         draw_in_scr(g, X + p_display.getX(), Y + p_display.getY(), v_F, v_P);
+        
          /*Прорисовка пламени*/
          draw_flame(g,p_display.getX(),p_display.getY());
          /*Отрисовка объекта*/

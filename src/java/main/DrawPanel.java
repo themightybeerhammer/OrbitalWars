@@ -154,7 +154,7 @@ public class DrawPanel extends JPanel{
             String str = "icons/weapon"+i+".png";
             Image img = Toolkit.getDefaultToolkit().getImage(str);
             g2.setStroke(new BasicStroke(1f));
-            g2.setClip(new Ellipse2D.Double(20,i*50+10,40,40));
+            //g2.setClip(new Ellipse2D.Double(20,i*50+10,40,40));
             g2.drawImage(img, 20,i*50+10, this);
         }
         
