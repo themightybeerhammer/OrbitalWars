@@ -18,6 +18,8 @@ package main;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -106,29 +108,47 @@ public class DrawPanel extends JPanel{
             if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.RED);        }
             g2.fillRect(20, 20, (int)(200 * (Player.HealthCur / Player.HealthMax)), (int)(15)); 
 
-            rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING
-                                   ,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING
+                                   ,RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHints(rh);
             g.setColor(Color.WHITE);
             if(Player.HealthCur==Player.HealthMax){ g2.setColor(Color.BLACK); }
             if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur>Player.HealthMax*0.4))){g2.setColor(Color.BLACK);        }
             if((Player.HealthCur!=Player.HealthMax)&&((Player.HealthCur<=Player.HealthMax*0.4))){g2.setColor(Color.WHITE);        }
-            g2.drawString((int)Player.HealthCur+"/"+(int)Player.HealthMax, 22, 32);
-
+            //g2.drawString((int)Player.HealthCur+"/"+(int)Player.HealthMax, 22, 32);
+            {
+            FontRenderContext fontContext = new FontRenderContext(null, false, false);
+            Font font = new Font("Arial",Font.TYPE1_FONT,15);
+            GlyphVector gv = font.createGlyphVector(fontContext, (int)Player.HealthCur+"/"+(int)Player.HealthMax);
+            Shape sh;
+            sh=gv.getOutline(22 ,32);
+            g2.fill(sh);
+            }
+            
+            
             /*Отрисовка прогрессбара заряда энергии*/
             /*Заливка бара*/
-             rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING
-                                   ,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING
+                                   ,RenderingHints.VALUE_ANTIALIAS_ON);
             
             g2.setRenderingHints(rh);
             g2.setColor(Color.GRAY);
             g2.fillRect(20, 40, 200, 15);
             g2.setColor(Color.BLUE); 
             g2.fillRect(20, 40, (int)(200 * (Player.Energy / Player.MaxEnergy)), (int)(15)); 
-            rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
+            rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON );
             g2.setRenderingHints(rh);
             g2.setColor(Color.WHITE);
-            g2.drawString((int)Player.Energy+"/"+(int)Player.MaxEnergy, 22, 52);
+            //g2.drawString((int)Player.Energy+"/"+(int)Player.MaxEnergy, 22, 52);
+            
+            {
+            FontRenderContext fontContext = new FontRenderContext(null, false, false);
+            Font font = new Font("Arial",Font.TYPE1_FONT,15);
+            GlyphVector gv = font.createGlyphVector(fontContext, (int)Player.Energy+"/"+(int)Player.MaxEnergy);
+            Shape sh;
+            sh=gv.getOutline(22 ,52);
+            g2.fill(sh);
+            }
         }
         
         /*Прорисовка Иконок Оружия*/

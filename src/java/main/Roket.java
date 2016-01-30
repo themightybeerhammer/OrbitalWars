@@ -85,6 +85,7 @@ public class Roket extends BaseClass {
                      ,double x
                      ,double y){
          
+         if(!Target.DeadFlag){
              Graphics2D g2 = (Graphics2D)g;/**/
              RenderingHints rh = new RenderingHints(
              RenderingHints.KEY_ANTIALIASING,
@@ -99,6 +100,7 @@ public class Roket extends BaseClass {
              g2.draw(new Line2D.Double(x,y+5,x,y+15));
              g2.draw(new Line2D.Double(x-5,y,x-15,y));
              g2.draw(new Line2D.Double(x+5,y,x+15,y));
+         }
          
          
      }
@@ -111,7 +113,7 @@ public class Roket extends BaseClass {
                      ,boolean v_P ){
         
         
-          Graphics2D g2 = (Graphics2D)g;/**/
+          Graphics2D g2 = (Graphics2D)g;
           RenderingHints rh = new RenderingHints(
              RenderingHints.KEY_ANTIALIASING,
              RenderingHints.VALUE_ANTIALIAS_ON);
@@ -209,7 +211,6 @@ public class Roket extends BaseClass {
              
            
            P.Plus(FP);
-           //P.length = P.length;
            RocketFuel = RocketFuel-FP.length/Mtplr;
            flame.add(new Point2D.Double(X,Y));
            

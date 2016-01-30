@@ -24,8 +24,12 @@ import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import static java.lang.Math.sqrt;
 import java.util.ArrayList;
+import java.util.Random;
+import static main.BaseClass.ALBaseClass;
 
 /**
  *
@@ -64,28 +68,77 @@ public class Grenede extends BaseClass {
          g2.setRenderingHints(rh);
          g2.setColor(Color.DARK_GRAY);
          g2.fill(new Ellipse2D.Double(x-RO, y-RO, RO*2, RO*2));
-        // g2.drawOval((int)x-RO, (int)y-RO, RO*2, RO*2);
-
-          /*Направление равнодействующей*/
-         double r = 20;
+         
+         g2.setColor(Color.RED);
+         g2.draw(new Line2D.Double(x-RO/2,y,x+RO/2,y));
+         g2.draw(new Line2D.Double(x,y-RO/2,x,y+RO/2));
         
-         if((F.length!=0)&(v_F))
-            {
-                g2.setColor(Color.BLUE);
-                g2.drawLine((int)x,(int) y, (int)x+(int)(Math.cos(F.angle)*r) ,(int) y+(int)(Math.sin(F.angle)*r));
-            }
-         
-         /*Направление Импульса*/
-          r = 20;
-         if((P.length!=0)&(v_P))
-            {
-                g2.setColor(Color.GREEN);
-                g2.drawLine((int)x, (int)y, (int)x+(int)(Math.cos(P.angle)*r) , (int)y+(int)(Math.sin(P.angle)*r));
-            }
-         
-      
+        
+         if(DeadFlag){
+             Point2D center = new Point2D.Double(x, y);
+             
+             float radius = RO*2-DeadSteps+2;
+             if(radius<=0) radius = 1;
+            
+             float[] dist = { 0.6f, 1.0f};
+             Color[] colors = { Color.YELLOW, new Color(1,0,0,0) };
+             RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+             g2.setPaint(p);
+             g2.fill(new Ellipse2D.Double(x-radius, y-radius, radius*2, radius*2));
+         }
      }
      
+     
+     
+      void Explode(){
+          
+        if(!DeadFlag){  
+        DeadFlag = true;  
+        int objCount = 20;   /*Кол-во осколков, на которые распадется планета*/
+        int objSize = 1;     /*Размер осколков*/
+        double objMass = 1; /*Масса осколков*/
+        double nx, ny;       /*Координаты появления осколка*/
+        Vector dirbuff;         /*Вектор полета осколка*/
+        //Projectile projbuff;    /*Осколок*/
+        /*Расстановка осколков внутри периметра планеты*/
+        for(double i = 0; i < objCount; i++){
+           
+            
+            Random rr = new Random();
+            int r =rr.nextInt(2);
+            if(r!=0){
+                nx = X + (2 / 2 * Math.cos(i));
+                ny = Y + (2 / 2 * Math.sin(i));
+                dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
+                dirbuff.length=15;
+                dirbuff.Plus(P);
+                (new Projectile(nx, ny, objMass, objSize, dirbuff.angle,  dirbuff.length, ALBaseClass)).Transparent = 5;
+            }
+            
+            r =rr.nextInt(2);
+            if(r!=0){
+                nx = X + (3 / 2 * Math.cos(i));
+                ny = Y + (3 / 2 * Math.sin(i));
+                dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
+                dirbuff.length=20;
+                dirbuff.Plus(P);
+               (new Projectile(nx, ny, objMass, objSize, dirbuff.angle, dirbuff.length, ALBaseClass)).Transparent = 5;
+            }
+            
+            r =rr.nextInt(2);
+            if(r!=0){
+                nx = X + (4 / 2 * Math.cos(i));
+                ny = Y + (4 / 2 * Math.sin(i));
+                dirbuff = (new Vector().SetAngle(X, Y, nx, ny));
+                dirbuff.length=25;
+                dirbuff.Plus(P);
+            
+            (new Projectile(nx, ny, objMass, objSize, dirbuff.angle, dirbuff.length, ALBaseClass)).Transparent = 5;
+            }
+        }
+       }
+    }
+    
      
      
     

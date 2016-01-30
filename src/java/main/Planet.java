@@ -17,19 +17,27 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.List;
 import java.awt.MouseInfo;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.random;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
+import sun.font.Font2D;
 
 /**
  *
@@ -50,7 +58,8 @@ public class Planet extends BaseClass {
     private double FireRate = 10;               /*Скорострельность орудия*/
     private double FireTimer;                   /*Таймер перезарядки*/
     private Point2D p_aim;
-    public String Name;
+    public  String Name;
+    public  Grenede GrenateEjected;             /*Запущенная */
     
     String Names[] = new String[]{"Alderaan", "Anoat", "Bespin", "Corellia", "Coruscant", "D'Qar", "Dagobah", "Dantooine"
                                 ,"Dathomir", "Endor", "Felucia", "Geonosis", "Hosnian Prime", "Hoth", "Jakku", "Kamino"
@@ -100,7 +109,8 @@ public class Planet extends BaseClass {
             g2.setColor(Color.GRAY);
             double mouseX = MouseInfo.getPointerInfo().getLocation().x;
             double mouseY = MouseInfo.getPointerInfo().getLocation().y;
-            g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(Gun.angle) * r), (int)y + (int)(Math.sin(Gun.angle) * r));
+            g2.draw(new Line2D.Double(x,y, x + (Math.cos(Gun.angle) * r), y + (Math.sin(Gun.angle) * r)));
+            //g2.drawLine((int)x, (int)y, (int)x + (int)(Math.cos(Gun.angle) * r), (int)y + (int)(Math.sin(Gun.angle) * r));
         }
         
         g2.setRenderingHints(rh);
@@ -117,19 +127,31 @@ public class Planet extends BaseClass {
         }else{
             g2.setColor(Color.RED);
         }
-        g2.drawString(Name, (int)(x - (Name.length() / 2) * 6), (int)(y - RO - 10));
+        
+        
+        //g2.drawString(Name, (int)(x - (Name.length() / 2) * 6), (int)(y - RO - 10));
+        FontRenderContext fontContext = new FontRenderContext(null, false, false);
+        Font font = new Font("Arial",Font.TYPE1_FONT,15);
+        GlyphVector gv = font.createGlyphVector(fontContext, Name);
+        Shape sh;
+        sh=gv.getOutline((float) (x - (Name.length() / 2) * 6)  ,(float) (y - RO - 10));
+        g2.fill(sh);
         /*Отрисовка прогрессбара зарядки планеты*/
         /*Заливка бара*/
         g2.setColor(Color.GRAY);
-        g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2), (int)(2));
+        g2.fill(new Rectangle2D.Double(x - RO, y - RO - 5, RO * 2, 2));
+        //g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2), (int)(2));
+        
         /*Маркер необходимого для выстрела кол-ва энергии*/
         g2.setColor(Color.RED);
         g2.setBackground(Color.RED);
-        g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (GunPowerNeed / MaxEnergy)), (int)(2)); 
+        g2.fill(new Rectangle2D.Double((x - RO), (y - RO - 5), (RO * 2 * (GunPowerNeed / MaxEnergy)), 2));
+        //g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (GunPowerNeed / MaxEnergy)), (int)(2)); 
         /*Текущий уровень заряда*/
         g2.setColor(Color.BLUE);
         g2.setBackground(Color.BLUE);
-        g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (Energy / MaxEnergy)), (int)(2 )); 
+        g2.fill(new Rectangle2D.Double((x - RO), (y - RO - 5), (RO * 2 * (Energy / MaxEnergy)), (2)));
+        //g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (Energy / MaxEnergy)), (int)(2 )); 
         
         /*Направление равнодействующей*/
         if((F.length != 0) & (v_F)){
@@ -174,20 +196,58 @@ public class Planet extends BaseClass {
                                          , Y + Math.sin(Gun.angle) * Gun.length
                                          , 1, 1
                                          , ShotV.angle
-                                         , ShotV.length, ALBaseClass);
+                                         , ShotV.length
+                                         , ALBaseClass);
                             break;
-                    case 2: int bullets = 8;    /*Кол-во "дробинок"*/
+                    case 2: int bullets = 5;    /*Кол-во "дробинок"*/
                             for(int i = -(bullets / 2); i <= (bullets / 2); i++){
                                 /**В первых двух параметрах Math.PI / i / 5
                                  * это смещение появляющихся снарядов
                                  * относительно дула - чтобы не столкнулись сразу
                                  */
-                                (new Projectile(X + (Math.cos(Gun.angle + (Math.PI / i / 5))) * (Gun.length)
-                                             , Y + (Math.sin(Gun.angle + (Math.PI / i / 5))) * (Gun.length)
+                                 double delta=0;
+                                 if(i!=0){delta=(Math.PI / i / 10);}
+                                 Random rr = new Random();
+                                 int r =0;
+                                 
+                                 
+                                 
+                                 r=rr.nextInt(2);
+                                 if(r!=0)
+                                 (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
+                                             , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
                                              , 1, 1
                                              /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + (Math.PI / i / 12)
-                                             , ShotV.length, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
+                                             , ShotV.angle + delta/2
+                                             , ShotV.length+5, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
+                                 r=rr.nextInt(2);
+                                 if(r!=0)
+                                 (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
+                                             , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
+                                             , 1, 1
+                                             /*Math.PI / i / 12 - угол разлета снарядов*/
+                                             , ShotV.angle + delta/2
+                                             , ShotV.length+10, ALBaseClass)).Transparent = 5; 
+                                 
+                                 r=rr.nextInt(2);
+                                 if(r!=0)
+                                 (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
+                                             , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
+                                             , 1, 1
+                                             /*Math.PI / i / 12 - угол разлета снарядов*/
+                                             , ShotV.angle + delta/2
+                                             , ShotV.length+15, ALBaseClass)).Transparent = 5; 
+                                 
+                                 r=rr.nextInt(2);
+                                 if(r!=0)
+                                 (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
+                                             , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
+                                             , 1, 1
+                                             /*Math.PI / i / 12 - угол разлета снарядов*/
+                                             , ShotV.angle + delta/2
+                                             , ShotV.length+20, ALBaseClass)).Transparent = 5; 
+                                 
+                                 
                             }
                             break;
                             
@@ -210,12 +270,29 @@ public class Planet extends BaseClass {
                                     }
                                 } 
                             break;
-                    case 4: new    Grenede(X + Math.cos(Gun.angle) * Gun.length
+                    case 4: if(GrenateEjected==null){
+                         
+                               GrenateEjected = new  Grenede(
+                                           X + Math.cos(Gun.angle) * Gun.length
                                          , Y + Math.sin(Gun.angle) * Gun.length
-                                         , 1, 2
+                                         , 1, 3
                                          , ShotV.angle
                                          , ShotV.length
                                          , ALBaseClass);
+                            }else{
+                                if(GrenateEjected.DeadFlag){
+                                   GrenateEjected = new  Grenede(
+                                           X + Math.cos(Gun.angle) * Gun.length
+                                         , Y + Math.sin(Gun.angle) * Gun.length
+                                         , 1, 3
+                                         , ShotV.angle
+                                         , ShotV.length
+                                         , ALBaseClass);
+                                }else{
+                                    GrenateEjected.Explode();
+                                    GrenateEjected = null;
+                                }
+                            }
                             break;                            
                 }
                 Energy -= GunPowerNeed;
@@ -274,6 +351,9 @@ public class Planet extends BaseClass {
                 case 3: GunPowerNeed = 5000;
                         FireRate = 2;
                         break;
+                case 4: GunPowerNeed = 10000;
+                        FireRate = 1;
+                        break;        
             }
             return true;
         }catch(Error e){

@@ -27,7 +27,9 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import static java.lang.Integer.max;
 import static java.lang.Math.PI;
 import static java.lang.Math.pow;
@@ -111,12 +113,7 @@ public class BaseClass {
         
          /*ПЕРЕД ЗАПУСКОМ ПРОЦЕДУРЫ ДОЛЖНА БЫТЬ ОБРАБОТКА ЭКРАНА ОТОБРАЖЕНИЯ
          Т.Е. ВХОДИТ ЛИ ОБЪЕКТ В ОТОБРАЖАЕМУЮ ОБЛАСТЬ */
-         
-         
-         /*Отрисовка объекта*/
-        // System.out.println(p_display.getX()+" "+p_display.getY());
-         draw_in_scr(g, X + p_display.getX(), Y + p_display.getY(), v_F, v_P);
-         /*Орбита объекта*/
+        /*Орбита объекта*/
          if(dw_orbit)draw_orbit(g,p_display.getX(),p_display.getY()); 
          if(dw_health)draw_health(g,(X+p_display.getX()),(Y+p_display.getY())); 
          
@@ -138,11 +135,13 @@ public class BaseClass {
         /*Заливка бара*/
         g2.setRenderingHints(rh);
         g2.setColor(Color.GRAY);
-        g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2), (int)(2));
+        g2.fill(new Rectangle2D.Double(x-RO,y-RO-7,RO*2,2));
+        //g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2), (int)(2));
       
         g2.setColor(Color.GREEN);
         g2.setBackground(Color.GREEN);
-        g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2 * (HealthCur / HealthMax)), (int)(2)); 
+        g2.fill(new Rectangle2D.Double(x-RO,y-RO-7,RO*2*(HealthCur / HealthMax),2));
+        //g2.fillRect((int)(x - RO), (int)(y - RO - 7), (int)(RO * 2 * (HealthCur / HealthMax)), (int)(2)); 
       
         
      
@@ -162,14 +161,12 @@ public class BaseClass {
          g2.setRenderingHints(rh);
          g2.setColor(Color.WHITE);
          g2.draw(new Ellipse2D.Double(x-RO, y-RO, RO*2, RO*2));
-        // g2.drawOval((int)x-RO, (int)y-RO, RO*2, RO*2);
-
           /*Направление равнодействующей*/
          double r = 20;
          if((F.length!=0)&(v_F))
             {
                 g2.setColor(Color.BLUE);
-                g2.drawLine((int)x,(int) y, (int)x+(int)(Math.cos(F.angle)*r) ,(int) y+(int)(Math.sin(F.angle)*r));
+                g2.draw(new Line2D.Double(x,y,x+(Math.cos(F.angle)*r),y+(Math.sin(F.angle)*r)));
             }
          
          /*Направление Импульса*/
@@ -177,7 +174,7 @@ public class BaseClass {
          if((P.length!=0)&(v_P))
             {
                 g2.setColor(Color.GREEN);
-                g2.drawLine((int)x, (int)y, (int)x+(int)(Math.cos(P.angle)*r) , (int)y+(int)(Math.sin(P.angle)*r));
+                g2.draw(new Line2D.Double(x,y,x+(Math.cos(P.angle)*r) , y+(Math.sin(P.angle)*r)));
             }
          
       
@@ -218,7 +215,7 @@ public class BaseClass {
         Vector _F = new Vector(0,0); /*Вектор равнодействующей*/
         Vector _P = new Vector(P);   /*Импульс*/
        
-       Orbit.add(new Point((int)(X),(int)(Y)));
+       Orbit.add(new Point2D.Double(X,Y));
        
        if (AL.size()>0){
        do{
@@ -293,33 +290,18 @@ public class BaseClass {
          
          GeneralPath path= new GeneralPath();
          
-         path.moveTo((float)Orbit.get(0).getX()+(float)x, (float)Orbit.get(0).getY()+(float)y);
+         path.moveTo(Orbit.get(0).getX()+x, Orbit.get(0).getY()+y);
          
          for(int i=1;i<Orbit.size();i++){
-            path.lineTo((float)Orbit.get(0).getX()+(float)Orbit.get(i).getX()+(float)x
-                      , (float)Orbit.get(0).getY()+(float)Orbit.get(i).getY()+(float)y);
+            path.lineTo(Orbit.get(0).getX()+Orbit.get(i).getX()+x
+                      , Orbit.get(0).getY()+Orbit.get(i).getY()+y);
          }
          
          path.closePath();
       
          g2.setStroke(new BasicStroke(2f));
          g2.draw(path);
-     
-         
-         
-         /*        
-         for(int i=0;i<Orbit.size();i++){
-            if(i==0){
-                double _x = Orbit.get(0).x+x
-                     ,_y = Orbit.get(0).y+y;
-              g2.draw(new Ellipse2D.Double(_x,_y, 1, 1));
-            }else{
-             }
-             
-           
-         }
-         */
-         
+       
      }
      
      void calc_F_ravn(double Mtplr){
