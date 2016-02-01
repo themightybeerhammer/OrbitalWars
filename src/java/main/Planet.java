@@ -131,10 +131,10 @@ public class Planet extends BaseClass {
         
         //g2.drawString(Name, (int)(x - (Name.length() / 2) * 6), (int)(y - RO - 10));
         FontRenderContext fontContext = new FontRenderContext(null, false, false);
-        Font font = new Font("Arial",Font.TYPE1_FONT,15);
+        Font font = new Font("Arial", Font.TYPE1_FONT, 15);
         GlyphVector gv = font.createGlyphVector(fontContext, Name);
         Shape sh;
-        sh=gv.getOutline((float) (x - (Name.length() / 2) * 6)  ,(float) (y - RO - 10));
+        sh = gv.getOutline((float)(x - (Name.length() / 2) * 10), (float)(y - RO - 10));
         g2.fill(sh);
         /*Отрисовка прогрессбара зарядки планеты*/
         /*Заливка бара*/
@@ -145,12 +145,12 @@ public class Planet extends BaseClass {
         /*Маркер необходимого для выстрела кол-ва энергии*/
         g2.setColor(Color.RED);
         g2.setBackground(Color.RED);
-        g2.fill(new Rectangle2D.Double((x - RO), (y - RO - 5), (RO * 2 * (GunPowerNeed / MaxEnergy)), 2));
+        g2.fill(new Rectangle2D.Double(x - RO, y - RO - 5, RO * 2 * GunPowerNeed / MaxEnergy, 2));
         //g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (GunPowerNeed / MaxEnergy)), (int)(2)); 
         /*Текущий уровень заряда*/
         g2.setColor(Color.BLUE);
         g2.setBackground(Color.BLUE);
-        g2.fill(new Rectangle2D.Double((x - RO), (y - RO - 5), (RO * 2 * (Energy / MaxEnergy)), (2)));
+        g2.fill(new Rectangle2D.Double(x - RO, y - RO - 5, RO * 2 * Energy / MaxEnergy, 2));
         //g2.fillRect((int)(x - RO), (int)(y - RO - 5), (int)(RO * 2 * (Energy / MaxEnergy)), (int)(2 )); 
         
         /*Направление равнодействующей*/
