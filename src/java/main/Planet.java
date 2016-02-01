@@ -77,10 +77,7 @@ public class Planet extends BaseClass {
     Planet(double x, double y, double m, int ro, double vangle, double vlength, ArrayList<BaseClass> AL, boolean player, boolean havegun){
         super(x, y, m, ro, vangle, vlength, AL);
         IsPlayer = player;
-        HaveGun = havegun;
-        if(HaveGun){
-            Gun = new Vector(0, 20);
-        }  
+        if(havegun)GiveGun();
         GunPowerNeed = 200;
         DeadSteps = 20;
         p_aim = new Point2D.Double();
@@ -96,7 +93,7 @@ public class Planet extends BaseClass {
     }
     
     @Override
-    void draw_in_scr(Graphics g, double x, double y, boolean v_F, boolean v_P ){
+    public void draw_in_scr(Graphics g, double x, double y, boolean v_F, boolean v_P ){
         RenderingHints rh = new RenderingHints(
         RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
@@ -104,7 +101,7 @@ public class Planet extends BaseClass {
         Graphics2D g2 = (Graphics2D)g;
         
         /*Отрисовка пушки*/
-        double r = 20;
+        double r = RO * 2;
         if(IsPlayer){
             g2.setColor(Color.GRAY);
             double mouseX = MouseInfo.getPointerInfo().getLocation().x;
@@ -180,13 +177,13 @@ public class Planet extends BaseClass {
      }
     
     /*Нацеливание пушки на точку*/
-    void Aim(double x, double y){
+    public void Aim(double x, double y){
         Gun.SetAngle(X, Y, x, y);
         p_aim.setLocation(x,y);
     }
 
     /*Выстрел из орудия*/
-    boolean Shoot(){
+    public boolean Shoot(){
         if((Energy >= GunPowerNeed) && (FireTimer <= 0)){
             try{
                 /*вектор учитывает скорость и направление движения планеты-стрелка*/
@@ -311,7 +308,7 @@ public class Planet extends BaseClass {
     /**Перезарядка оружия
      * возвращает остаток времени до перезарядки
      */
-    double Reload(double elapsed){
+    public double Reload(double elapsed){
         if(FireTimer > 0)FireTimer = max(0, FireTimer - elapsed);
         return FireTimer;
     }
@@ -320,7 +317,7 @@ public class Planet extends BaseClass {
      * текущий вариант использует только звезды как источники энергии
      * в будущем будем учитывать и другие (внутренние)
      */
-    void Charge(){
+    public void Charge(){
         if(Energy < MaxEnergy){
             for(int i = 0; i < ALBaseClass.size(); i++){
                 if(ALBaseClass.get(i) != null){
@@ -338,7 +335,7 @@ public class Planet extends BaseClass {
      * 
      * Возращает истину когда удалось переключится
      */
-    boolean SwitchGun(int gt){
+    public boolean SwitchGun(int gt){
         try{
             GunType = gt;
             switch(gt){
@@ -364,8 +361,16 @@ public class Planet extends BaseClass {
     
     /*Обработка гибели объекта*/
     @Override
-    void Die(){
+    public void Die(){
         DeadFlag = true;
         Disruption();//Explode();
+    }
+    
+    /*Выдать планете оружие*/
+    public void GiveGun(){
+        HaveGun = true;
+        if(HaveGun){
+            Gun = new Vector(0, RO * 2);
+        }  
     }
 }
