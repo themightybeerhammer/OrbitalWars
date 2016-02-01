@@ -331,7 +331,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         }
         NewM = random() * 50;
         NewRO = (int)max(5, (random() * 50));
-        NewDist = max(StarRO * 1.5, (MaxDist + NewRO * 2 * (random() + 1) + MaxRO * 2) * signum(random() - 1));
+        NewDist = max(StarRO * 1.5, (MaxDist + NewRO * 2 * (random() + 1) + MaxRO * 2)) * signum(random() - 0.5);
         NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * (round(random() * 2) / 2), NewDist, ALBaseClass, false, false);
         NewPlanet.calc_F_ravn(Mltplr);
         NewPlanet.P.length = NewPlanet.M * sqrt(StarMass / abs(NewDist));
