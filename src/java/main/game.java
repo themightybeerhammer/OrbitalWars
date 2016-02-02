@@ -67,13 +67,15 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                , p_display;                     /*Координаты центра экрана*/
     public int DisplayW = 800;                  /*Ширина экрана*/
     public int DisplayH = 600;                  /*Высота экрана*/
-    public boolean RMBPressed = false;          /*Нажата правая кнопка мыши*/
+    private boolean RMBPressed = false;          /*Нажата правая кнопка мыши*/
     boolean overChild;                          /*Буфер для перемещения по контейнерам*/
-    float mx, my;                               /*Последние известные координаты мыши*/
+    private float mx, my;                               /*Последние известные координаты мыши*/
     public boolean ScrFlwPlr=false;             /*Экран следует за планетой игрока*/     
     public int un_end_X=1000,un_end_Y=1000;     /*Края вселеной вылетая за которые объект погибает*/
     public boolean pause = false;
     public boolean gamestarted = false;
+    
+    private int keymod = 0;
     
     /*Параметры для дебугагинга начало*/
     public float Mltplr = 400f / (1000 / FPS);  /*Множитель замедления*/      
@@ -131,6 +133,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         setSize(DisplayW, DisplayH);
         p_Delta = new Point2D.Double(0,0);
         p_display = new Point2D.Double(DisplayW / 2, DisplayH / 2);
+        player = null;
         
         GenerateLevel(1);
         
@@ -330,7 +333,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             }else if("main.Star".equals(AL.getClass().getName())){
                 StarMass += AL.M;
                 StarRO = max(StarRO, AL.RO);
-                MaxDist = max(MaxDist, StarRO * 1.5);
+                MaxDist = max(MaxDist, max(100, StarRO * 1.5));
             }
         }
         NewRO = (int)max(5, StarRO / 2);
@@ -360,6 +363,10 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     @Override
     public void keyPressed(KeyEvent e) {
+        switch(e.getKeyCode()){
+            case 17:    keymod += 1;    /*Зажата CTRL*/
+                        break;
+        }
         if(gamestarted){ /*игра запущена и не на паузе*/
             switch(e.getKeyCode()){
                 case 19:    pause = !pause; /*кнопка pause вкл/выкл паузу*/
@@ -388,7 +395,11 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 case 52:    player.GunType = 4;
                             System.out.println(new StringBuilder().append("Player switch weapon to 4").toString());
                             break;            
-                case 112:   SendNewPlanet();    /*F1 - генерация новой планеты*/
+                case 112:   if((keymod & 1) != 0){
+                                StartGame();        /*CTRL + F1 - рестарт*/
+                            }else{
+                                SendNewPlanet();    /*F1 - генерация новой планеты*/
+                            }
                             break;
                 case 113:   SendNewComet();     /*F2 - генерация новой кометы*/
                             break;
@@ -460,6 +471,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
               p_Delta = e.getPoint();
            }
     }
+    
+    @Override 
+    public void keyReleased(KeyEvent e) {
+        switch(e.getKeyCode()){
+            case 17:    keymod -= 1; /*Отжата CTRL*/
+                        break;
+        }
+    }
 
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -476,9 +495,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     }
     @Override 
     public void keyTyped(KeyEvent e) {
-    }
-    @Override 
-    public void keyReleased(KeyEvent e) {
     }
     @Override
     public void mouseClicked(MouseEvent e) {
