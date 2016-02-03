@@ -383,16 +383,16 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             p_display.setLocation(DisplayW / 2,DisplayH / 2);
                             break;
                 /*клавиши 1-9 для переключения оружия*/
-                case 49:    player.GunType = 1;
+                case 49:    player.SwitchGun(1);
                             System.out.println(new StringBuilder().append("Player switch weapon to 1").toString());
                             break;
-                case 50:    player.GunType = 2;
+                case 50:    player.SwitchGun(2);
                             System.out.println(new StringBuilder().append("Player switch weapon to 2").toString());
                             break;
-                case 51:    player.GunType = 3;
+                case 51:    player.SwitchGun(3);
                             System.out.println(new StringBuilder().append("Player switch weapon to 3").toString());
                             break;
-                case 52:    player.GunType = 4;
+                case 52:    player.SwitchGun(4);
                             System.out.println(new StringBuilder().append("Player switch weapon to 4").toString());
                             break;            
                 case 112:   if((keymod & 1) != 0){
@@ -440,13 +440,8 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             Point p = e.getPoint();
             Rectangle r = Display.getBounds();
             if(r.contains(p)){
-                if(!overChild)
-                    overChild = true;
                 mx = p.x - r.x + 16;
                 my = p.y - r.y + 16;
-            }
-            else if(overChild){
-                overChild = false;
             }
         }
     }
