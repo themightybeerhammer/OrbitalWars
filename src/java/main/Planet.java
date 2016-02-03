@@ -293,7 +293,7 @@ public class Planet extends BaseClass {
                             break;                            
                 }
                 Energy -= GunPowerNeed;
-                FireTimer += 1000 / FireRate;
+                FireTimer += 60000 / FireRate;
             }catch(Error e){
                 System.err.println("ERROR: Failed to shoot!");
                 return false;
@@ -301,6 +301,7 @@ public class Planet extends BaseClass {
             return true;
         }else{
             System.err.println("Failed to shoot!");
+            System.out.println("Reload time: " + FireTimer);
             return false;
         }
     }
@@ -340,16 +341,16 @@ public class Planet extends BaseClass {
             GunType = gt;
             switch(gt){
                 case 1: GunPowerNeed = 200;
-                        FireRate = 20;
+                        FireRate = 2000;
                         break;
                 case 2: GunPowerNeed = 1000;
-                        FireRate = 4;
+                        FireRate = 500;
                         break;
                 case 3: GunPowerNeed = 5000;
-                        FireRate = 2;
+                        FireRate = 200;
                         break;
                 case 4: GunPowerNeed = 10000;
-                        FireRate = 1;
+                        FireRate = 50;
                         break;        
             }
             return true;
