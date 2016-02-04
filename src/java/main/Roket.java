@@ -237,7 +237,7 @@ public class Roket extends BaseClass {
                     FP.Minus(P);
                     
                 }else{
-                    if (P.length<30) {FP.length=1.5;} else FP.length = 0; 
+                    if (P.length<40) {FP.length=2.5;} else FP.length = 0; 
                 }
                 
                
@@ -298,7 +298,7 @@ public class Roket extends BaseClass {
                     FP.Minus(P);
                    
                 }else{
-                    if (P.length<30) {FP.length=1.5;} else FP.length = 0; 
+                    if (P.length<40) {FP.length=2.5;} else FP.length = 0; 
                 }
                
             
