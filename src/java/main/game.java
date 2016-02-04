@@ -203,6 +203,13 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                     player.Aim((mx - p_display.getX()),( my - p_display.getY()));     /*постоянно нацеливаем орудие на последние координаты мыши*/
                     CM.CalcCenterMass();                                /*пересчет центра масс*/
                     Display.AssignList(ALBaseClass,player,p_display,v_F,v_P);  /*передача игровому экрану списка объектов для отрисовки*/ 
+                    /*Выполнение действий искуственного интелекта*/
+                    for(int i = 0; i < ALBaseClass.size(); i++){
+                        if((ALBaseClass.get(i) != null)&(ALBaseClass.get(i) != player)){
+                            ALBaseClass.get(i).AI_do();
+                        }
+                    }
+                    
                     /*Перерасчет импульса объекта, движение объекта и удаление вылетивших за пределы*/
                     for(int i = 0; i < ALBaseClass.size(); i++){
                         if(ALBaseClass.get(i) != null){
@@ -224,15 +231,9 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                     }
                     /*Следование экрана за объектом*/
                     if(ScrFlwPlr){
-                          /*End - возрат камеры к планете игрока*/
-                        /*p_display.x = DisplayW / 2-(int)Math.floor(player.X);  
-                        p_display.y = DisplayH / 2-(int)Math.floor(player.Y);*/
                         double __x = (double)(DisplayW / 2-player.X);
                         double __y = (double)(DisplayH / 2-player.Y);
-
-                        //System.out.println("X="+__x+"Y="+__y);
                         p_display.setLocation(__x,__y);
-
                     }        
                     /*Обработка столкновения*/
                     for(int i = 0 ;i < ALBaseClass.size(); i++){
@@ -265,6 +266,22 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                                        ALBaseClass.get(i).setHedge(ALBaseClass.get(j));
                                 }
                                 
+                                /*Обработка приблежающихся к планете объектов*/
+                                if((ALBaseClass.get(i).getClass().getName()=="main.Planet")
+                                 &((ALBaseClass.get(i).RO*5+ALBaseClass.get(j).RO)>rr)
+                                 &((ALBaseClass.get(i)!=player))){
+                                    /*Направленение от объекта к текущей планете*/
+                                    BaseClass object = ALBaseClass.get(j);
+                                    Planet planet = (Planet) ALBaseClass.get(i);
+                                    if(planet.IsPlayer){
+                                        
+                                        double _angle = Vector.SetAngleD(object.X, object.Y, planet.X, planet.Y);
+                                        if((Vector.AngleDiff(_angle, object.P.angle))<Math.PI/2){
+                                          planet.setHedge(object);
+                                        }
+                                    }
+                                       
+                                }
                                 
                             }
                         }  
@@ -367,7 +384,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         NewRO = (int)max(5, StarRO / 2);
         NewM = max(10, min(StarMass / 10, random() * 10 * NewRO));
         NewDist = max(StarRO * 1.5, (MaxDist + NewRO * 2 * (random() + 1) + MaxRO * 2)) * signum(random() - 0.5);
-        NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * (round(random() * 2) / 2), NewDist, ALBaseClass, false, false);
+        NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * (round(random() * 2) / 2), NewDist, ALBaseClass, true,true);
         NewPlanet.calc_F_ravn(Mltplr);
         NewPlanet.P.length = NewPlanet.M * sqrt(StarMass / abs(NewDist));
         System.out.println(new StringBuilder()

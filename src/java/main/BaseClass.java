@@ -52,6 +52,7 @@ public class BaseClass {
     double MinMassOrbit;     /*Минимальная масса объекта для участия в расчете орбиты*/
     private ArrayList<Point2D> Orbit; /*Кординаты орбиты*/
     static ArrayList<BaseClass> ALBaseClass;
+    ArrayList<BaseClass> Hedges; /*Масив перпятствий и приближающихся объектов*/
     boolean dw_orbit; /*Флаг рисования орбиты*/
     
     boolean DeadFlag=false; /*Флаг Гибели объекта*/
@@ -63,6 +64,7 @@ public class BaseClass {
           ,HealthCur=1;   /*Текущие здоровье*/
     
     int Transparent = 0;    /*Счетчик отсрочки расчета столкновений. Необходим для создания объекта-в-объекте*/
+    
     
    
     
@@ -102,6 +104,7 @@ public class BaseClass {
        
         HealthMax = M;    /*Максимальное здоровье*/
         HealthCur = HealthMax;
+        Hedges=new ArrayList<>();
       
      }
     
@@ -117,14 +120,35 @@ public class BaseClass {
          if(dw_orbit)draw_orbit(g,p_display.getX(),p_display.getY()); 
          if(dw_health)draw_health(g,(X+p_display.getX()),(Y+p_display.getY())); 
          
-           /*Отрисовка объекта*/
+         /*Отрисовка объекта*/
          draw_in_scr(g,(X+p_display.getX()),(Y+p_display.getY()),v_F,v_P);
-       
+         
+         /*Маркировка препятствий и приближающихся объектов*/
+         if(this.getClass().getName()=="main.Planet"){draw_Hedges(g,p_display.getX(),p_display.getY());}
+          
           
      }
+    
+      /*Маркировка препятствий и приближающихся объектов*/
+      public void draw_Hedges(Graphics g
+                            ,double x
+                            ,double y){
+         
+         Graphics2D g2 = (Graphics2D)g;/**/
+         RenderingHints rh = new RenderingHints(
+         RenderingHints.KEY_ANTIALIASING,
+         RenderingHints.VALUE_ANTIALIAS_ON);
+         
+         g2.setRenderingHints(rh);
+         g2.setStroke(new BasicStroke(1f));
+         g2.setColor(Color.GREEN);
+         for(int i=0;i<Hedges.size();i++){
+             g2.draw(new Ellipse2D.Double(Hedges.get(i).X+x-10,Hedges.get(i).Y+y-10,20,20));
+         
+         }
+       } 
      
      /*Пламя за ракетой, кометой или ещё какой херней*/ 
-     
      void draw_health(Graphics g, double x, double y){
          Graphics2D g2 = (Graphics2D)g;
          RenderingHints rh = new RenderingHints(
@@ -352,6 +376,8 @@ public class BaseClass {
      
 
      void move(double Mtplr){
+         /*Отчистка массива препятсвий*/
+       
          
          double xd ;
          double yd ;
@@ -427,5 +453,11 @@ public class BaseClass {
     public void setHedge(BaseClass b){
        
     }
+    
+    public void AI_do(){
+        
+       
+    }
+    
 }
              

@@ -74,7 +74,15 @@ public class Planet extends BaseClass {
         dw_health = true;
         calc_orbit();
     }
-    Planet(double x, double y, double m, int ro, double vangle, double vlength, ArrayList<BaseClass> AL, boolean player, boolean havegun){
+    Planet(double x
+         , double y
+         , double m
+         , int ro
+         , double vangle
+         , double vlength
+         , ArrayList<BaseClass> AL
+         , boolean player
+         , boolean havegun){
         super(x, y, m, ro, vangle, vlength, AL);
         IsPlayer = player;
         if(havegun)GiveGun();
@@ -375,5 +383,30 @@ public class Planet extends BaseClass {
         }  
     }
     
+    
+    /*Запись в массив препятсвий и приближающихся объектов*/
+    public void setHedge(BaseClass b){
+        Hedges.add(b);
+    }
+    
+    public void AI_do(){
+      
+      BaseClass nearest=null; /*Ближайжий объект*/  
+      for(int i=0;i<Hedges.size();i++){
+          if(nearest ==null){nearest = Hedges.get(0);}
+          if(Hedges.get(i).Distance(this)<nearest.Distance(this)){
+              nearest = Hedges.get(i);
+          }
+      }
+      
+      if(nearest!=null){
+          this.SwitchGun(1);
+          this.Aim(nearest.X, nearest.Y);
+          this.Shoot();
+          
+      }
+     
+      Hedges.removeAll(Hedges);
+    }
  
 }
