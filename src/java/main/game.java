@@ -305,7 +305,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         NewM = NewRO;
         /*Определяет с какой границы системы создать комету*/
         int SpawnSeed = (int)round(random() * 100);
-        double NX = 1000, NY = 1000;
+        double NX = un_end_X, NY = un_end_Y;
         if(SpawnSeed <= 50){
             NX = random() * un_end_X * signum(random() * 2 - 1);
             NY -= NewRO * signum(NX);
@@ -400,8 +400,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 case 19:    pause = !pause; /*кнопка pause вкл/выкл паузу*/
                             System.out.println(pause);
                             break;
-                case 32:    if(player.Shoot())  /*тест стрельбы по клавише ПРОБЕЛ*/
-                            System.out.println(new StringBuilder().append("Player shoot!").toString());
+                case 32:    player.Shoot();  /*тест стрельбы по клавише ПРОБЕЛ*/
                             break;
                 case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
                             break;
