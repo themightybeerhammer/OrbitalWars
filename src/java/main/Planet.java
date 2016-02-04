@@ -91,6 +91,127 @@ public class Planet extends BaseClass {
         }
         calc_orbit();
     }
+
+    /*Выстрел из орудия*/
+    public boolean Shoot(){
+        if((Energy >= GunPowerNeed) && (FireTimer <= 0)){
+            try{
+                /*вектор учитывает скорость и направление движения планеты-стрелка*/
+                Vector ShotV = new Vector(P.angle, P.length / M).Plus(Gun);
+                switch(GunType){
+                    case 1: new Projectile(X + Math.cos(Gun.angle) * Gun.length
+                                         , Y + Math.sin(Gun.angle) * Gun.length
+                                         , 1, 1
+                                         , ShotV.angle
+                                         , ShotV.length
+                                         , ALBaseClass);
+                            Shooted();
+                            break;
+                    case 2: int bullets = 5;    /*Кол-во "дробинок"*/
+                            for(int i = -(bullets / 2); i <= (bullets / 2); i++){
+                                /**В первых двух параметрах Math.PI / i / 5
+                                 * это смещение появляющихся снарядов
+                                 * относительно дула - чтобы не столкнулись сразу
+                                 */
+                                double delta = 0;
+                                if(i != 0)
+                                    delta = (Math.PI / i / 10);
+                                Random rr = new Random();
+                                int r = 0;
+                                r = rr.nextInt(2);
+                                if(r != 0)
+                                (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
+                                              , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
+                                              , 1, 1
+                                              /*Math.PI / i / 12 - угол разлета снарядов*/
+                                              , ShotV.angle + delta / 2
+                                              , ShotV.length + 5, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
+                                r = rr.nextInt(2);
+                                if(r != 0)
+                                (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
+                                              , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
+                                              , 1, 1
+                                              /*Math.PI / i / 12 - угол разлета снарядов*/
+                                              , ShotV.angle + delta / 2
+                                              , ShotV.length + 10, ALBaseClass)).Transparent = 5; 
+
+                                r = rr.nextInt(2);
+                                if(r != 0)
+                                (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
+                                              , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
+                                               , 1, 1
+                                              /*Math.PI / i / 12 - угол разлета снарядов*/
+                                              , ShotV.angle + delta / 2
+                                              , ShotV.length + 15, ALBaseClass)).Transparent = 5; 
+
+                                r = rr.nextInt(2);
+                                if(r != 0)
+                                (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
+                                              , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
+                                              , 1, 1
+                                              /*Math.PI / i / 12 - угол разлета снарядов*/
+                                              , ShotV.angle + delta / 2
+                                              , ShotV.length + 20, ALBaseClass)).Transparent = 5; 
+                                Shooted();
+                            }
+                            break;
+                    case 3: for(int i = 0; i < ALBaseClass.size(); i++){
+                                if(((ALBaseClass.get(i).getClass().getName() == "main.Star")
+                                  |(ALBaseClass.get(i).getClass().getName() == "main.Planet")
+                                  |(ALBaseClass.get(i).getClass().getName() == "main.Comet")
+                                  |(ALBaseClass.get(i).getClass().getName() == "main.Roket"))
+                                  &(ALBaseClass.get(i) != this))
+                                    {
+                                        double r = Math.sqrt(Math.pow((ALBaseClass.get(i).X - p_aim.getX()), 2) 
+                                                           + Math.pow((ALBaseClass.get(i).Y - p_aim.getY()), 2));
+                                        if(ALBaseClass.get(i).RO>r){
+                                            new  Roket(X + Math.cos(Gun.angle) * Gun.length * 1.5f
+                                                     , Y + Math.sin(Gun.angle) * Gun.length * 1.5f
+                                                     , 1, 4
+                                                     , Gun.angle
+                                                     , 7
+                                                     , ALBaseClass
+                                                     , ALBaseClass.get(i));
+                                            Shooted();
+                                            System.out.println(p_aim.getX()+" "+p_aim.getY());
+                                        }
+                                    }
+                                } 
+                            break;
+                    case 4: if(GrenateEjected==null){
+                                GrenateEjected = new  Grenede(X + Math.cos(Gun.angle) * Gun.length
+                                                            , Y + Math.sin(Gun.angle) * Gun.length
+                                                            , 1, 3
+                                                            , ShotV.angle
+                                                            , ShotV.length
+                                                            , ALBaseClass);
+                                Shooted();
+                            }else{
+                                if(GrenateEjected.DeadFlag){
+                                    GrenateEjected = new  Grenede(X + Math.cos(Gun.angle) * Gun.length
+                                                                , Y + Math.sin(Gun.angle) * Gun.length
+                                                                , 1, 3
+                                                                , ShotV.angle
+                                                                , ShotV.length
+                                                                , ALBaseClass);
+                                }else{
+                                    GrenateEjected.Explode();
+                                    GrenateEjected = null;
+                                }
+                            }
+                            break;                            
+                }
+            }catch(Error e){
+                System.err.println("ERROR: Failed to shoot!");
+                return false;
+            }
+            return true;
+        }else{
+            System.err.println("Failed to shoot!");
+            System.out.println("Reload time: " + FireTimer);
+            return false;
+        }
+    }
     
     @Override
     public void draw_in_scr(Graphics g, double x, double y, boolean v_F, boolean v_P ){
@@ -176,161 +297,6 @@ public class Planet extends BaseClass {
         }
      }
     
-    /*Нацеливание пушки на точку*/
-    public void Aim(double x, double y){
-        Gun.SetAngle(X, Y, x, y);
-        p_aim.setLocation(x,y);
-    }
-
-    /*Выстрел из орудия*/
-    public boolean Shoot(){
-        if((Energy >= GunPowerNeed) && (FireTimer <= 0)){
-            try{
-                /*вектор учитывает скорость и направление движения планеты-стрелка*/
-                Vector ShotV = new Vector(P.angle, P.length / M).Plus(Gun);
-                switch(GunType){
-                    case 1: new Projectile(X + Math.cos(Gun.angle) * Gun.length
-                                         , Y + Math.sin(Gun.angle) * Gun.length
-                                         , 1, 1
-                                         , ShotV.angle
-                                         , ShotV.length
-                                         , ALBaseClass);
-                            break;
-                    case 2: int bullets = 5;    /*Кол-во "дробинок"*/
-                            for(int i = -(bullets / 2); i <= (bullets / 2); i++){
-                                /**В первых двух параметрах Math.PI / i / 5
-                                 * это смещение появляющихся снарядов
-                                 * относительно дула - чтобы не столкнулись сразу
-                                 */
-                                 double delta=0;
-                                 if(i!=0){delta=(Math.PI / i / 10);}
-                                 Random rr = new Random();
-                                 int r =0;
-                                 
-                                 
-                                 
-                                 r=rr.nextInt(2);
-                                 if(r!=0)
-                                 (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
-                                             , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
-                                             , 1, 1
-                                             /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + delta/2
-                                             , ShotV.length+5, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
-                                 r=rr.nextInt(2);
-                                 if(r!=0)
-                                 (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
-                                             , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
-                                             , 1, 1
-                                             /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + delta/2
-                                             , ShotV.length+10, ALBaseClass)).Transparent = 5; 
-                                 
-                                 r=rr.nextInt(2);
-                                 if(r!=0)
-                                 (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
-                                             , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
-                                             , 1, 1
-                                             /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + delta/2
-                                             , ShotV.length+15, ALBaseClass)).Transparent = 5; 
-                                 
-                                 r=rr.nextInt(2);
-                                 if(r!=0)
-                                 (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
-                                             , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
-                                             , 1, 1
-                                             /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + delta/2
-                                             , ShotV.length+20, ALBaseClass)).Transparent = 5; 
-                                 
-                                 
-                            }
-                            break;
-                            
-                    case 3: for(int i=0;i<ALBaseClass.size();i++){
-                                if((ALBaseClass.get(i).getClass().getName()=="main.Star")
-                                  |(ALBaseClass.get(i).getClass().getName()=="main.Planet"))
-                                    {
-                                        double r = Math.sqrt(Math.pow((ALBaseClass.get(i).X-p_aim.getX()),2)+Math.pow((ALBaseClass.get(i).Y-p_aim.getY()),2));
-                                        if(ALBaseClass.get(i).RO>r){
-                                           new  Roket(X + Math.cos(Gun.angle) * Gun.length*1.5f
-                                                         , Y + Math.sin(Gun.angle) * Gun.length*1.5f
-                                                         , 1, 4
-                                                         , Gun.angle
-                                                         , 7
-                                                         , ALBaseClass
-                                                         ,ALBaseClass.get(i) );
-                                           
-                                           System.out.println(p_aim.getX()+" "+p_aim.getY());
-                                        }
-                                    }
-                                } 
-                            break;
-                    case 4: if(GrenateEjected==null){
-                         
-                               GrenateEjected = new  Grenede(
-                                           X + Math.cos(Gun.angle) * Gun.length
-                                         , Y + Math.sin(Gun.angle) * Gun.length
-                                         , 1, 3
-                                         , ShotV.angle
-                                         , ShotV.length
-                                         , ALBaseClass);
-                            }else{
-                                if(GrenateEjected.DeadFlag){
-                                   GrenateEjected = new  Grenede(
-                                           X + Math.cos(Gun.angle) * Gun.length
-                                         , Y + Math.sin(Gun.angle) * Gun.length
-                                         , 1, 3
-                                         , ShotV.angle
-                                         , ShotV.length
-                                         , ALBaseClass);
-                                }else{
-                                    GrenateEjected.Explode();
-                                    GrenateEjected = null;
-                                }
-                            }
-                            break;                            
-                }
-                Energy -= GunPowerNeed;
-                FireTimer += 60000 / FireRate;
-            }catch(Error e){
-                System.err.println("ERROR: Failed to shoot!");
-                return false;
-            }
-            return true;
-        }else{
-            System.err.println("Failed to shoot!");
-            System.out.println("Reload time: " + FireTimer);
-            return false;
-        }
-    }
-    
-    /**Перезарядка оружия
-     * возвращает остаток времени до перезарядки
-     */
-    public double Reload(double elapsed){
-        if(FireTimer > 0)FireTimer = max(0, FireTimer - elapsed);
-        return FireTimer;
-    }
-    
-    /**Подзарядка планеты
-     * текущий вариант использует только звезды как источники энергии
-     * в будущем будем учитывать и другие (внутренние)
-     */
-    public void Charge(){
-        if(Energy < MaxEnergy){
-            for(int i = 0; i < ALBaseClass.size(); i++){
-                if(ALBaseClass.get(i) != null){
-                    if(ALBaseClass.get(i).getClass().getName() == "main.Star"){
-                        Energy += 1 / Distance(ALBaseClass.get(i)) * 100000/*1000*/;
-                    }
-                }
-            }
-            Energy = min(Energy, MaxEnergy);
-        }
-    }
-    
     /**Переключение вооружения
      * Подменяет значения полей описывающих орудие и его снаряды
      * 
@@ -360,11 +326,21 @@ public class Planet extends BaseClass {
         }
     }
     
-    /*Обработка гибели объекта*/
-    @Override
-    public void Die(){
-        DeadFlag = true;
-        Disruption();//Explode();
+    /**Подзарядка планеты
+     * текущий вариант использует только звезды как источники энергии
+     * в будущем будем учитывать и другие (внутренние)
+     */
+    public void Charge(){
+        if(Energy < MaxEnergy){
+            for(int i = 0; i < ALBaseClass.size(); i++){
+                if(ALBaseClass.get(i) != null){
+                    if(ALBaseClass.get(i).getClass().getName() == "main.Star"){
+                        Energy += 1 / Distance(ALBaseClass.get(i)) * 100000/*1000*/;
+                    }
+                }
+            }
+            Energy = min(Energy, MaxEnergy);
+        }
     }
     
     /*Выдать планете оружие*/
@@ -375,5 +351,32 @@ public class Planet extends BaseClass {
         }  
     }
     
+    /**Перезарядка оружия
+     * возвращает остаток времени до перезарядки
+     */
+    public double Reload(double elapsed){
+        if(FireTimer > 0)FireTimer = max(0, FireTimer - elapsed);
+        return FireTimer;
+    }
+    
+    /*Обработка гибели объекта*/
+    @Override
+    public void Die(){
+        DeadFlag = true;
+        Disruption();//Explode();
+    }
+    
+    /*После выстрела*/
+    private void Shooted(){
+        Energy -= GunPowerNeed;
+        FireTimer += 60000 / FireRate;
+        System.out.println(new StringBuilder().append("Player shoot!").toString());
+    }
+    
+    /*Нацеливание пушки на точку*/
+    public void Aim(double x, double y){
+        Gun.SetAngle(X, Y, x, y);
+        p_aim.setLocation(x,y);
+    }
  
 }
