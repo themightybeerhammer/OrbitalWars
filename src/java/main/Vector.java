@@ -42,10 +42,64 @@ public class Vector {
         length = nv.length;
     }
     
+    /*Прибавление к вектору вертора*/
+    public Vector Plus(Vector nv){
+        if(nv == null)throw new NullPointerException("Vector cannot be NULL");
+        double nx, ny;   /*координаты конца суммарного вектора*/
+        /*вычисление координат конца последовательности векторов (как при суммировании)*/
+        nx = GetX() + nv.GetX();
+        ny = GetY() + nv.GetY();
+        /*вычисление новых значений*/
+        length = sqrt(pow(nx, 2) + pow(ny, 2));
+        try{
+            angle = acos(nx / length) * signum(ny);
+        }catch(Error e){
+            System.err.println("[Vector Plus]: Error");
+        }finally{
+            return this;
+        }
+    }
+    
+    /*Вычитание вектора из вектора*/
+    public Vector Minus(Vector nv){
+        if(nv == null)throw new NullPointerException("Vector cannot be NULL");
+        double nx, ny;   /*координаты конца суммарного вектора*/
+        /*вычисление координат конца последовательности векторов (как при вычитании)*/
+        nx = GetX() - nv.GetX();
+        ny = GetY() - nv.GetY();
+        /*вычисление новых значений*/
+        length = sqrt(nx * nx + ny * ny);
+        try{
+            angle = acos(nx / length) * signum(ny);
+        }catch(Error e){
+            System.err.println("[Vector Minus]: Error");
+        }finally{
+            return this;
+        }
+    }
+    
+    /*Установка угла вектора по двум точкам*/
+    public Vector SetAngle(double x1, double y1, double x2, double y2){
+        try{
+            angle = acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
+        }catch(Error e){
+            System.err.println("[Vector SetAngle]: Error");
+        }finally{
+            return this;
+        }
+    }
+    
     /*Установка угла вектора аналогично заданному*/
     public Vector AngleAs(Vector nv){
         if(nv == null)throw new NullPointerException("Vector cannot be NULL");
         angle = nv.angle;
+        return this;
+    }
+    
+    /*Установка длины вектора аналогично заданному*/
+    public Vector LengthAs(Vector nv){
+        if(nv == null)throw new NullPointerException("Vector cannot be NULL");
+        length = nv.length;
         return this;
     }
     
@@ -72,59 +126,7 @@ public class Vector {
         return (float) sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
     
-    /*Установка длины вектора аналогично заданному*/
-    public Vector LengthAs(Vector nv){
-        if(nv == null)throw new NullPointerException("Vector cannot be NULL");
-        length = nv.length;
-        return this;
-    }
-    
-    /*Вычитание вектора из вектора*/
-    public Vector Minus(Vector nv){
-        if(nv == null)throw new NullPointerException("Vector cannot be NULL");
-        double nx, ny;   /*координаты конца суммарного вектора*/
-        /*вычисление координат конца последовательности векторов (как при вычитании)*/
-        nx = GetX() - nv.GetX();
-        ny = GetY() - nv.GetY();
-        /*вычисление новых значений*/
-        length = sqrt(nx * nx + ny * ny);
-        try{
-            angle = acos(nx / length) * signum(ny);
-        }catch(Error e){
-            System.err.println("[Vector Minus]: Error");
-        }finally{
-            return this;
-        }
-    }
-    
-    /*Прибавление к вектору вертора*/
-    public Vector Plus(Vector nv){
-        if(nv == null)throw new NullPointerException("Vector cannot be NULL");
-        double nx, ny;   /*координаты конца суммарного вектора*/
-        /*вычисление координат конца последовательности векторов (как при суммировании)*/
-        nx = GetX() + nv.GetX();
-        ny = GetY() + nv.GetY();
-        /*вычисление новых значений*/
-        length = sqrt(pow(nx, 2) + pow(ny, 2));
-        try{
-            angle = acos(nx / length) * signum(ny);
-        }catch(Error e){
-            System.err.println("[Vector Plus]: Error");
-        }finally{
-            return this;
-        }
-    }
-    
-    /*Установка угла вектора по двум точкам*/
-    public Vector SetAngle(double x1, double y1, double x2, double y2){
-        try{
-            angle = acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
-        }catch(Error e){
-            System.err.println("[Vector SetAngle]: Error");
-        }finally{
-            return this;
-        }
-    }
+  
     
      /*Установка угла вектора по двум точкам*/
     public static double SetAngleD(double x1, double y1, double x2, double y2){
