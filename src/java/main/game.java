@@ -132,20 +132,45 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         p_Delta = new Point2D.Double(0,0);
         p_display = new Point2D.Double(DisplayW / 2, DisplayH / 2);
         
-        GenerateLevel(1);
+       GenerateLevel(1);
         
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
-        /*
-        new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
+        
+      /*  new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
         
         player = new Planet(0, -400, 30, 10, 0, 480, ALBaseClass, true, true);
-        new Planet(0, -450, 50, 10, 0, 745, ALBaseClass, false, true);*/
-        /*new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
+       
+        new Planet(100, -300, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(200, -300, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(300, -300, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(400, -300, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(500, -300, 50, 10, 0, 745, ALBaseClass, false, true);
+        
+        new Planet(100, -200, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(200, -200, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(300, -200, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(400, -200, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(500, -200, 50, 10, 0, 745, ALBaseClass, false, true);
+        
+        
+        new Planet(300, -100, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(350, -100, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(400, -100, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(450, -100, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(500, -100, 50, 10, 0, 745, ALBaseClass, false, true);
+        
+        new Planet(400, 0, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(500, 0, 50, 10, 0, 745, ALBaseClass, false, true);
+        
+        
+        new Planet(0, -450, 50, 10, 0, 745, ALBaseClass, false, true);
+        new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
         new Planet(-350, -350, 30, 10, -(float)Math.PI / 4, 425, ALBaseClass, false, false);
         new Planet(-325, 325, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, false, false);
-        new Planet(-250, -250, 30, 10, -(float)Math.PI/4, 510, ALBaseClass, false, false);
+        new Planet(0, 400, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, false, false);*/
+        /*new Planet(-250, -250, 30, 10, -(float)Math.PI/4, 510, ALBaseClass, false, false);
         new Planet(-250, 0, 30, 10, (float)Math.PI / 2, 600, ALBaseClass, false, false);
         */
         
@@ -227,14 +252,17 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                                     ALBaseClass.get(i).HealthCur=(int)(ALBaseClass.get(i).HealthCur -  ALBaseClass.get(j).M);
                                     ALBaseClass.get(j).HealthCur=(int)(ALBaseClass.get(j).HealthCur -  ALBaseClass.get(i).M);
 
-                                    if( ALBaseClass.get(i).HealthCur<=0) ALBaseClass.get(i).Die();//.DeadFlag=true;
-                                    if( ALBaseClass.get(j).HealthCur<=0) ALBaseClass.get(j).Die();//.DeadFlag=true;
-                                    /*if(ALBaseClass.get(i).getClass().getName()=="main.Projectile")
-                                    {ALBaseClass.get(i).DeadFlag=true;}
-                                    if(ALBaseClass.get(j).getClass().getName()=="main.Projectile")
-                                    {ALBaseClass.get(j).DeadFlag=true;}*/
-
+                                    if( ALBaseClass.get(i).HealthCur<=0) ALBaseClass.get(i).Die();
+                                    if( ALBaseClass.get(j).HealthCur<=0) ALBaseClass.get(j).Die();
                                 }
+                                
+                                /*Обработка облета ракетой препятствий*/
+                                if((ALBaseClass.get(i).getClass().getName()=="main.Roket")
+                                &&((ALBaseClass.get(i).RO*5+ALBaseClass.get(j).RO)>rr)){
+                                       ALBaseClass.get(i).setHedge(ALBaseClass.get(j));
+                                }
+                                
+                                
                             }
                         }  
                     }
@@ -330,7 +358,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             }else if("main.Star".equals(AL.getClass().getName())){
                 StarMass += AL.M;
                 StarRO = max(StarRO, AL.RO);
-                MaxDist = max(MaxDist, StarRO * 1.5);
+                MaxDist = max(MaxDist, max(100, StarRO * 1.5));
             }
         }
         NewRO = (int)max(5, StarRO / 2);

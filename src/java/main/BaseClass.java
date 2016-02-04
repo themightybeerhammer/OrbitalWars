@@ -423,5 +423,9 @@ public class BaseClass {
         DeadFlag = true;
     }
      
+      /*Запись в массив препятсвия*/
+    public void setHedge(BaseClass b){
+       
+    }
 }
              

@@ -258,7 +258,7 @@ public class Planet extends BaseClass {
                                                          , Y + Math.sin(Gun.angle) * Gun.length*1.5f
                                                          , 1, 4
                                                          , Gun.angle
-                                                         , 5
+                                                         , 7
                                                          , ALBaseClass
                                                          ,ALBaseClass.get(i) );
                                            
@@ -373,4 +373,6 @@ public class Planet extends BaseClass {
             Gun = new Vector(0, RO * 2);
         }  
     }
+    
+ 
 }

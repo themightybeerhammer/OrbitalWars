@@ -126,6 +126,22 @@ public class Vector {
         }
     }
     
+     /*Установка угла вектора по двум точкам*/
+    public static double SetAngleD(double x1, double y1, double x2, double y2){
+        
+        double angle=0;
+        try{
+            
+            angle = acos((x2 - x1) / sqrt(pow((x2 - x1), 2) + pow((y2 - y1),2))) * signum(y2 - y1);
+        }catch(Error e){
+            System.err.println("[Vector SetAngle]: Error");
+            
+            
+        }finally{
+            return angle;
+        }
+    }
+    
     /*Получение координаты X конца вектора*/
     public double GetX(){
         return cos(angle) * length;
@@ -134,6 +150,56 @@ public class Vector {
     /*Получение координаты Y конца вектора*/
     public double GetY(){
         return sin(angle) * length;
+    }
+    
+    /*Разница между двумя углами*/
+    
+    public static double AngleDiff(double a1,double a2){
+        
+        if(a1>Math.PI*2){
+            do{
+                a1=a1-Math.PI*2;
+          }while(a1>Math.PI*2);
+        }
+        
+        if(a1<0){
+            do{
+                a1=a1+Math.PI*2;
+          }while(a1<0);
+        }
+        
+        
+        if(a2>Math.PI*2){
+            do{
+                a2=a2-Math.PI*2;
+          }while(a2>Math.PI*2);
+        }
+        
+        if(a2<0){
+            do{
+                a2=a2+Math.PI*2;
+          }while(a2<0);
+        }
+        
+        
+                
+        if(a1>=a2){
+            a1=a1-a2; 
+            a2 = 0;
+        }else{
+            a1=a2-a1;
+            a2 = 0;
+        }
+        
+        double adiff;
+        if(a1>Math.PI) {
+            adiff = Math.PI*2-a1;
+        }else{
+            adiff = a1;
+        }
+        
+        return adiff;
+    
     }
 
 }
