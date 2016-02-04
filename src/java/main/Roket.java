@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class Roket extends BaseClass {
      ArrayList<Point2D> flame; /*Пламя*/
      BaseClass Target;         /*Объект цель*/
-     ArrayList<BaseClass> Hedges;
+     
      public double RocketFuel; /*Запас топлива ракеты*/
      long chetchik = 0;
      Vector pFP = new Vector(0,0); /*Значение импульса из пердыдущей итерации*/
@@ -61,7 +61,7 @@ public class Roket extends BaseClass {
         DeadSteps = 4;
         flame=new ArrayList<>();
         RocketFuel=100;
-        Hedges=new ArrayList<>();
+        
         
     }
     
@@ -85,25 +85,7 @@ public class Roket extends BaseClass {
           
      }
      
-     public void draw_Hedges(Graphics g
-                            ,double x
-                            ,double y){
-         
-         Graphics2D g2 = (Graphics2D)g;/**/
-         RenderingHints rh = new RenderingHints(
-         RenderingHints.KEY_ANTIALIASING,
-         RenderingHints.VALUE_ANTIALIAS_ON);
-         
-         g2.setRenderingHints(rh);
-         g2.setColor(Color.GREEN);
-         for(int i=0;i<Hedges.size();i++){
-             g2.draw(new Ellipse2D.Double(Hedges.get(i).X+x-10,Hedges.get(i).Y+y-10,20,20));
-         
-         }
-         
-         
-     
-     } 
+    
       
      public void draw_aim(Graphics g
                      ,double x

@@ -74,7 +74,15 @@ public class Planet extends BaseClass {
         dw_health = true;
         calc_orbit();
     }
-    Planet(double x, double y, double m, int ro, double vangle, double vlength, ArrayList<BaseClass> AL, boolean player, boolean havegun){
+    Planet(double x
+         , double y
+         , double m
+         , int ro
+         , double vangle
+         , double vlength
+         , ArrayList<BaseClass> AL
+         , boolean player
+         , boolean havegun){
         super(x, y, m, ro, vangle, vlength, AL);
         IsPlayer = player;
         if(havegun)GiveGun();
@@ -351,7 +359,7 @@ public class Planet extends BaseClass {
         }  
     }
     
-    /**Перезарядка оружия
+        /**Перезарядка оружия
      * возвращает остаток времени до перезарядки
      */
     public double Reload(double elapsed){
@@ -377,6 +385,29 @@ public class Planet extends BaseClass {
     public void Aim(double x, double y){
         Gun.SetAngle(X, Y, x, y);
         p_aim.setLocation(x,y);
+    }
+    
+    /*Запись в массив препятсвий и приближающихся объектов*/
+    @Override
+    public void setHedge(BaseClass b){
+        Hedges.add(b);
+    }
+    
+    @Override
+    public void AI_do(){
+        BaseClass nearest=null; /*Ближайжий объект*/  
+        for(int i = 0;i < Hedges.size(); i++){
+            if(nearest == null){nearest = Hedges.get(0);}
+            if(Hedges.get(i).Distance(this) < nearest.Distance(this)){
+                nearest = Hedges.get(i);
+            }
+        }
+        if(nearest!=null){
+            SwitchGun(1);
+            Aim(nearest.X, nearest.Y);
+            Shoot();
+        }
+        Hedges.removeAll(Hedges);
     }
  
 }
