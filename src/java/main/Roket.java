@@ -209,6 +209,9 @@ public class Roket extends BaseClass {
            
                Vector FP = new Vector(0,P.length);
              chetchik = 0;
+            /*Если растояние до объекта меньше 2 радиусов то насрать на препятсвия*/
+            if(Target.Distance(this)<Target.RO*10) {Hedges.removeAll(Hedges);}
+            
             if(Hedges.size()==0) /*Если массив препятсвий пуст то движемся в сторону цели*/
             {  
               

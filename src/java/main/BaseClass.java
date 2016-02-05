@@ -124,7 +124,7 @@ public class BaseClass {
          draw_in_scr(g,(X+p_display.getX()),(Y+p_display.getY()),v_F,v_P);
          
          /*Маркировка препятствий и приближающихся объектов*/
-         if(this.getClass().getName()=="main.Planet"){draw_Hedges(g,p_display.getX(),p_display.getY());}
+       //  if(this.getClass().getName()=="main.Planet"){draw_Hedges(g,p_display.getX(),p_display.getY());}
           
           
      }

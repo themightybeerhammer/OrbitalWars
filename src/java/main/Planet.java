@@ -200,8 +200,8 @@ public class Planet extends BaseClass {
                     case 1: new Projectile(X + Math.cos(Gun.angle) * Gun.length
                                          , Y + Math.sin(Gun.angle) * Gun.length
                                          , 1, 1
-                                         , ShotV.angle
-                                         , ShotV.length
+                                         , Gun.angle//ShotV.angle
+                                         , 50//ShotV.length
                                          , ALBaseClass);
                             break;
                     case 2: int bullets = 5;    /*Кол-во "дробинок"*/
@@ -223,16 +223,16 @@ public class Planet extends BaseClass {
                                              , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
                                              , 1, 1
                                              /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + delta/2
-                                             , ShotV.length+5, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
+                                             , /*ShotV.angle*/Gun.angle + delta/2
+                                             , /*ShotV.length*/50+5, ALBaseClass)).Transparent = 5;  /*Сначала пули "эфирные" - чтобы не столкнулись в стволе*/
                                  r=rr.nextInt(2);
                                  if(r!=0)
                                  (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
                                              , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
                                              , 1, 1
                                              /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + delta/2
-                                             , ShotV.length+10, ALBaseClass)).Transparent = 5; 
+                                             , /*ShotV.angle*/Gun.angle + delta/2
+                                             , /*ShotV.length*/50+10, ALBaseClass)).Transparent = 5; 
                                  
                                  r=rr.nextInt(2);
                                  if(r!=0)
@@ -240,8 +240,8 @@ public class Planet extends BaseClass {
                                              , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
                                              , 1, 1
                                              /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + delta/2
-                                             , ShotV.length+15, ALBaseClass)).Transparent = 5; 
+                                             , /*ShotV.angle*/Gun.angle + delta/2
+                                             , /*ShotV.length*/50+15, ALBaseClass)).Transparent = 5; 
                                  
                                  r=rr.nextInt(2);
                                  if(r!=0)
@@ -249,8 +249,8 @@ public class Planet extends BaseClass {
                                              , Y + (Math.sin(Gun.angle + delta)) * (Gun.length)
                                              , 1, 1
                                              /*Math.PI / i / 12 - угол разлета снарядов*/
-                                             , ShotV.angle + delta/2
-                                             , ShotV.length+20, ALBaseClass)).Transparent = 5; 
+                                             , /*ShotV.angle*/Gun.angle + delta/2
+                                             , /*ShotV.length*/50+20, ALBaseClass)).Transparent = 5; 
                                  
                                  
                             }
@@ -266,7 +266,7 @@ public class Planet extends BaseClass {
                                                          , Y + Math.sin(Gun.angle) * Gun.length*1.5f
                                                          , 1, 4
                                                          , Gun.angle
-                                                         , 7
+                                                         , 10
                                                          , ALBaseClass
                                                          ,ALBaseClass.get(i) );
                                            
@@ -331,7 +331,7 @@ public class Planet extends BaseClass {
             for(int i = 0; i < ALBaseClass.size(); i++){
                 if(ALBaseClass.get(i) != null){
                     if(ALBaseClass.get(i).getClass().getName() == "main.Star"){
-                        Energy += 1 / Distance(ALBaseClass.get(i)) * 100000/*1000*/;
+                        Energy += 1 / Distance(ALBaseClass.get(i)) * 10000/*1000*/;
                     }
                 }
             }
@@ -404,6 +404,26 @@ public class Planet extends BaseClass {
           this.Aim(nearest.X, nearest.Y);
           this.Shoot();
           
+      }else{
+            BaseClass aim=null;
+            for(int i=0;i<ALBaseClass.size();i++){
+                BaseClass object = ALBaseClass.get(i);
+                if((object!=null)
+                 &&(object!=this)
+                 &&(object.getClass().getName()=="main.Planet")){
+                    if(aim==null) aim = object;
+                    if(object.Distance(this)<aim.Distance(this)){
+                        aim=object;
+                    }
+                }
+            }
+            if(aim!=null){
+                this.SwitchGun(3);
+                this.Aim(aim.X, aim.Y);
+                this.Shoot();
+            }
+            
+      
       }
      
       Hedges.removeAll(Hedges);

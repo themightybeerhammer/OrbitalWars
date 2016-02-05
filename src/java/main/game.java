@@ -140,42 +140,15 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
-        
-      /*  new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
+      /*  
+        new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
         
         player = new Planet(0, -400, 30, 10, 0, 480, ALBaseClass, true, true);
-       
-        new Planet(100, -300, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(200, -300, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(300, -300, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(400, -300, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(500, -300, 50, 10, 0, 745, ALBaseClass, false, true);
-        
-        new Planet(100, -200, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(200, -200, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(300, -200, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(400, -200, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(500, -200, 50, 10, 0, 745, ALBaseClass, false, true);
-        
-        
-        new Planet(300, -100, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(350, -100, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(400, -100, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(450, -100, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(500, -100, 50, 10, 0, 745, ALBaseClass, false, true);
-        
-        new Planet(400, 0, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(500, 0, 50, 10, 0, 745, ALBaseClass, false, true);
-        
-        
-        new Planet(0, -450, 50, 10, 0, 745, ALBaseClass, false, true);
-        new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, false, false);
-        new Planet(-350, -350, 30, 10, -(float)Math.PI / 4, 425, ALBaseClass, false, false);
-        new Planet(-325, 325, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, false, false);
-        new Planet(0, 400, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, false, false);*/
-        /*new Planet(-250, -250, 30, 10, -(float)Math.PI/4, 510, ALBaseClass, false, false);
-        new Planet(-250, 0, 30, 10, (float)Math.PI / 2, 600, ALBaseClass, false, false);
-        */
+        new Planet(0, -450, 50, 10, 0, 745, ALBaseClass, true, true);
+        new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, true, true);
+        new Planet(-350, -350, 30, 10, -(float)Math.PI / 4, 425, ALBaseClass, true, true);
+        new Planet(-325, 325, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, true, true);
+      */
         
         /*Система сиськи*/
       /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
