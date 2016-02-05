@@ -39,6 +39,7 @@ public class DrawPanel extends JPanel{
     public int DisplayW = 800;                  /*Ширина экрана*/
     public int DisplayH = 600;                  /*Высота экрана*/
     Planet Player;
+    public int gameend = 0;                     /*Флаг окончания игры 1 - победа, -1 - поражение*/
     
     public DrawPanel(int displayw, int displayh){
         /*замена курсора на прицел*/
@@ -178,12 +179,20 @@ public class DrawPanel extends JPanel{
             g2.drawImage(img, 20,i*50+10, this);
         }
         
-     
-       
         
-        
-      
-        
+        g.setColor(Color.WHITE);
+        FontRenderContext fontContext = new FontRenderContext(null, false, false);
+        Font font = new Font("Arial", Font.TYPE1_FONT, 20);
+        GlyphVector gv = font.createGlyphVector(fontContext, "");
+        switch(gameend){
+            case -1:    gv = font.createGlyphVector(fontContext, "DEFEAT");
+                        break;
+            case 1:     gv = font.createGlyphVector(fontContext, "VICTORY");
+                        break;
+        }
+        Shape sh;
+        sh=gv.getOutline(DisplayW / 2 - 50, DisplayW / 20 + 50);
+        g2.fill(sh);
     }
 
     @Override

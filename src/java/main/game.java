@@ -55,7 +55,6 @@ import javax.swing.JLabel;
  *
  * @author Vladimir
  */
-
 public class game extends Applet implements KeyListener, MouseListener, MouseMotionListener {
     
     public final byte FPS = 20;                 /*Частота обновлений*/
@@ -74,6 +73,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public int un_end_X=1000,un_end_Y=1000;     /*Края вселеной вылетая за которые объект погибает*/
     public boolean pause = false;
     public boolean gamestarted = false;
+    public int gameend = 0;                     /*Флаг окончания игры 1 - победа, -1 - поражение*/
     
     private int keymod = 0;
     
@@ -94,8 +94,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                gamestarted = true;
-                pause = false;
                 b_startgame.setVisible(false);
                 StartGame();
             }
@@ -128,6 +126,8 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     /*Инициализация игровой среды*/
     private void StartGame(){
+        pause = true;
+        gameend = 0;
         ALBaseClass = new ArrayList<>();
         CM = new CenterMass(ALBaseClass);
         setSize(DisplayW, DisplayH);
@@ -296,6 +296,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             j++;
                         }   
                     }while(j<ALBaseClass.size());
+                            checkEndgame();
 
                     //System.out.println("---------------------------");
                     /*for(int i = 0; i < ALBaseClass.size(); i++){
@@ -305,13 +306,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             ALBaseClass.get(i).calc_orbit();  
                         }
                     }*/
-
                 }
             }
         };
         oTimer.schedule(oTimerTask, 0, 1000 / FPS);
         setFocusable(true);
         requestFocusInWindow();
+        gamestarted = true;
+        pause = false;
     }
     
     /*Генерация случайной кометы на краю системы*/
@@ -524,6 +526,25 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
        if(RMBPressed){
          RMBPressed = false;
        }
+    }
+    
+    public boolean checkEndgame(){
+        int pcount = 0;
+        for(int i = 0; i < ALBaseClass.size(); i++)
+            if(ALBaseClass.get(i).getClass().getName() == "main.Planet")
+                pcount++;
+        System.out.println(pcount);
+        if(pcount <= 1){
+            if(player.HealthCur <= 0){
+                gameend = -1;
+            }else{
+                gameend = 1;
+            }
+            pause = true;
+            Display.gameend = this.gameend;
+            return true;
+        }
+        return false;
     }
     
     
