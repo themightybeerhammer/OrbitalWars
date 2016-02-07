@@ -238,7 +238,8 @@ public class Roket extends BaseClass {
                 
                 double min_angle = Math.PI;
                 double tar_angle = Vector.SetAngleD(X, Y, Target.X, Target.Y);
-                double cur_angleP,cur_angleM;
+                double cur_angleP
+                      ,cur_angleM;
                 for(int i=0;i<180;i++){
                     
                     cur_angleP = P.angle+Math.PI*2*i/180;
@@ -256,6 +257,7 @@ public class Roket extends BaseClass {
                     for(int j=0;j<Hedges.size();j++){
                         if(Vector.AngleDiff(angles[j],cur_angleM)<Math.PI/2){fM=false;}
                     }
+                   
                     
                     if((fP)&(fM)){
                         if(Vector.AngleDiff(P.angle,cur_angleP)<Vector.AngleDiff(P.angle,cur_angleM)){

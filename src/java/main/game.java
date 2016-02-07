@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.lang.Object;
+import java.util.Random;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JButton;
@@ -55,7 +56,6 @@ import javax.swing.JLabel;
  *
  * @author Vladimir
  */
-
 public class game extends Applet implements KeyListener, MouseListener, MouseMotionListener {
     
     public final byte FPS = 20;                 /*Частота обновлений*/
@@ -74,6 +74,10 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public int un_end_X=1000,un_end_Y=1000;     /*Края вселеной вылетая за которые объект погибает*/
     public boolean pause = false;
     public boolean gamestarted = false;
+    public int gameend = 0;                     /*Флаг окончания игры 1 - победа, -1 - поражение*/
+    public int GoNextLevel=0
+              ,CurLevel = 1;
+    
     
     private int keymod = 0;
     
@@ -94,8 +98,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                gamestarted = true;
-                pause = false;
                 b_startgame.setVisible(false);
                 StartGame();
             }
@@ -128,27 +130,28 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     /*Инициализация игровой среды*/
     private void StartGame(){
-        ALBaseClass = new ArrayList<>();
-        CM = new CenterMass(ALBaseClass);
-        setSize(DisplayW, DisplayH);
-        p_Delta = new Point2D.Double(0,0);
-        p_display = new Point2D.Double(DisplayW / 2, DisplayH / 2);
-        player = null;
+        pause = true;
+        gameend = 0;
+    
         
-       GenerateLevel(1);
+        GenerateLevel(CurLevel);
         
         /*тестовые болванки НАЧАЛО*/
         
         /*Одна звезда и 3 планеты*/
-      /*  
-        new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
         
-        player = new Planet(0, -400, 30, 10, 0, 480, ALBaseClass, true, true);
-        new Planet(0, -450, 50, 10, 0, 745, ALBaseClass, true, true);
-        new Planet(400, 400, 30, 10, (float)Math.PI *3/ 4, 395, ALBaseClass, true, true);
-        new Planet(-350, -350, 30, 10, -(float)Math.PI / 4, 425, ALBaseClass, true, true);
-        new Planet(-325, 325, 30, 10, (float)Math.PI*5/4, 440, ALBaseClass, true, true);
-      */
+        /*Star star =  new Star(0, 0, 100000, 150, 0, 0, ALBaseClass);
+        
+        player = new Planet(star, 400 ,0, 50, 10, Math.PI, 1000, ALBaseClass, true, true);
+        (new Planet(player, 40 ,Math.PI, 50, 5, Math.PI, 480, ALBaseClass, false, false)).dw_orbit=false;
+        
+         
+        new Planet(star, 200 ,Math.PI*3/4, 50, 10, 0, 500, ALBaseClass, true, true);
+        new Planet(star, 250 ,Math.PI*2/4, 50, 10, 0, 500, ALBaseClass, true, true);
+        new Planet(star, 300 ,Math.PI*3/4, 50, 10, 0, 500, ALBaseClass, true, true);
+        new Planet(star, 350 ,Math.PI*2/4, 50, 10, Math.PI, 500, ALBaseClass, true, true);*/
+       
+       
         
         /*Система сиськи*/
       /*  player = new Planet(375, 375, 10, 10, (float)Math.PI*200/207,80, ALBaseClass, true, true);
@@ -172,10 +175,18 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
             /*в ране описываются периодические действия*/
             @Override 
             public void run(){
-                    if(gamestarted && !pause ){
-                    player.Aim((mx - p_display.getX()),( my - p_display.getY()));     /*постоянно нацеливаем орудие на последние координаты мыши*/
+                    if(/*gamestarted && !pause &&*/ player!=null)
+                    {
+                    if(GoNextLevel>0)GoNextLevel--;
+                    if((GoNextLevel==0)&(gameend==1)){ CurLevel++; GenerateLevel(CurLevel); }
+                    if(player.IsPlayer){player.Aim((mx - p_display.getX()),( my - p_display.getY()));}     /*постоянно нацеливаем орудие на последние координаты мыши*/
                     CM.CalcCenterMass();                                /*пересчет центра масс*/
-                    Display.AssignList(ALBaseClass,player,p_display,v_F,v_P);  /*передача игровому экрану списка объектов для отрисовки*/ 
+                    Display.AssignList(ALBaseClass
+                                      ,player
+                                      ,p_display
+                                      ,v_F
+                                      ,v_P
+                                      ,game.this);  /*передача игровому экрану списка объектов для отрисовки*/ 
                     /*Выполнение действий искуственного интелекта*/
                     for(int i = 0; i < ALBaseClass.size(); i++){
                         if((ALBaseClass.get(i) != null)&(ALBaseClass.get(i) != player)){
@@ -225,10 +236,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                                 float rr = (float)(Math.sqrt(Math.pow((ALBaseClass.get(i).X-ALBaseClass.get(j).X),2)+ Math.pow((ALBaseClass.get(i).Y-ALBaseClass.get(j).Y),2)));
 
                                 if(rr<(ALBaseClass.get(i).RO+ALBaseClass.get(j).RO)){
-
-                                    ALBaseClass.get(i).HealthCur=(int)(ALBaseClass.get(i).HealthCur -  ALBaseClass.get(j).M);
-                                    ALBaseClass.get(j).HealthCur=(int)(ALBaseClass.get(j).HealthCur -  ALBaseClass.get(i).M);
-
+                                    
+                                    if(ALBaseClass.get(i).getClass().getName()=="main.Roket"){
+                                        ALBaseClass.get(i).HealthCur=(int)(ALBaseClass.get(i).HealthCur -  ALBaseClass.get(j).M);
+                                        ALBaseClass.get(j).HealthCur=(int)(ALBaseClass.get(j).HealthCur -  10);
+                                    }else{
+                                        ALBaseClass.get(i).HealthCur=(int)(ALBaseClass.get(i).HealthCur -  ALBaseClass.get(j).M);
+                                        ALBaseClass.get(j).HealthCur=(int)(ALBaseClass.get(j).HealthCur -  ALBaseClass.get(i).M);
+                                    }        
                                     if( ALBaseClass.get(i).HealthCur<=0) ALBaseClass.get(i).Die();
                                     if( ALBaseClass.get(j).HealthCur<=0) ALBaseClass.get(j).Die();
                                 }
@@ -253,8 +268,19 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                                           planet.setHedge(object);
                                         }
                                     }
-                                       
                                 }
+                                
+                               /*Обработка взрыва гранаты при приближения к ней планеты или звезды*/
+                                 if((ALBaseClass.get(i).getClass().getName()=="main.Grenede")
+                                 &&((50+ALBaseClass.get(j).RO)>rr)
+                                 &&(ALBaseClass.get(i).Transparent==0)){
+                                     if((ALBaseClass.get(j).getClass().getName() =="main.Planet")
+                                       |(ALBaseClass.get(j).getClass().getName() =="main.Star")){
+                                       ALBaseClass.get(i).Explode();
+                                     }
+                                     
+                                 }
+                               
                                 
                             }
                         }  
@@ -269,6 +295,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             j++;
                         }   
                     }while(j<ALBaseClass.size());
+                    checkEndgame();
 
                     //System.out.println("---------------------------");
                     /*for(int i = 0; i < ALBaseClass.size(); i++){
@@ -278,13 +305,14 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                             ALBaseClass.get(i).calc_orbit();  
                         }
                     }*/
-
                 }
             }
         };
         oTimer.schedule(oTimerTask, 0, 1000 / FPS);
         setFocusable(true);
         requestFocusInWindow();
+        gamestarted = true;
+        pause = false;
     }
     
     /*Генерация случайной кометы на краю системы*/
@@ -295,7 +323,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         NewM = NewRO;
         /*Определяет с какой границы системы создать комету*/
         int SpawnSeed = (int)round(random() * 100);
-        double NX = 1000, NY = 1000;
+        double NX = un_end_X, NY = un_end_Y;
         if(SpawnSeed <= 50){
             NX = random() * un_end_X * signum(random() * 2 - 1);
             NY -= NewRO * signum(NX);
@@ -357,7 +385,16 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         NewRO = (int)max(5, StarRO / 2);
         NewM = max(10, min(StarMass / 10, random() * 10 * NewRO));
         NewDist = max(StarRO * 1.5, (MaxDist + NewRO * 2 * (random() + 1) + MaxRO * 2)) * signum(random() - 0.5);
-        NewPlanet = new Planet(0, NewDist, NewM, NewRO, PI * (round(random() * 2) / 2), NewDist, ALBaseClass, true,true);
+        NewPlanet = new Planet(0
+                            , NewDist
+                            , NewM
+                            , NewRO
+                            , PI * (round(random() * 2) / 2)
+                            , NewDist
+                            , ALBaseClass
+                            , false //true
+                            , false //true
+                            );
         NewPlanet.calc_F_ravn(Mltplr);
         NewPlanet.P.length = NewPlanet.M * sqrt(StarMass / abs(NewDist));
         System.out.println(new StringBuilder()
@@ -388,10 +425,9 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         if(gamestarted){ /*игра запущена и не на паузе*/
             switch(e.getKeyCode()){
                 case 19:    pause = !pause; /*кнопка pause вкл/выкл паузу*/
-                            System.out.println(pause);
+                            //System.out.println(pause);
                             break;
-                case 32:    if(player.Shoot())  /*тест стрельбы по клавише ПРОБЕЛ*/
-                            System.out.println(new StringBuilder().append("Player shoot!").toString());
+                case 32:    player.Shoot();  /*тест стрельбы по клавише ПРОБЕЛ*/
                             break;
                 case 35:    if(ScrFlwPlr){ScrFlwPlr = false;}else{ScrFlwPlr = true;} 
                             break;
@@ -413,11 +449,12 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                 case 52:    player.SwitchGun(4);
                             System.out.println(new StringBuilder().append("Player switch weapon to 4").toString());
                             break;            
-                case 112:   if((keymod & 1) != 0){
-                                StartGame();        /*CTRL + F1 - рестарт*/
-                            }else{
-                                SendNewPlanet();    /*F1 - генерация новой планеты*/
-                            }
+                case 112:   GenerateLevel(CurLevel);
+                            //if((keymod & 1) != 0){
+                            //    GenerateLevel(1);        /*CTRL + F1 - рестарт*/
+                            //}else{
+                            //    SendNewPlanet();    /*F1 - генерация новой планеты*/
+                            //}
                             break;
                 case 113:   SendNewComet();     /*F2 - генерация новой кометы*/
                             break;
@@ -432,7 +469,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     
     /*Генератор уровня*/
     private void GenerateLevel(int diff){
-        int MaxPlanets = max(2, (int)sqrt(diff));
+        /*int MaxPlanets = max(2, (int)sqrt(diff));
         Planet planet;
         Star star = new Star(0, 0, random() * max(100000, pow(diff, 2)), (int)max(max(20, diff), (random() * 2 * diff)), 0, 0, ALBaseClass);
         double MaxDist = 0;
@@ -450,6 +487,67 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
                         System.out.println("Player's planet set!");
                     }
             }
+        */
+        gameend = 0;
+        if(ALBaseClass == null){
+            ALBaseClass = new ArrayList<>();
+        }else{
+            ALBaseClass.removeAll(ALBaseClass);
+        }
+        CM = new CenterMass(ALBaseClass);
+        setSize(DisplayW, DisplayH);
+        p_Delta = new Point2D.Double(0,0);
+        if(p_display==null) p_display= new Point2D.Double(DisplayW / 2, DisplayH / 2);else p_display.setLocation(DisplayW / 2, DisplayH / 2);
+        player = null;
+        
+        
+        if(diff<1) diff=1;
+        diff++;
+        Star star = new Star(0, 0, 100000, 100, 0, 0, ALBaseClass);
+        Random random = new Random();
+        int NumPlayer =0;
+        NumPlayer=random.nextInt(diff);
+        for(int i=0;i<diff;i++){
+            double OrbitPosition = random.nextInt(36)+1; OrbitPosition = Math.PI*2*OrbitPosition/36;
+            
+            Planet planet =new Planet(
+                                    star                                       /*Ведущий объект*/
+                                   ,200+i*50                                   /*Растояние от ведущего объекта*/
+                                   ,OrbitPosition                              /*Положение на орбите*/ 
+                                   ,50+random.nextInt(diff)*25                                         /*Масса*/
+                                   ,10+random.nextInt(diff)                                         /*Радиус*/
+                                   ,Math.PI*random.nextInt(2)                  /*Направление Math.PI- по часовой;>Math.PI против часовой*/
+                                   ,200*diff                                   /*Импульс движения*/
+                                   ,ALBaseClass, true,true);
+            planet.NameColor=Color.RED;
+            planet.MaxEnergy = planet.MaxEnergy+random.nextInt(diff)*1000;
+            planet.AI_level = diff;
+            /*Спутники после 6 уровня*/
+            if((diff>6)&(random.nextInt(2)==1)){
+                Planet sputnik = new Planet(
+                                    planet                                     /*Ведущий объект*/
+                                   ,planet.RO*1.2+5                            /*Растояние от ведущего объекта*/
+                                   ,OrbitPosition                              /*Положение на орбите*/ 
+                                   ,25+random.nextInt(diff)*10                 /*Масса*/
+                                   ,5                                          /*Радиус*/
+                                   ,Math.PI*random.nextInt(2)                  /*Направление Math.PI- по часовой;>Math.PI против часовой*/
+                                   ,150                                   /*Импульс движения*/
+                                   ,ALBaseClass, false,false);
+                sputnik.dw_orbit = false;
+                sputnik.dw_name  = false;
+                
+                
+            }
+            if(i==NumPlayer){
+                player = planet;
+                player.NameColor=Color.GREEN;
+            }
+            
+            
+        }
+        
+        
+        
     }
     
     @Override
@@ -467,7 +565,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     @Override
     public void mousePressed(MouseEvent e) {
         switch(e.getButton()){
-            case 1: if(gamestarted && !pause)player.Shoot();
+            case 1: /*if(gamestarted && !pause)*/player.Shoot();
                     break;
             case 3: RMBPressed = true;
                     p_Delta  = e.getPoint();
@@ -478,8 +576,6 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     @Override
     public void mouseDragged(MouseEvent e) {
             if(RMBPressed){
-              /*p_display.x = p_display.x + (e.getPoint().x - p_Delta.x);
-              p_display.y = p_display.y + (e.getPoint().y - p_Delta.y);*/
               p_display.setLocation(p_display.getX() + (e.getPoint().x - p_Delta.getX()),p_display.getY() + (e.getPoint().y - p_Delta.getY()));
               p_Delta = e.getPoint();
            }
@@ -498,6 +594,31 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
        if(RMBPressed){
          RMBPressed = false;
        }
+    }
+    
+    public boolean checkEndgame(){
+        int pcount = 0;
+        if((GoNextLevel==0)&&(gameend==0)){
+        for(int i = 0; i < ALBaseClass.size(); i++)
+            if((ALBaseClass.get(i).getClass().getName() == "main.Planet")
+              &&(ALBaseClass.get(i).LeadingObject!=player))
+                pcount++;
+      //  System.out.println(pcount);
+        if(pcount <= 1){
+            if(player.HealthCur <= 0){
+                gameend = -1;
+            }else{
+                gameend = 1;
+                GoNextLevel=150;
+            }
+            //pause = true;
+            Display.gameend = this.gameend;
+            
+            return true;
+            
+        }
+        }
+        return false;
     }
     
     

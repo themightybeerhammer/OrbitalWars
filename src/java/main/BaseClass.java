@@ -65,6 +65,10 @@ public class BaseClass {
     
     int Transparent = 0;    /*Счетчик отсрочки расчета столкновений. Необходим для создания объекта-в-объекте*/
     
+    BaseClass LeadingObject;    /*Ведущий объект*/
+    double    rLeadingObject;   /*Растояние до ведущего объекта*/
+    double    OrbitPosition;    /*Позиция на орбите у ведущего объекта*/
+    
     
    
     
@@ -76,6 +80,47 @@ public class BaseClass {
        P = new Vector(1,1);
        F = new Vector();
        dw_orbit = false;
+     }
+     
+     
+     BaseClass(
+               BaseClass _LeadingObject    /*Ведущий объект*/
+              ,double    _rLeadingObject   /*Растояние до ведущего объекта*/
+              ,double    _OrbitPosition    /*Позиция на орбите у ведущего объекта*/
+              
+              ,double m
+              ,int ro
+              ,double vangle
+              ,double vlength
+              ,ArrayList<BaseClass> AL
+              ){
+       
+       
+       
+       M = m;
+       RO = ro;
+       P = new Vector(vangle,vlength);
+       F= new Vector(0,0);
+       AL.add(this);
+       //ALBaseClass =new ArrayList<>(AL);
+       ALBaseClass = AL;
+       /*Орбита*/
+       MinMassOrbit = m*10;
+       Orbit = new ArrayList<>();
+       dw_orbit = false;
+       DeadSteps = ro*20;
+       
+       HealthMax = M;    /*Максимальное здоровье*/
+       HealthCur = HealthMax;
+       Hedges=new ArrayList<>();
+       
+       LeadingObject = _LeadingObject;    /*Ведущий объект*/
+       rLeadingObject =  _rLeadingObject;   /*Растояние до ведущего объекта*/
+       OrbitPosition = _OrbitPosition;    /*Позиция на орбите у ведущего объекта*/
+       
+       X =LeadingObject.X+(Math.cos(OrbitPosition)*rLeadingObject);
+       Y =LeadingObject.Y+(Math.sin(OrbitPosition)*rLeadingObject);
+      
      }
      
      
@@ -93,6 +138,7 @@ public class BaseClass {
        M = m;
        RO = ro;
        P = new Vector(vangle,vlength);
+       F= new Vector(0,0);
        AL.add(this);
        //ALBaseClass =new ArrayList<>(AL);
        ALBaseClass = AL;
@@ -102,9 +148,9 @@ public class BaseClass {
        dw_orbit = false;
        DeadSteps = ro*20;
        
-        HealthMax = M;    /*Максимальное здоровье*/
-        HealthCur = HealthMax;
-        Hedges=new ArrayList<>();
+       HealthMax = M;    /*Максимальное здоровье*/
+       HealthCur = HealthMax;
+       Hedges=new ArrayList<>();
       
      }
     
@@ -207,7 +253,7 @@ public class BaseClass {
      void calc_orbit(){
          
        
-       if (dw_orbit){ 
+       if ((dw_orbit)&(LeadingObject==null)){ 
            
        Orbit.clear(); /*Чистим массив орбиты*/  
        /*Отбираем объекты масса которых значительно привышает массу объекта, которые явно влияют на траекторию полета */
@@ -312,6 +358,7 @@ public class BaseClass {
          
          g2.setColor(Color.DARK_GRAY);
          
+         if(LeadingObject==null){
          GeneralPath path= new GeneralPath();
          
          path.moveTo(Orbit.get(0).getX()+x, Orbit.get(0).getY()+y);
@@ -325,11 +372,17 @@ public class BaseClass {
       
          g2.setStroke(new BasicStroke(2f));
          g2.draw(path);
-       
+         }else{
+            g2.setStroke(new BasicStroke(2f));
+            g2.draw(new Ellipse2D.Double(LeadingObject.X-rLeadingObject+x,LeadingObject.Y-rLeadingObject+y,2*rLeadingObject,2*rLeadingObject));
+         }
      }
      
      void calc_F_ravn(double Mtplr){
          
+         if(LeadingObject!=null){
+             if(LeadingObject.DeadFlag){DeadFlag=true;}
+         }else{
          double r; /*Растояние между двумя объектами*/
          double f; /*Сила притяжения между двумя объектами*/
          double x,y;  /*Координаты объекта*/
@@ -370,20 +423,37 @@ public class BaseClass {
         F.length = F.length/Mtplr;
          
         P.Plus(F);
+        
+       } 
          
     }
-         
-     
 
      void move(double Mtplr){
-         /*Отчистка массива препятсвий*/
-       
          
+        if((LeadingObject!=null)&(rLeadingObject>0)){
+            int znak; 
+            if(P.angle>=Math.PI){znak = -1;}else {znak = 1;}
+              
+            OrbitPosition=OrbitPosition+P.length/((double)(M*Mtplr*rLeadingObject))*znak;
+            if(OrbitPosition<0){OrbitPosition=OrbitPosition+Math.PI*2;}
+            if(OrbitPosition>Math.PI*2){OrbitPosition=OrbitPosition-Math.PI*2;}
+            
+            double xd ;
+            double yd ;
+         
+            xd = (Math.cos(OrbitPosition)*rLeadingObject);
+            yd = (Math.sin(OrbitPosition)*rLeadingObject);
+          
+            xd = xd; //Mtplr;
+            yd = yd;//Mtplr;
+          
+            X =LeadingObject.X+xd;
+            Y =LeadingObject.Y+yd;
+           // System.out.println("X="+X+" Y="+Y);
+        }else{
          double xd ;
          double yd ;
-          //xd = (Math.cos(F.angle)*F.length/M);
-          //yd = (Math.sin(F.angle)*F.length/M);
-         
+          
           xd = (Math.cos(P.angle)*P.length/M);
           yd = (Math.sin(P.angle)*P.length/M);
           
@@ -393,6 +463,7 @@ public class BaseClass {
           
           X = X+xd;
           Y = Y+yd;
+        }  
           
          if(DeadFlag){
            DeadSteps--;  
@@ -458,6 +529,8 @@ public class BaseClass {
         
        
     }
+    
+
     
 }
              

@@ -46,10 +46,12 @@ public class Grenede extends BaseClass {
             , int ro
             , double vangle
             , double vlength
-            , ArrayList<BaseClass> AL){
+            , ArrayList<BaseClass> AL
+            , int _Transparent){
         
         super(x, y, m, ro, vangle, vlength, AL);
         DeadSteps = 2;
+        Transparent = _Transparent;
     }
     
     
@@ -73,6 +75,13 @@ public class Grenede extends BaseClass {
          g2.draw(new Line2D.Double(x-RO/2,y,x+RO/2,y));
          g2.draw(new Line2D.Double(x,y-RO/2,x,y+RO/2));
         
+         
+         if((!DeadFlag)&(Transparent<1)){
+          g2.setColor(Color.RED);
+          g2.setStroke(new BasicStroke(1f));
+          g2.draw(new Ellipse2D.Double(x-50, y-50, 100, 100));
+        
+         }
         
          if(DeadFlag){
              Point2D center = new Point2D.Double(x, y);
@@ -86,8 +95,12 @@ public class Grenede extends BaseClass {
              g2.setPaint(p);
              g2.fill(new Ellipse2D.Double(x-radius, y-radius, radius*2, radius*2));
          }
+         
+         
      }
-     
+    void Die(){
+       Explode();
+    }
      
      
       void Explode(){
@@ -139,7 +152,6 @@ public class Grenede extends BaseClass {
        }
     }
     
-     
-     
+ 
     
 }

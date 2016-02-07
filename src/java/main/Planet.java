@@ -60,6 +60,9 @@ public class Planet extends BaseClass {
     private Point2D p_aim;
     public  String Name;
     public  Grenede GrenateEjected;             /*Запущенная */
+    public  Color NameColor = Color.GREEN;
+    public  boolean dw_name = true;
+    public  int AI_level;
     
     String Names[] = new String[]{"Alderaan", "Anoat", "Bespin", "Corellia", "Coruscant", "D'Qar", "Dagobah", "Dantooine"
                                 ,"Dathomir", "Endor", "Felucia", "Geonosis", "Hosnian Prime", "Hoth", "Jakku", "Kamino"
@@ -74,6 +77,7 @@ public class Planet extends BaseClass {
         dw_health = true;
         calc_orbit();
     }
+    
     Planet(double x
          , double y
          , double m
@@ -92,13 +96,51 @@ public class Planet extends BaseClass {
         dw_orbit = true;
         dw_health = true;
         dw_energy = true;
-        if(IsPlayer){
+        
+        /*if(IsPlayer){
             Name = "Earth";
         }else{
             Name = Names[(int)(random() * Names.length)];
-        }
+        }*/
+        Name = Names[(new Random()).nextInt(Names.length)];
         calc_orbit();
     }
+    
+    
+    Planet(  
+           BaseClass _LeadingObject    /*Ведущий объект*/
+         , double    _rLeadingObject   /*Растояние до ведущего объекта*/
+         , double    _OrbitPosition    /*Позиция на орбите у ведущего объекта*/
+         , double m
+         , int ro
+         , double vangle
+         , double vlength
+         , ArrayList<BaseClass> AL
+         , boolean player
+         , boolean havegun){
+        super(_LeadingObject 
+         ,_rLeadingObject 
+         , _OrbitPosition 
+         , m, ro, vangle, vlength, AL);
+        IsPlayer = player;
+        if(havegun)GiveGun();
+        GunPowerNeed = 200;
+        DeadSteps = 20;
+        p_aim = new Point2D.Double();
+        dw_orbit = true;
+        dw_health = true;
+        dw_energy = true;
+       /* if(IsPlayer){
+            Name = "Earth";
+        }else{
+            Name = Names[(int)(random() * Names.length)];
+        }*/
+       
+        Name = Names[(new Random()).nextInt(Names.length)];
+        calc_orbit();
+       
+    }
+
     
     @Override
     public void draw_in_scr(Graphics g, double x, double y, boolean v_F, boolean v_P ){
@@ -127,20 +169,17 @@ public class Planet extends BaseClass {
           g2.fill(new Ellipse2D.Double(_x,_y, RO * 2, RO * 2));
         }
         
-        if(IsPlayer){
-            g2.setColor(Color.GREEN);
-        }else{
-            g2.setColor(Color.RED);
+        /*Отрисовка имени*/
+        if(dw_name){
+            g2.setColor(NameColor);
+            FontRenderContext fontContext = new FontRenderContext(null, false, false);
+            Font font = new Font("Arial", Font.TYPE1_FONT, 15);
+            GlyphVector gv = font.createGlyphVector(fontContext, Name);
+            Shape sh;
+            sh = gv.getOutline((float)(x - (Name.length() / 2) * 10), (float)(y - RO - 10));
+            g2.fill(sh);
         }
         
-        
-        //g2.drawString(Name, (int)(x - (Name.length() / 2) * 6), (int)(y - RO - 10));
-        FontRenderContext fontContext = new FontRenderContext(null, false, false);
-        Font font = new Font("Arial", Font.TYPE1_FONT, 15);
-        GlyphVector gv = font.createGlyphVector(fontContext, Name);
-        Shape sh;
-        sh = gv.getOutline((float)(x - (Name.length() / 2) * 10), (float)(y - RO - 10));
-        g2.fill(sh);
         /*Отрисовка прогрессбара зарядки планеты*/
         /*Заливка бара*/
         g2.setColor(Color.GRAY);
@@ -184,8 +223,10 @@ public class Planet extends BaseClass {
         }
      }
     
+
     /*Нацеливание пушки на точку*/
     public void Aim(double x, double y){
+        
         Gun.SetAngle(X, Y, x, y);
         p_aim.setLocation(x,y);
     }
@@ -214,9 +255,6 @@ public class Planet extends BaseClass {
                                  if(i!=0){delta=(Math.PI / i / 10);}
                                  Random rr = new Random();
                                  int r =0;
-                                 
-                                 
-                                 
                                  r=rr.nextInt(2);
                                  if(r!=0)
                                  (new Projectile(X + (Math.cos(Gun.angle + delta)) * (Gun.length)
@@ -266,38 +304,26 @@ public class Planet extends BaseClass {
                                                          , Y + Math.sin(Gun.angle) * Gun.length*1.5f
                                                          , 1, 4
                                                          , Gun.angle
-                                                         , 10
+                                                         , 15
                                                          , ALBaseClass
                                                          ,ALBaseClass.get(i) );
                                            
-                                           System.out.println(p_aim.getX()+" "+p_aim.getY());
+                                          // System.out.println(p_aim.getX()+" "+p_aim.getY());
                                         }
                                     }
                                 } 
                             break;
-                    case 4: if(GrenateEjected==null){
+                    case 4: 
                          
                                GrenateEjected = new  Grenede(
                                            X + Math.cos(Gun.angle) * Gun.length
                                          , Y + Math.sin(Gun.angle) * Gun.length
                                          , 1, 3
                                          , ShotV.angle
-                                         , ShotV.length
-                                         , ALBaseClass);
-                            }else{
-                                if(GrenateEjected.DeadFlag){
-                                   GrenateEjected = new  Grenede(
-                                           X + Math.cos(Gun.angle) * Gun.length
-                                         , Y + Math.sin(Gun.angle) * Gun.length
-                                         , 1, 3
-                                         , ShotV.angle
-                                         , ShotV.length
-                                         , ALBaseClass);
-                                }else{
-                                    GrenateEjected.Explode();
-                                    GrenateEjected = null;
-                                }
-                            }
+                                         , 30//ShotV.length
+                                         , ALBaseClass
+                                         , 25);
+                            
                             break;                            
                 }
                 Energy -= GunPowerNeed;
@@ -308,8 +334,8 @@ public class Planet extends BaseClass {
             }
             return true;
         }else{
-            System.err.println("Failed to shoot!");
-            System.out.println("Reload time: " + FireTimer);
+           // System.err.println("Failed to shoot!");
+            //System.out.println("Reload time: " + FireTimer);
             return false;
         }
     }
@@ -339,6 +365,7 @@ public class Planet extends BaseClass {
         }
     }
     
+
     /**Переключение вооружения
      * Подменяет значения полей описывающих орудие и его снаряды
      * 
@@ -349,16 +376,16 @@ public class Planet extends BaseClass {
             GunType = gt;
             switch(gt){
                 case 1: GunPowerNeed = 200;
-                        FireRate = 2000;
-                        break;
-                case 2: GunPowerNeed = 1000;
-                        FireRate = 500;
-                        break;
-                case 3: GunPowerNeed = 5000;
                         FireRate = 200;
                         break;
-                case 4: GunPowerNeed = 10000;
-                        FireRate = 50;
+                case 2: GunPowerNeed = 4000;
+                        FireRate = 500;
+                        break;
+                case 3: GunPowerNeed = 1500;
+                        FireRate = 500;
+                        break;
+                case 4: GunPowerNeed = 2000;
+                        FireRate = 500;
                         break;        
             }
             return true;
@@ -367,13 +394,7 @@ public class Planet extends BaseClass {
             return false;
         }
     }
-    
-    /*Обработка гибели объекта*/
-    @Override
-    public void Die(){
-        DeadFlag = true;
-        Disruption();//Explode();
-    }
+
     
     /*Выдать планете оружие*/
     public void GiveGun(){
@@ -383,25 +404,66 @@ public class Planet extends BaseClass {
         }  
     }
     
+
     
-    /*Запись в массив препятсвий и приближающихся объектов*/
-    public void setHedge(BaseClass b){
-        Hedges.add(b);
+    /*Обработка гибели объекта*/
+    @Override
+    public void Die(){
+        DeadFlag = true;
+        Disruption();//Explode();
     }
     
+    /*После выстрела*/
+    private void Shooted(){
+        Energy -= GunPowerNeed;
+        FireTimer += 60000 / FireRate;
+       // System.out.println(new StringBuilder().append("Player shoot!").toString());
+    }
+    
+ 
+    /*Запись в массив препятсвий и приближающихся объектов*/
+    @Override
+    public void setHedge(BaseClass b){
+        if(b.LeadingObject!=this){
+            Hedges.add(b);
+        }
+    }
+    
+    @Override
     public void AI_do(){
       
+      if(IsPlayer) {
       BaseClass nearest=null; /*Ближайжий объект*/  
       for(int i=0;i<Hedges.size();i++){
           if(nearest ==null){nearest = Hedges.get(0);}
           if(Hedges.get(i).Distance(this)<nearest.Distance(this)){
               nearest = Hedges.get(i);
           }
+          
       }
       
       if(nearest!=null){
-          this.SwitchGun(1);
-          this.Aim(nearest.X, nearest.Y);
+          
+          
+          double angle_delta = (AI_level);  angle_delta = Math.PI*(double)(angle_delta)/720;  
+          double angle_aim   = Vector.SetAngleD(X,Y,nearest.X, nearest.Y);
+          double angle_plus   = Gun.angle+angle_delta;
+          double angle_minus  = Gun.angle-angle_delta;
+          
+          if((Vector.AngleDiff(angle_aim, angle_plus)<=angle_delta)
+            |(Vector.AngleDiff(angle_aim, angle_minus)<=angle_delta)){
+              this.Aim(nearest.X, nearest.Y);
+          }else{
+              if(Vector.AngleDiff(angle_aim, angle_plus)<=Vector.AngleDiff(angle_aim, angle_minus)){
+                  Gun.angle = angle_plus;
+              }else{
+                  Gun.angle = angle_minus;
+              }
+              
+          }
+          
+                  
+          this.SwitchGun(1);        
           this.Shoot();
           
       }else{
@@ -418,14 +480,31 @@ public class Planet extends BaseClass {
                 }
             }
             if(aim!=null){
+                double angle_delta = (AI_level);  angle_delta = Math.PI*(double)(angle_delta)/720;  
+                 double angle_aim   = Vector.SetAngleD(X,Y,aim.X, aim.Y);
+                 double angle_plus   = Gun.angle+angle_delta;
+                 double angle_minus  = Gun.angle-angle_delta;
+          
+                 if((Vector.AngleDiff(angle_aim, angle_plus)<=angle_delta)
+                   |(Vector.AngleDiff(angle_aim, angle_minus)<=angle_delta)){
+                         this.Aim(aim.X, aim.Y);
+                    }else{
+                         if(Vector.AngleDiff(angle_aim, angle_plus)<=Vector.AngleDiff(angle_aim, angle_minus)){
+                            Gun.angle = angle_plus;
+                         }else{
+                            Gun.angle = angle_minus;
+                         }
+          }
+                
+                
                 this.SwitchGun(3);
-                this.Aim(aim.X, aim.Y);
+                //this.Aim(aim.X, aim.Y);
                 this.Shoot();
             }
             
       
       }
-     
+    }
       Hedges.removeAll(Hedges);
     }
  

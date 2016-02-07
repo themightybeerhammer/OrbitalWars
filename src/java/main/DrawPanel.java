@@ -39,6 +39,8 @@ public class DrawPanel extends JPanel{
     public int DisplayW = 800;                  /*Ширина экрана*/
     public int DisplayH = 600;                  /*Высота экрана*/
     Planet Player;
+    public int gameend = 0;                     /*Флаг окончания игры 1 - победа, -1 - поражение*/
+    public game CurGame;
     
     public DrawPanel(int displayw, int displayh){
         /*замена курсора на прицел*/
@@ -68,7 +70,13 @@ public class DrawPanel extends JPanel{
     public void AssignList(ArrayList<BaseClass> ALBC){
         ALBaseClass = new ArrayList<>(ALBC);
     }
-    public void AssignList(ArrayList<BaseClass> ALBC,Planet player,Point2D p_display, boolean V_F, boolean V_P ){
+    public void AssignList(ArrayList<BaseClass> ALBC
+                          ,Planet player
+                          ,Point2D p_display
+                          ,boolean V_F
+                          ,boolean V_P 
+                          ,game _CurGame){
+        CurGame = _CurGame;
         v_F = V_F;
         v_P = V_P; 
         ALBaseClass = ALBC;//new ArrayList<>(ALBC);
@@ -154,36 +162,46 @@ public class DrawPanel extends JPanel{
         /*Прорисовка Иконок Оружия*/
         
         
-        
-        Point2D center = new Point2D.Double(40, Player.GunType*50+30);
-        float radius = 25;
-        float rr = (float)(Math.random()*4+20)/100;
-        float[] dist = { 0.8f, 1.0f};
-        Color[] colors = { Color.GREEN, new Color(1,0,0,0) };
-        RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
-        g2.setPaint(p);
-      //  g2.setClip(new Ellipse2D.Double(20,Player.GunType*50-5,50,50));
-        g2.fill(new Ellipse2D.Double(15, Player.GunType*50+5, 50, 50));
-        
-        
-        
-       for(int i=1;i<9;i++){
-            rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING
-                                ,RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setRenderingHints(rh);
-            String str = "icons/weapon"+i+".png";
-            Image img = Toolkit.getDefaultToolkit().getImage(str);
-            g2.setStroke(new BasicStroke(1f));
-            //g2.setClip(new Ellipse2D.Double(20,i*50+10,40,40));
-            g2.drawImage(img, 20,i*50+10, this);
-        }
-        
-     
-       
-        
-        
+        if(Player!=null){
+            Point2D center = new Point2D.Double(40, Player.GunType*50+30);
+            float radius = 25;
+            float rr = (float)(Math.random()*4+20)/100;
+            float[] dist = { 0.8f, 1.0f};
+            Color[] colors = { Color.GREEN, new Color(1,0,0,0) };
+            RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+            g2.setPaint(p);
+            g2.fill(new Ellipse2D.Double(15, Player.GunType*50+5, 50, 50));
       
+            for(int i=1;i<5;i++){
+                rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING
+                                       ,RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHints(rh);
+                String str = "icons/weapon"+i+".png";
+                Image img = Toolkit.getDefaultToolkit().getImage(str);
+                g2.setStroke(new BasicStroke(1f));
+                g2.drawImage(img, 20,i*50+10, this);
+            }
+        } 
         
+        g.setColor(Color.WHITE);
+        FontRenderContext fontContext = new FontRenderContext(null, false, false);
+        Font font = new Font("Arial", Font.TYPE1_FONT, 20);
+        GlyphVector gv = font.createGlyphVector(fontContext, "");
+        switch(CurGame.gameend){
+            case -1:    gv = font.createGlyphVector(fontContext, "DEFEAT");
+                        break;
+            case 1:     gv = font.createGlyphVector(fontContext, "VICTORY");
+                        break;
+        }
+        Shape sh;
+        sh=gv.getOutline(DisplayW / 2 - 50, DisplayW / 20 + 50);
+        g2.fill(sh);
+        
+        
+        g.setColor(Color.WHITE);
+        gv = font.createGlyphVector(fontContext,"LEVEL "+CurGame.CurLevel);
+        sh=gv.getOutline(DisplayW / 2 - 45, DisplayW / 20 );
+        g2.fill(sh);
     }
 
     @Override
