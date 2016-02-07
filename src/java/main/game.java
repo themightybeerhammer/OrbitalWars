@@ -78,7 +78,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public int GoNextLevel=0
               ,CurLevel = 1;
     
-    
+        
     private int keymod = 0;
     
     /*Параметры для дебугагинга начало*/
