@@ -34,7 +34,7 @@ import java.util.ArrayList;
 */
 public class Projectile extends BaseClass{
     
-    /*Конструкторы класса*/
+    /**Конструкторы класса*/
     Projectile(){
         super();
     }

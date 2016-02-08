@@ -36,7 +36,7 @@ import java.util.ArrayList;
 
 public class Star extends BaseClass {
     
-    /*Конструкторы класса*/
+    /**Конструкторы класса*/
     Star(){
         super();
         dw_health = true;
@@ -97,7 +97,7 @@ public class Star extends BaseClass {
            if(DeadSteps<0) DeadSteps = 0;}
     }
     
-    /*Обработка гибели объекта*/
+    /**Обработка гибели объекта*/
     @Override
     void Die(){
         DeadFlag = true;

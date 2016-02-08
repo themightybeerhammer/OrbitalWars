@@ -97,7 +97,7 @@ public class Comet extends BaseClass{
         }
      }
     
-    /*Прорисовка хвоста кометы*/
+    /**Прорисовка хвоста кометы*/
     void draw_tail(Graphics g, double x, double y){
         Graphics2D g2 = (Graphics2D)g;
         RenderingHints rh = new RenderingHints(

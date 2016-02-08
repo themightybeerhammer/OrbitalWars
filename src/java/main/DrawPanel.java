@@ -66,10 +66,11 @@ public class DrawPanel extends JPanel{
         timer.start();
     }
     
-    /*Передача данных в дисплей*/
+    /**Передача данных в дисплей*/
     public void AssignList(ArrayList<BaseClass> ALBC){
         ALBaseClass = new ArrayList<>(ALBC);
     }
+    /**Передача данных в дисплей*/
     public void AssignList(ArrayList<BaseClass> ALBC
                           ,Planet player
                           ,Point2D p_display

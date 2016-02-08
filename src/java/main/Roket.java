@@ -332,7 +332,7 @@ public class Roket extends BaseClass {
     
     
     
-    /*Запись в массив препятсвия*/
+    /**Запись в массив препятсвия*/
     public void setHedge(BaseClass b){
         if(b!=Target)
         {

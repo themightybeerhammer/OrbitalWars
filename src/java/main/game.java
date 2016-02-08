@@ -76,7 +76,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
     public boolean gamestarted = false;
     public int gameend = 0;                     /*Флаг окончания игры 1 - победа, -1 - поражение*/
     public int GoNextLevel=0
-              ,CurLevel = 1;
+              ,CurLevel = 6;
     
         
     private int keymod = 0;
@@ -128,7 +128,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         b_startgame.setText("Start game");
     }
     
-    /*Инициализация игровой среды*/
+    /**Инициализация игровой среды*/
     private void StartGame(){
         pause = true;
         gameend = 0;
@@ -315,7 +315,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         pause = false;
     }
     
-    /*Генерация случайной кометы на краю системы*/
+    /**Генерация случайной кометы на краю системы*/
     public Comet SendNewComet(){
         int NewRO;
         NewRO = (int)max(1, (random() * 3));
@@ -361,7 +361,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         return NewComet;
     }
     
-    /*Добавляет новую планету в уже существующую систему*/
+    /**Добавляет новую планету в уже существующую систему*/
     public Planet SendNewPlanet(){
         double MaxDist = 0; /*Расстояние до самой дальней планеты*/
         double NewM;
@@ -467,7 +467,7 @@ public class game extends Applet implements KeyListener, MouseListener, MouseMot
         }
     }
     
-    /*Генератор уровня*/
+    /**Генератор уровня*/
     private void GenerateLevel(int diff){
         /*int MaxPlanets = max(2, (int)sqrt(diff));
         Planet planet;

@@ -70,7 +70,7 @@ public class Planet extends BaseClass {
                                 ,"Naboo", "Nal Hutta", "Rodia", "Ryloth", "Sullust", "Takodana", "Tatooine", "Umbara"
                                 ,"Utapau", "Yavin"};
     
-    /*Конструкторы класса*/
+    /**Конструкторы класса*/
     Planet(){
         super();
         dw_orbit = true;
@@ -224,14 +224,14 @@ public class Planet extends BaseClass {
      }
     
 
-    /*Нацеливание пушки на точку*/
+    /**Нацеливание пушки на точку*/
     public void Aim(double x, double y){
         
         Gun.SetAngle(X, Y, x, y);
         p_aim.setLocation(x,y);
     }
 
-    /*Выстрел из орудия*/
+    /**Выстрел из орудия*/
     public boolean Shoot(){
         if((Energy >= GunPowerNeed) && (FireTimer <= 0)){
             try{
@@ -396,7 +396,7 @@ public class Planet extends BaseClass {
     }
 
     
-    /*Выдать планете оружие*/
+    /**Выдать планете оружие*/
     public void GiveGun(){
         HaveGun = true;
         if(HaveGun){
@@ -406,14 +406,14 @@ public class Planet extends BaseClass {
     
 
     
-    /*Обработка гибели объекта*/
+    /**Обработка гибели объекта*/
     @Override
     public void Die(){
         DeadFlag = true;
         Disruption();//Explode();
     }
     
-    /*После выстрела*/
+    /**После выстрела*/
     private void Shooted(){
         Energy -= GunPowerNeed;
         FireTimer += 60000 / FireRate;
@@ -421,7 +421,7 @@ public class Planet extends BaseClass {
     }
     
  
-    /*Запись в массив препятсвий и приближающихся объектов*/
+    /**Запись в массив препятсвий и приближающихся объектов*/
     @Override
     public void setHedge(BaseClass b){
         if(b.LeadingObject!=this){

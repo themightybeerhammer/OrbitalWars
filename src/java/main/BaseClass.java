@@ -175,7 +175,7 @@ public class BaseClass {
           
      }
     
-      /*Маркировка препятствий и приближающихся объектов*/
+      /**Маркировка препятствий и приближающихся объектов*/
       public void draw_Hedges(Graphics g
                             ,double x
                             ,double y){
@@ -194,7 +194,7 @@ public class BaseClass {
          }
        } 
      
-     /*Пламя за ракетой, кометой или ещё какой херней*/ 
+     /**Пламя за ракетой, кометой или ещё какой херней*/ 
      void draw_health(Graphics g, double x, double y){
          Graphics2D g2 = (Graphics2D)g;
          RenderingHints rh = new RenderingHints(
@@ -475,12 +475,12 @@ public class BaseClass {
      
     }
      
-    /*Расстояние от текущего до заданного объекта*/
+    /**Расстояние от текущего до заданного объекта*/
     double Distance(BaseClass bc){
         return sqrt((X - bc.X) * (X - bc.X) + (Y - bc.Y) * (Y - bc.Y));
     }
     
-    /*Взрыв - объект разлетается на куски*/
+    /**Взрыв - объект разлетается на куски*/
     void Explode(){
         int objCount = (int)sqrt(RO);   /*Кол-во осколков, на которые распадется планета*/
         int objSize = RO / objCount;    /*Размер осколков*/
@@ -515,12 +515,12 @@ public class BaseClass {
         }
     }
     
-    /*Обработка гибели объекта*/
+    /**Обработка гибели объекта*/
     void Die(){
         DeadFlag = true;
     }
      
-      /*Запись в массив препятсвия*/
+      /**Запись в массив препятсвия*/
     public void setHedge(BaseClass b){
        
     }
